@@ -2,28 +2,28 @@
 
 ## Project Overview
 
-O projeto eh composto por um sistema embarcado de tempo real para o controle de temperatura de um aquecedor. O sistema ira contar com diferentes formas de interacao Homem / Maquina, alem de 
-diferentes procolos de comunicacao (UART, i2C, entre outros). 
+O projeto é composto por um sistema embarcado de tempo real para o controle de temperatura de um aquecedor. O sistema irá contar com diferentes formas de interação Homem / Máquina, além de 
+diferentes protocolos de comunicação (UART, i2C, entre outros). 
 
-A documentacao preliminar do sistema pode ser encontrado no no diretorio `Docs`. Eh importante ressaltar que os requisitos e arquitetura levantados ate o momento nao estao congelados 
-(baseline de requisitos nao fechada) e conforme o andamento do desenvolvimento e exploracao dos diferentes perifericos e componentes eles serao alterados.
+A documentação preliminar do sistema pode ser encontrado no no diretório `Docs`. É importante ressaltar que os requisitos e arquitetura levantados até o momento não estão congelados 
+(baseline de requisitos não fechada) e conforme o andamento do desenvolvimento e exploração dos diferentes periféricos e componentes eles serão alterados.
 
 ## Modelagem do Sistema
 
-De forma geral, os sistemas e subsistemas que irao compor o projeto sao representados pelo diagrama de blocos abaixo:
+De forma geral, os sistemas e subsistemas que irão compor o projeto são representados pelo diagrama de blocos abaixo:
 
 ![Diagrama de Blocos](Docs/Diagrama_Blocos_ES670B.drawio.png)
 
-Expandindo para o n@ivel de arquitetura de software, temos a seguinte organizacao:
+Expandindo para o nível de arquitetura de software, temos a seguinte organização:
 ![Diagrama de Blocos](Docs/DIAGRAMA-CAMADAS.png)
 
-Aprofundando mais no quesito software e a relacao de dependencia entre cada modulo temos:
+Aprofundando mais no quesito software e a relação de dependência entre cada módulo temos:
 ![Diagrama de Blocos](Docs/DIAGRAMA-CLASSES.png)
 
 ## Requisitos
 
-A coisa mais importante de ressaltar eh que qualquer implementacao e escolha feita durante o desenvolvimento do software deve visar a adequacao e o cumprimento dos requisitos 
-(desde os requisitos oriundos dos stakeholders needs ateh os requisitos de baixo nivel derivados durante o desenvolvimento). 
+A coisa mais importante de ressaltar é que qualquer implementação e escolha feita durante o desenvolvimento do software deve visar a adequação e o cumprimento dos requisitos 
+(desde os requisitos oriundos dos stakeholders needs até os requisitos de baixo nível derivados durante o desenvolvimento). 
 
 | *1. Temp System*         |                                                                                                                                                         |                                                                                                                             |                      |
 |------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------|----------------------|
@@ -78,4 +78,4 @@ A coisa mais importante de ressaltar eh que qualquer implementacao e escolha fei
 | PERIP002               | O sistema periférico deve ser capaz de gerar um sinal PWM com frequência variável de 100 a 10000Hz                                                      | valor necessário para a geração do sinal sono dentro de frequência audível                                                  | HMI009               |
 | PERIP003               | O sistema periférico deve ter um conversor AD                                                                                                           | periférico necessário para leitura da temperatura do sistema de aquecimento                                                 | HEAT008              |
 
-* Importante ressaltar que o arquivo excel referente aos requisitos tambem se encontram no diretorio `Docs`
+* Importante ressaltar que o arquivo excel referente aos requisitos também se encontram no diretório `Docs`
