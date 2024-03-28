@@ -1,0 +1,31 @@
+#include "stm32g474xx.h"
+#include "led.h"
+
+
+#define LED_SOLID_GREEN_PIN 5
+#define LED_SOLID_YELLOW_PIN 4
+#define LED_DIM_RED_PIN 14
+#define LED_DIM_GREEN_PIN 12
+#define LED_DIM_BLUE_PIN 5
+
+void vApplicationMain(){
+
+	// Initialize LED Drivers
+	LedMapping boardLeds[] =
+	{
+				{GPIOA, LED_SOLID_GREEN_PIN },
+				{GPIOA, LED_SOLID_YELLOW_PIN},
+				{GPIOB, LED_DIM_RED_PIN     },
+				{GPIOA, LED_DIM_GREEN_PIN   },
+				{GPIOB, LED_DIM_BLUE_PIN    }
+	};
+
+	vLedInit(boardLeds);
+
+	// Initialize Button Drivers
+	while(1){
+
+
+	}
+
+}

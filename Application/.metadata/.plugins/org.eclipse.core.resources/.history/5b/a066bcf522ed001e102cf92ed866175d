@@ -1,0 +1,56 @@
+// **********************************************//
+// File name:        led.c                       //
+// File description: This file implements the    //
+//                   functions' implementations  //
+//                   fot on-board LEDs           //
+// Author name:		 Isabelle Miki Ikuno         //
+//                   Pedro Henrique L. da Cruz   //
+// Creation date:	 22/Mar/2024                 //
+// Revision date:    22/Mar/2024                 //
+// **********************************************//
+#include "stm32g474xx.h"
+#include "led.h"
+
+#define _SET_MODE(GPIO, PIN) GPIO->MODER |= (1 << (PIN*2) ); GPIO->MODER &= ~(1 << (PIN*2 + 1) )
+
+
+typedef enum {
+	SOLID_GREEN = 1,
+	SOLID_YELLOW,
+	DIM_RED,
+	DIM_BLUE,
+	DIM_GREEN
+} Color;
+
+
+void vLedInit(){
+
+	 RCC->AHB2ENR |=  3;
+
+	 _SET_MODE(GPIOA, LED_SOLID_GREEN);
+	 _SET_MODE(GPIOA, LED_SOLID_YELLOW);
+	 _SET_MODE(GPIOA, LED_DIM_GREEN);
+
+	 _SET_MODE(GPIOB, LED_DIM_RED);
+	 _SET_MODE(GPIOB, LED_DIM_BLUE);
+
+
+
+
+}
+
+void vLedTurnOn(led ledTarget){
+
+}
+
+void vLedTurnOff(led ledTarget){
+
+}
+
+void vLedToggle(led ledTarget){
+
+}
+
+void vLedSet(led ledTarget, char ledStatus){
+
+}

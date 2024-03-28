@@ -1,0 +1,12 @@
+#include "stm32g474xx.h"
+#include "led.h"
+
+void vApplicationMain(){
+
+	//
+	while(1){
+
+
+	}
+
+}
