@@ -17,7 +17,7 @@
 				GPIO->MODER &= ~(1 << (PIN*2 + 1) )
 
 
-static LedMapping (*boardLedArray)[NUMBER_BOARD_LEDS];
+static LedMapping (* boardLedArray)[NUMBER_BOARD_LEDS];
 
 
 void vLedInit(LedMapping (*boardLeds)[NUMBER_BOARD_LEDS]){
@@ -27,28 +27,28 @@ void vLedInit(LedMapping (*boardLeds)[NUMBER_BOARD_LEDS]){
 
 	for(int ledIndex = 0; ledIndex < 5; ledIndex++){
 
-		if (boardLeds[ledIndex]->gpioPort == GPIOA)
+		if ((*boardLeds)[ledIndex].gpioPort == GPIOA)
 			clockInUse |= 1 << 0;
 
-		else if (boardLeds[ledIndex]->gpioPort == GPIOB)
+		else if ((*boardLeds)[ledIndex].gpioPort == GPIOB)
 			clockInUse |= 1 << 1;
 
-		else if (boardLeds[ledIndex]->gpioPort == GPIOC)
+		else if ((*boardLeds)[ledIndex].gpioPort == GPIOC)
 			clockInUse |= 1 << 2;
 
-		else if (boardLeds[ledIndex]->gpioPort == GPIOD)
+		else if ((*boardLeds)[ledIndex].gpioPort == GPIOD)
 			clockInUse |= 1 << 3;
 
-		else if (boardLeds[ledIndex]->gpioPort == GPIOE)
+		else if ((*boardLeds)[ledIndex].gpioPort == GPIOE)
 			clockInUse |= 1 << 4;
 
-		else if (boardLeds[ledIndex]->gpioPort == GPIOF)
+		else if ((*boardLeds)[ledIndex].gpioPort == GPIOF)
 			clockInUse |= 1 << 5;
 
-		else if (boardLeds[ledIndex]->gpioPort == GPIOG)
+		else if ((*boardLeds)[ledIndex].gpioPort == GPIOG)
 			clockInUse |= 1 << 6;
 
-		_SET_MODE_OUTPUT(boardLeds[ledIndex]->gpioPort, boardLeds[ledIndex]->gpioPin);
+		_SET_MODE_OUTPUT((*boardLeds)[ledIndex].gpioPort, (*boardLeds)[ledIndex].gpioPin);
 	}
 
 	RCC->AHB2ENR |=  clockInUse;
@@ -58,7 +58,7 @@ void vLedInit(LedMapping (*boardLeds)[NUMBER_BOARD_LEDS]){
 
 void vLedTurnOn(Color ledColor){
 
-	boardLedArray[ledColor]->gpioPort->ODR |= (1 << boardLedArray[ledColor]->gpioPin);
+	(*boardLedArray)[ledColor].gpioPort->ODR |= (1 << (*boardLedArray)[ledColor].gpioPin);
 
 }
 
