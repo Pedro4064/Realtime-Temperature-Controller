@@ -8,6 +8,7 @@
 // Creation date:	 29/Mar/2024                 //
 // Revision date:    29/Mar/2024                 //
 // **********************************************//
+#include "stm32g474xx.h"
 
 #ifndef INC_BUTTONS_H_
 #define INC_BUTTONS_H_
@@ -25,7 +26,7 @@ typedef enum {
 typedef enum {
 	PRESSED = 1,
 	NOT_PRESSED = 0
-} LedStatus;
+} ButtonStatus;
 
 typedef struct{
 
@@ -35,6 +36,6 @@ typedef struct{
 }ButtonMapping;
 
 void vButtonInit(ButtonMapping (*boardButtons)[NUMBER_BOARD_BUTTONS]);
-int iButtonRead(Position buttonPosition);
+ButtonStatus ButtonStatusRead(Position buttonPosition);
 
 #endif /* INC_BUTTONS_H_ */

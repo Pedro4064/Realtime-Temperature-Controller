@@ -1,6 +1,7 @@
 #include "application.h"
 #include "stm32g474xx.h"
 #include "led.h"
+#include "buttons.h"
 
 
 
@@ -19,7 +20,7 @@ void vApplicationMain(){
 	vLedInit(&boardLeds);
 
 	// Initialize Button Drivers
-	LedMapping boardButtons[] =
+	ButtonMapping boardButtons[] =
 	{
 				{GPIOC, BUTTON_UP_PIN    },
 				{GPIOC, BUTTON_DOWN_PIN  },
@@ -58,7 +59,7 @@ void vApplicationMain(){
 
 		vLedSet(SOLID_GREEN, ON);
 
-
+		char batata = ButtonStatusRead(UP);
 
 	}
 
