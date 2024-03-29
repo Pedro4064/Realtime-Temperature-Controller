@@ -1,9 +1,0 @@
-#include "led.h"
-
-void vApplicationMain(){
-
-	while(1){
-
-	}
-
-}

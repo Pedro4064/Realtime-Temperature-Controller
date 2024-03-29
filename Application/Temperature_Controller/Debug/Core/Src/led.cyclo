@@ -1,5 +1,0 @@
-../Core/Src/led.c:23:6:vLedInit	9
-../Core/Src/led.c:60:6:vLedTurnOn	1
-../Core/Src/led.c:66:6:vLedTurnOff	1
-../Core/Src/led.c:71:6:vLedToggle	1
-../Core/Src/led.c:75:6:vLedSet	1
