@@ -55,21 +55,29 @@ void vLedInit(LedMapping (*boardLeds)[NUMBER_BOARD_LEDS]){
 
 }
 
-void vLedTurnOn(Color ledColor){
+inline void vLedTurnOn(Color ledColor){
 
 	(*boardLedArray)[ledColor].gpioPort->ODR |= (1 << (*boardLedArray)[ledColor].gpioPin);
 
 }
 
-void vLedTurnOff(Color ledColor){
+inline void vLedTurnOff(Color ledColor){
 
 	(*boardLedArray)[ledColor].gpioPort->ODR &= ~(1 << (*boardLedArray)[ledColor].gpioPin);
 }
 
-void vLedToggle(Color ledColor){
+inline void vLedToggle(Color ledColor){
+
+	(*boardLedArray)[ledColor].gpioPort->ODR ^= (1 << (*boardLedArray)[ledColor].gpioPin);
 
 }
 
 void vLedSet(Color ledColor, LedStatus status){
+	if(status == ON){
+		vLedTurnOn(ledColor);
+	}
+	else{
+		vLedTurnOff(ledColor);
+	}
 
 }

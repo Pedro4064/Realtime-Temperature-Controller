@@ -25,8 +25,8 @@ typedef enum {
 } Color;
 
 typedef enum {
-	ON,
-	OFF
+	ON = 1,
+	OFF = 0
 } LedStatus;
 
 typedef struct{

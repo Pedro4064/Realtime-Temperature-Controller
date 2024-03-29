@@ -1,13 +1,40 @@
-/*
- * buttons.h
- *
- *  Created on: Mar 22, 2024
- *      Author: ES670 B
- */
+// **********************************************//
+// File name:        buttons.h                   //
+// File description: This file implements the    //
+//                   functions' for driving      //
+//                   on-board Buttons            //
+// Author name:		 Isabelle Miki Ikuno         //
+//                   Pedro Henrique L. da Cruz   //
+// Creation date:	 29/Mar/2024                 //
+// Revision date:    29/Mar/2024                 //
+// **********************************************//
 
 #ifndef INC_BUTTONS_H_
 #define INC_BUTTONS_H_
 
+#define NUMBER_BOARD_BUTTONS 5
 
+typedef enum {
+	UP,
+	DOWN,
+	LEFT,
+	RIGHT,
+	CENTER
+} Position;
+
+typedef enum {
+	PRESSED = 1,
+	NOT_PRESSED = 0
+} LedStatus;
+
+typedef struct{
+
+	GPIO_TypeDef* gpioPort;
+	char gpioPin;
+
+}ButtonMapping;
+
+void vButtonInit(ButtonMapping (*boardButtons)[NUMBER_BOARD_BUTTONS]);
+int iButtonRead(Position buttonPosition);
 
 #endif /* INC_BUTTONS_H_ */
