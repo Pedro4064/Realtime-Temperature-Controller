@@ -23,7 +23,7 @@ static LedMapping (* boardLedArray)[NUMBER_BOARD_LEDS];
 void vLedInit(LedMapping (*boardLeds)[NUMBER_BOARD_LEDS]){
 
 	boardLedArray = boardLeds;
-	unsigned int clockInUse = 0;
+	unsigned char clockInUse = 0;
 
 	for(int ledIndex = 0; ledIndex < 5; ledIndex++){
 
@@ -48,10 +48,9 @@ void vLedInit(LedMapping (*boardLeds)[NUMBER_BOARD_LEDS]){
 		else if ((*boardLeds)[ledIndex].gpioPort == GPIOG)
 			clockInUse |= 1 << 6;
 
+		RCC->AHB2ENR |=  clockInUse;
 		_SET_MODE_OUTPUT((*boardLeds)[ledIndex].gpioPort, (*boardLeds)[ledIndex].gpioPin);
 	}
-
-	RCC->AHB2ENR |=  clockInUse;
 
 
 }
@@ -64,6 +63,7 @@ void vLedTurnOn(Color ledColor){
 
 void vLedTurnOff(Color ledColor){
 
+	(*boardLedArray)[ledColor].gpioPort->ODR &= ~(1 << (*boardLedArray)[ledColor].gpioPin);
 }
 
 void vLedToggle(Color ledColor){
