@@ -20,8 +20,8 @@ typedef enum {
 	SOLID_GREEN,
 	SOLID_YELLOW,
 	DIM_RED,
-	DIM_BLUE,
-	DIM_GREEN
+	DIM_GREEN,
+	DIM_BLUE
 } Color;
 
 typedef enum {

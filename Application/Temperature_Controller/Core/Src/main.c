@@ -98,7 +98,7 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-	 vApplicationMain();
+	  vApplicationMain();
 
     /* USER CODE BEGIN 3 */
   }
