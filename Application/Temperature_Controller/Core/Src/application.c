@@ -16,7 +16,7 @@
 
 
 
-void vApplicationMain(){
+void vApplicationStart(){
 
 	// Initialize LED Drivers
 	LedMapping xBoardLeds[] =

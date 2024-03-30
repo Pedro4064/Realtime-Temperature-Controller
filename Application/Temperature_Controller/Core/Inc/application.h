@@ -24,6 +24,6 @@
 #define BUTTON_RIGHT_PIN     4
 #define BUTTON_CENTER_PIN    0
 
-void vApplicationMain();
+void vApplicationStart();
 
 #endif /* INC_APPLICATION_H_ */
