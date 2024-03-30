@@ -1,5 +1,5 @@
 // **********************************************//
-// File name:        buttons.c                   //
+// File name:        button.c                   //
 // File description: This file implements the    //
 //                   functions' implementations  //
 //                   fot on-board Buttons        //
@@ -9,7 +9,7 @@
 // Revision date:    29/Mar/2024                 //
 // **********************************************//
 
-#include  "buttons.h"
+#include <button.h>
 
 #define _SET_MODE_INPUT(GPIO, PIN) \
 				GPIO->MODER &= ~(1 << (PIN*2) );\

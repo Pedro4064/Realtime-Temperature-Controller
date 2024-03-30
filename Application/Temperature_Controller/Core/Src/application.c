@@ -9,10 +9,10 @@
 // Revision date:    29/Mar/2024                 //
 // **********************************************//
 
+#include <button.h>
 #include "application.h"
 #include "stm32g474xx.h"
 #include "led.h"
-#include "buttons.h"
 
 
 
@@ -43,18 +43,18 @@ void vApplicationMain(){
 	vButtonInit(&xBoardButtons);
 
 
-	// Initialize Button Drivers
+	// Initialize Application
 	while(1){
 
 		//vLedTurnOn(SOLID_GREEN);
 		//vLedTurnOn(SOLID_YELLOW);
-		//vLedTurnOn(DIM_RED);
+		vLedTurnOn(DIM_RED);
 		//vLedTurnOn(DIM_BLUE);
 		//vLedTurnOn(DIM_GREEN);
 
 		//vLedTurnOff(SOLID_GREEN);
 		//vLedTurnOff(SOLID_YELLOW);
-		//vLedTurnOff(DIM_RED);
+		vLedTurnOff(DIM_RED);
 		//vLedTurnOff(DIM_BLUE);
 		//vLedTurnOff(DIM_GREEN);
 
