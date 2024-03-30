@@ -12,10 +12,6 @@
 #ifndef INC_LED_H_
 #define INC_LED_H_
 
-
-#define NUMBER_BOARD_LEDS 5
-
-
 typedef enum {
 	SOLID_GREEN,
 	SOLID_YELLOW,
@@ -31,16 +27,20 @@ typedef enum {
 
 typedef struct{
 
-	GPIO_TypeDef* gpioPort;
-	char gpioPin;
+	GPIO_TypeDef* xGpioPort;
+	char cGpioPin;
 
 }LedMapping;
 
 
-void vLedInit(LedMapping (*boardLeds)[NUMBER_BOARD_LEDS]);
-void vLedTurnOn(Color ledColor);
-void vLedTurnOff(Color ledColor);
-void vLedToggle(Color ledColor);
-void vLedSet(Color ledColor, LedStatus status);
+#define NUMBER_BOARD_LEDS 5
+
+
+void vLedInit(LedMapping (*xBoardLeds)[NUMBER_BOARD_LEDS]);
+void vLedTurnOn(Color xledColor);
+void vLedTurnOff(Color xledColor);
+void vLedToggle(Color xledColor);
+void vLedSet(Color xledColor, LedStatus xStatus);
 
 #endif /* INC_LED_H_ */
+

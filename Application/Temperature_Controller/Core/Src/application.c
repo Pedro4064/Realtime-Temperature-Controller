@@ -1,3 +1,14 @@
+// **********************************************//
+// File name:        aplication.c                //
+// File description: This file implements the    //
+//                   temperature controller      //
+//                   aplication layer.           //
+// Author name:		 Isabelle Miki Ikuno         //
+//                   Pedro Henrique L. da Cruz   //
+// Creation date:	 29/Mar/2024                 //
+// Revision date:    29/Mar/2024                 //
+// **********************************************//
+
 #include "application.h"
 #include "stm32g474xx.h"
 #include "led.h"
@@ -8,7 +19,7 @@
 void vApplicationMain(){
 
 	// Initialize LED Drivers
-	LedMapping boardLeds[] =
+	LedMapping xBoardLeds[] =
 	{
 				{GPIOA, LED_SOLID_GREEN_PIN },
 				{GPIOA, LED_SOLID_YELLOW_PIN},
@@ -17,10 +28,10 @@ void vApplicationMain(){
 				{GPIOB, LED_DIM_BLUE_PIN    }
 	};
 
-	vLedInit(&boardLeds);
+	vLedInit(&xBoardLeds);
 
 	// Initialize Button Drivers
-	ButtonMapping boardButtons[] =
+	ButtonMapping xBoardButtons[] =
 	{
 				{GPIOC, BUTTON_UP_PIN    },
 				{GPIOC, BUTTON_DOWN_PIN  },
@@ -29,7 +40,7 @@ void vApplicationMain(){
 				{GPIOB, BUTTON_CENTER_PIN}
 	};
 
-	vButtonInit(&boardButtons);
+	vButtonInit(&xBoardButtons);
 
 
 	// Initialize Button Drivers
@@ -58,8 +69,6 @@ void vApplicationMain(){
 		vLedSet(SOLID_GREEN, OFF);
 
 		vLedSet(SOLID_GREEN, ON);
-
-		char batata = ButtonStatusRead(UP);
 
 	}
 

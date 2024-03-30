@@ -8,12 +8,11 @@
 // Creation date:	 29/Mar/2024                 //
 // Revision date:    29/Mar/2024                 //
 // **********************************************//
-#include "stm32g474xx.h"
 
 #ifndef INC_BUTTONS_H_
 #define INC_BUTTONS_H_
 
-#define NUMBER_BOARD_BUTTONS 5
+#include "stm32g474xx.h"
 
 typedef enum {
 	UP,
@@ -30,12 +29,14 @@ typedef enum {
 
 typedef struct{
 
-	GPIO_TypeDef* gpioPort;
-	char gpioPin;
+	GPIO_TypeDef* xGpioPort;
+	char cGpioPin;
 
 }ButtonMapping;
 
-void vButtonInit(ButtonMapping (*boardButtons)[NUMBER_BOARD_BUTTONS]);
-ButtonStatus ButtonStatusRead(Position buttonPosition);
+#define NUMBER_BOARD_BUTTONS 5
+
+void vButtonInit(ButtonMapping (*xBoardButtons)[NUMBER_BOARD_BUTTONS]);
+ButtonStatus bsButtonRead(Position xButtonPosition);
 
 #endif /* INC_BUTTONS_H_ */

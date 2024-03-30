@@ -17,67 +17,63 @@
 				GPIO->MODER &= ~(1 << (PIN*2 + 1) )
 
 
-static LedMapping (* boardLedArray)[NUMBER_BOARD_LEDS];
+static LedMapping (*xBoardLedArray)[NUMBER_BOARD_LEDS];
 
 
-void vLedInit(LedMapping (*boardLeds)[NUMBER_BOARD_LEDS]){
+void vLedInit(LedMapping (*xBoardLeds)[NUMBER_BOARD_LEDS]){
 
-	boardLedArray = boardLeds;
-	unsigned char clockInUse = 0;
+	xBoardLedArray = xBoardLeds;
+	unsigned char ucClockInUse = 0;
 
-	for(int ledIndex = 0; ledIndex < 5; ledIndex++){
+	for(int iLedIndex = 0; iLedIndex < 5; iLedIndex++){
 
-		if ((*boardLeds)[ledIndex].gpioPort == GPIOA)
-			clockInUse |= 1 << 0;
+		if ((*xBoardLeds)[iLedIndex].xGpioPort == GPIOA)
+			ucClockInUse |= 1 << 0;
 
-		else if ((*boardLeds)[ledIndex].gpioPort == GPIOB)
-			clockInUse |= 1 << 1;
+		else if ((*xBoardLeds)[iLedIndex].xGpioPort == GPIOB)
+			ucClockInUse |= 1 << 1;
 
-		else if ((*boardLeds)[ledIndex].gpioPort == GPIOC)
-			clockInUse |= 1 << 2;
+		else if ((*xBoardLeds)[iLedIndex].xGpioPort == GPIOC)
+			ucClockInUse |= 1 << 2;
 
-		else if ((*boardLeds)[ledIndex].gpioPort == GPIOD)
-			clockInUse |= 1 << 3;
+		else if ((*xBoardLeds)[iLedIndex].xGpioPort == GPIOD)
+			ucClockInUse |= 1 << 3;
 
-		else if ((*boardLeds)[ledIndex].gpioPort == GPIOE)
-			clockInUse |= 1 << 4;
+		else if ((*xBoardLeds)[iLedIndex].xGpioPort == GPIOE)
+			ucClockInUse |= 1 << 4;
 
-		else if ((*boardLeds)[ledIndex].gpioPort == GPIOF)
-			clockInUse |= 1 << 5;
+		else if ((*xBoardLeds)[iLedIndex].xGpioPort == GPIOF)
+			ucClockInUse |= 1 << 5;
 
-		else if ((*boardLeds)[ledIndex].gpioPort == GPIOG)
-			clockInUse |= 1 << 6;
+		else if ((*xBoardLeds)[iLedIndex].xGpioPort == GPIOG)
+			ucClockInUse |= 1 << 6;
 
-		RCC->AHB2ENR |=  clockInUse;
-		_SET_MODE_OUTPUT((*boardLeds)[ledIndex].gpioPort, (*boardLeds)[ledIndex].gpioPin);
+		RCC->AHB2ENR |=  ucClockInUse;
+		_SET_MODE_OUTPUT((*xBoardLeds)[iLedIndex].xGpioPort, (*xBoardLeds)[iLedIndex].cGpioPin);
 	}
-
-
 }
 
-inline void vLedTurnOn(Color ledColor){
+inline void vLedTurnOn(Color xLedColor){
 
-	(*boardLedArray)[ledColor].gpioPort->ODR |= (1 << (*boardLedArray)[ledColor].gpioPin);
-
+	(*xBoardLedArray)[xLedColor].xGpioPort->ODR |= (1 << (*xBoardLedArray)[xLedColor].cGpioPin);
 }
 
-inline void vLedTurnOff(Color ledColor){
+inline void vLedTurnOff(Color xLedColor){
 
-	(*boardLedArray)[ledColor].gpioPort->ODR &= ~(1 << (*boardLedArray)[ledColor].gpioPin);
+	(*xBoardLedArray)[xLedColor].xGpioPort->ODR &= ~(1 << (*xBoardLedArray)[xLedColor].cGpioPin);
 }
 
-inline void vLedToggle(Color ledColor){
+inline void vLedToggle(Color xLedColor){
 
-	(*boardLedArray)[ledColor].gpioPort->ODR ^= (1 << (*boardLedArray)[ledColor].gpioPin);
-
+	(*xBoardLedArray)[xLedColor].xGpioPort->ODR ^= (1 << (*xBoardLedArray)[xLedColor].cGpioPin);
 }
 
-void vLedSet(Color ledColor, LedStatus status){
-	if(status == ON){
-		vLedTurnOn(ledColor);
+void vLedSet(Color xLedColor, LedStatus xStatus){
+
+	if(xStatus == ON){
+		vLedTurnOn(xLedColor);
 	}
 	else{
-		vLedTurnOff(ledColor);
+		vLedTurnOff(xLedColor);
 	}
-
 }

@@ -1,9 +1,13 @@
-/*
- * application.h
- *
- *  Created on: Mar 28, 2024
- *      Author: pedrocruz
- */
+// **********************************************//
+// File name:        aplication.h                //
+// File description: This file declare functions //
+//                   interface and data types for//
+//                   aplication.                 //
+// Author name:		 Isabelle Miki Ikuno         //
+//                   Pedro Henrique L. da Cruz   //
+// Creation date:	 29/Mar/2024                 //
+// Revision date:    29/Mar/2024                 //
+// **********************************************//
 
 #ifndef INC_APPLICATION_H_
 #define INC_APPLICATION_H_
