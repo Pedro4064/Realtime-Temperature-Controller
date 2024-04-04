@@ -51,6 +51,6 @@ void vButtonInit(ButtonMapping (*xBoardButtons)[NUMBER_BOARD_BUTTONS]){
 		}
 }
 
-ButtonStatus bsButtonRead(Position xButtonPosition){
+ButtonStatus xButtonRead(Position xButtonPosition){
 	return (((*xBoardButtonArray)[xButtonPosition].xGpioPort->IDR)>>((*xBoardButtonArray)[xButtonPosition].cGpioPin)) & 1;
 }

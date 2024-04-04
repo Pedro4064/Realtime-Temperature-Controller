@@ -37,6 +37,6 @@ typedef struct{
 #define NUMBER_BOARD_BUTTONS 5
 
 void vButtonInit(ButtonMapping (*xBoardButtons)[NUMBER_BOARD_BUTTONS]);
-ButtonStatus bsButtonRead(Position xButtonPosition);
+ButtonStatus xButtonRead(Position xButtonPosition);
 
 #endif /* INC_BUTTON_H_ */
