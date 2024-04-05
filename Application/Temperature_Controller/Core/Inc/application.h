@@ -24,6 +24,18 @@
 #define BUTTON_RIGHT_PIN     4
 #define BUTTON_CENTER_PIN    0
 
+// ********************************************************** //
+// Method name:        vApplicationStart                      //
+// Method description: All   the   code   responsible   for   //
+//                     implementing     the     temperature   //
+//                     controller application, allowing the   //
+//                     main  function  to  focus  solely on   //
+//                     calling this function for execution    //
+// Input params:       void                                   //
+//                        N/A                                 //
+// Output params:      void                                   //
+//                        N/A                                 //
+// ********************************************************** //
 void vApplicationStart();
 
 #endif /* INC_APPLICATION_H_ */
