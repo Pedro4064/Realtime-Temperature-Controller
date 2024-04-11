@@ -13,7 +13,7 @@
 
 static MatrixMapping gpio_mapping;
 static MatrixKeyboard xMatrixKeys;
-static char cActiveColumn = 3;
+static int cActiveColumn = 3;
 
 void vMatrixKeyboardInit(MatrixMapping mapping, TIM_HandleTypeDef* timer) {
     gpio_mapping = mapping;
@@ -28,7 +28,7 @@ void vMatrixKeyboardUpdateCallback() {
     HAL_GPIO_WritePin(gpio_mapping.columns[cActiveColumn].xGpioPort, gpio_mapping.columns[cActiveColumn].cGpioPin, GPIO_PIN_SET);
 
     // Iterate and read the status for each matrix row
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i <= 3; i++) {
         xMatrixKeys.cKeayboardValues[i][cActiveColumn] = HAL_GPIO_ReadPin(gpio_mapping.rows[i].xGpioPort, gpio_mapping.rows[i].cGpioPin);
     }
 

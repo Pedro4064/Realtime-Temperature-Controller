@@ -10,8 +10,8 @@
 #define INC_MATRIXKEYBOARD_H_
 
 typedef enum {
-    HIGH,
-    LOW
+    HIGH = 1,
+    LOW = 0
 } KeyStatus;
 
 typedef struct {

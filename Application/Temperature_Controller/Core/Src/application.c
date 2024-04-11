@@ -23,6 +23,42 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* timer) {
     }
 }
 
+//A ideia seria ter uma entrada um numero de 5 bits e aih ligar a cor
+void vApplicationTurnOnBinaryLed(MatrixKeyboard* pMatrixKeayboardStatus){
+  	//Finds the key position pressed
+    	int iKeyNumber = 0;
+    	for(int i=1; i<=16; i++){
+    	    if(pMatrixKeayboardStatus->cKeyboard1dValues[i-1] == 1){
+    	    	iKeyNumber = i;
+    	  }
+    	}
+
+    	if (((iKeyNumber >> 0) & 1) == HIGH)
+    		vLedTurnOn(SOLID_GREEN);
+    	else
+    		vLedTurnOff(SOLID_GREEN);
+
+    	if(((iKeyNumber>>1 ) & 1) == HIGH)
+    		vLedTurnOn(SOLID_YELLOW);
+    	else
+    		vLedTurnOff(SOLID_YELLOW);
+
+    	if(((iKeyNumber>>2 ) & 1) == HIGH)
+    	    vLedTurnOn(DIM_RED);
+    	else
+    		vLedTurnOff(DIM_RED);
+
+    	if(((iKeyNumber>>3 ) & 1) == HIGH)
+    	    vLedTurnOn(DIM_GREEN);
+    	else
+    		vLedTurnOff(DIM_GREEN);
+
+    	if(((iKeyNumber>>4 ) & 1) == HIGH)
+    	    vLedTurnOn(DIM_BLUE);
+    	else
+    		vLedTurnOff(DIM_BLUE);
+}
+
 void vApplicationStart() {
     // Initialize LED Drivers
     LedMapping xBoardLeds[] =
@@ -65,34 +101,7 @@ void vApplicationStart() {
 
     vMatrixKeyboardInit(xKeyboardMapping, &htim6);
 
-    //A ideia seria ter uma entrada um numero de 5 bits e aih ligar a cor
-    void vApplicationTurnOnBinaryLed(MatrixKeyboard* pMatrixKeayboardStatus){
-    	//Reset all the LEDs
-    	vLedTurnOff(SOLID_GREEN);
-    	vLedTurnOff(SOLID_YELLOW);
-    	vLedTurnOff(DIM_RED);
-    	vLedTurnOff(DIM_GREEN);
-    	vLedTurnOff(DIM_BLUE);
 
-    	//Finds the key position pressed
-    	int iKeyNumber = 0;
-    	for(int i=0; i<15; i++){
-    	    if(pMatrixKeayboardStatus->cKeyboard1dValues[i] == 1){
-    	    	iKeyNumber = i;
-    	  }
-    	}
-
-    	if (((iKeyNumber>>0)&1) == HIGH)
-    		vLedTurnOn(SOLID_GREEN);
-    	else if(((iKeyNumber>>1)&1) == HIGH)
-    		vLedTurnOn(SOLID_YELLOW);
-    	else if(((iKeyNumber>>2))&1 == HIGH)
-    	    vLedTurnOn(DIM_RED);
-    	else if(((iKeyNumber>>3))&1 == HIGH)
-    	    vLedTurnOn(DIM_GREEN);
-    	else if(((iKeyNumber>>4)&1) == HIGH)
-    	    vLedTurnOn(DIM_BLUE);
-    }
 
 
 
@@ -102,7 +111,7 @@ void vApplicationStart() {
     	//CODE TEST
     	MatrixKeyboard* pMatrixKeayboardStatus = pMatrixKeyboardGetKeys();
 
-    	cKeyA = pMatrixKeayboardStatus->xKeyboard.cA;
+    	cKeyA = pMatrixKeayboardStatus->xKeyboard.cD;
     	vApplicationTurnOnBinaryLed(pMatrixKeayboardStatus);
 
     }
