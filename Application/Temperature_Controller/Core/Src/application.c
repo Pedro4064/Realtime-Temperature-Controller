@@ -65,9 +65,45 @@ void vApplicationStart() {
 
     vMatrixKeyboardInit(xKeyboardMapping, &htim6);
 
+    //A ideia seria ter uma entrada um numero de 5 bits e aih ligar a cor
+    void vApplicationTurnOnBinaryLed(MatrixKeyboard* pMatrixKeayboardStatus){
+    	//Reset all the LEDs
+    	vLedTurnOff(SOLID_GREEN);
+    	vLedTurnOff(SOLID_YELLOW);
+    	vLedTurnOff(DIM_RED);
+    	vLedTurnOff(DIM_GREEN);
+    	vLedTurnOff(DIM_BLUE);
+
+    	//Finds the key position pressed
+    	int iKeyNumber = 0;
+    	for(int i=0; i<15; i++){
+    	    if(pMatrixKeayboardStatus->cKeyboard1dValues[i] == 1){
+    	    	iKeyNumber = i;
+    	  }
+    	}
+
+    	if (((iKeyNumber>>0)&1) == HIGH)
+    		vLedTurnOn(SOLID_GREEN);
+    	else if(((iKeyNumber>>1)&1) == HIGH)
+    		vLedTurnOn(SOLID_YELLOW);
+    	else if(((iKeyNumber>>2))&1 == HIGH)
+    	    vLedTurnOn(DIM_RED);
+    	else if(((iKeyNumber>>3))&1 == HIGH)
+    	    vLedTurnOn(DIM_GREEN);
+    	else if(((iKeyNumber>>4)&1) == HIGH)
+    	    vLedTurnOn(DIM_BLUE);
+    }
+
+
+
     // Initialize Application
     while (1) {
-    	MatrixKeyboard* pBatata = pMatrixKeyboardGetKeys();
-    	cKeyA = pBatata->xKeyboard.cA;
+
+    	//CODE TEST
+    	MatrixKeyboard* pMatrixKeayboardStatus = pMatrixKeyboardGetKeys();
+
+    	cKeyA = pMatrixKeayboardStatus->xKeyboard.cA;
+    	vApplicationTurnOnBinaryLed(pMatrixKeayboardStatus);
+
     }
 }

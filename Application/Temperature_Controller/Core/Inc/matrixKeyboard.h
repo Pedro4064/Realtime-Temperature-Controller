@@ -39,6 +39,7 @@ typedef struct {
 typedef union {
     KeyboardKeys xKeyboard;
     char cKeayboardValues[4][4];
+    char cKeyboard1dValues[16];
 } MatrixKeyboard;
 
 typedef struct {
