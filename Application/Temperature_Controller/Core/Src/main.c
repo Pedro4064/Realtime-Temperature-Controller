@@ -46,6 +46,7 @@ UART_HandleTypeDef hlpuart1;
 TIM_HandleTypeDef htim6;
 
 /* USER CODE BEGIN PV */
+char cKeyA = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/

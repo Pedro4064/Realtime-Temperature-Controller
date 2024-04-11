@@ -43,7 +43,7 @@ typedef union {
 
 typedef struct {
     GPIO_TypeDef* xGpioPort;
-    char cGpioPin;
+    unsigned int cGpioPin;
 
 } MatrixGpioInterface;
 
