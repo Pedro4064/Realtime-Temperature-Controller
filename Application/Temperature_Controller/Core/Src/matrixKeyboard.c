@@ -10,11 +10,10 @@
 #include "matrixKeyboard.h"
 
 #include "application.h"
-#include "main.h"
 
 #define CIRCULAR_INCREMENT(x) (x == 3) ? 0 : x + 1
 
-static MatrixMapping gpio_mapping;
+static MatrixMapping xGpioMapping;
 static MatrixKeyboard xMatrixKeys;
 static int cActiveColumn = 3;
 static MatrixKeyboardTimePressed xTimerBalance;
@@ -26,21 +25,21 @@ char cVisualKeyboardMapping[4][4] = {
     {'*', '0', '#', 'D'},
 };
 
-void vMatrixKeyboardInit(MatrixMapping mapping, TIM_HandleTypeDef* timer) {
-    gpio_mapping = mapping;
-    HAL_TIM_Base_Start_IT(timer);
+void vMatrixKeyboardInit(MatrixMapping xMapping, TIM_HandleTypeDef* pTimer) {
+    xGpioMapping = xMapping;
+    HAL_TIM_Base_Start_IT(pTimer);
 }
 
 void vMatrixKeyboardUpdateCallback() {
-    HAL_GPIO_WritePin(gpio_mapping.columns[cActiveColumn].xGpioPort, gpio_mapping.columns[cActiveColumn].cGpioPin, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(xGpioMapping.columns[cActiveColumn].xGpioPort, xGpioMapping.columns[cActiveColumn].cGpioPin, GPIO_PIN_RESET);
 
     cActiveColumn = CIRCULAR_INCREMENT(cActiveColumn);
 
-    HAL_GPIO_WritePin(gpio_mapping.columns[cActiveColumn].xGpioPort, gpio_mapping.columns[cActiveColumn].cGpioPin, GPIO_PIN_SET);
+    HAL_GPIO_WritePin(xGpioMapping.columns[cActiveColumn].xGpioPort, xGpioMapping.columns[cActiveColumn].cGpioPin, GPIO_PIN_SET);
 
     // Iterate and read the status for each matrix row
     for (int i = 0; i <= 3; i++) {
-        GPIO_PinState xKeyValue = HAL_GPIO_ReadPin(gpio_mapping.rows[i].xGpioPort, gpio_mapping.rows[i].cGpioPin);
+        GPIO_PinState xKeyValue = HAL_GPIO_ReadPin(xGpioMapping.rows[i].xGpioPort, xGpioMapping.rows[i].cGpioPin);
         xMatrixKeys.cKeayboardValues[i][cActiveColumn] = xKeyValue;
 
         unsigned int uiPreviously = xTimerBalance.xKeyboardTimePressed[i][cActiveColumn].usTimeSpendPressed;
