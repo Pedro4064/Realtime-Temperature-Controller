@@ -19,12 +19,15 @@
 
 #define INCREMENT_HALF_SEC(x) (x == 15) ? 0 : x+1
 static int iCircularNumberHalfSec = 15;
-
+static MatrixKeyboard* pMatrixKeayboardStatus;
 
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* timer) {
+
     if (timer->Instance == TIM6) {
         vMatrixKeyboardUpdateCallback();
+//        pMatrixKeayboardStatus = pMatrixKeyboardGetKeys();
+//        vApplicationTurnOnBinaryLed(pMatrixKeayboardStatus);
     }
 }
 
@@ -144,17 +147,15 @@ void vApplicationStart() {
 
 
 
-
-
     // Initialize Application
     while (1) {
 
-    	MatrixKeyboard* pMatrixKeayboardStatus = pMatrixKeyboardGetKeys();
 
-    	//CODE TEST PART 1
-    	//To run this part it is necessary to comment the implementations of the __weak functions on this file
-    	vApplicationTurnOnBinaryLed(pMatrixKeayboardStatus);
 
+         //CODE TEST PART 1
+         //To run this part it is necessary to comment the implementations of the __weak functions on this file
+
+        cKeyA	= pMatrixKeyboardGetKeys()->xKeyboard.cA;
     	//CODE TEST PART 2
     	//To run this part it is necessary to comment the vApplicationTurnOnBinaryLed command above
 

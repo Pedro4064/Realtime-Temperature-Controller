@@ -1,0 +1,5 @@
+../Core/Src/led.c:23:6:vLedInit	36	static
+../Core/Src/led.c:56:13:vLedTurnOn	8	static
+../Core/Src/led.c:61:13:vLedTurnOff	0	static
+../Core/Src/led.c:66:13:vLedToggle	8	static
+../Core/Src/led.c:71:6:vLedSet	0	static

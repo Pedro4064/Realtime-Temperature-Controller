@@ -89,7 +89,6 @@ typedef struct {
 // matrix_keyboard.xKeyboard.cB;
 // matrix_keyboard.cKeayboardValues[1][3]
 
-
 void vMatrixKeyboardInit(MatrixMapping mapping, TIM_HandleTypeDef* timer);
 
 void vMatrixKeyboardUpdateCallback();

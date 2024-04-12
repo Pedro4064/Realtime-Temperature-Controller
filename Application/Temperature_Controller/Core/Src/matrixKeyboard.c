@@ -7,6 +7,7 @@
 
 #include "matrixKeyboard.h"
 #include "application.h"
+#include "main.h"
 
 
 #define CIRCULAR_INCREMENT(x) (x == 3) ? 0 : x+1
@@ -29,30 +30,36 @@ void vMatrixKeyboardInit(MatrixMapping mapping, TIM_HandleTypeDef* timer) {
 }
 
 void vMatrixKeyboardUpdateCallback() {
+
+
     HAL_GPIO_WritePin(gpio_mapping.columns[cActiveColumn].xGpioPort, gpio_mapping.columns[cActiveColumn].cGpioPin, GPIO_PIN_RESET);
 
     cActiveColumn = CIRCULAR_INCREMENT(cActiveColumn);
 
     HAL_GPIO_WritePin(gpio_mapping.columns[cActiveColumn].xGpioPort, gpio_mapping.columns[cActiveColumn].cGpioPin, GPIO_PIN_SET);
+    timer_counter = xTimerBalance.xKeyboard.xA.usTimeSpendPressed;
 
     // Iterate and read the status for each matrix row
     for (int i = 0; i <= 3; i++) {
         GPIO_PinState xKeyValue = HAL_GPIO_ReadPin(gpio_mapping.rows[i].xGpioPort, gpio_mapping.rows[i].cGpioPin);
-
     	xMatrixKeys.cKeayboardValues[i][cActiveColumn] = xKeyValue;
 
     	unsigned int uiPreviously = xTimerBalance.xKeyboardTimePressed[i][cActiveColumn].usTimeSpendPressed;
     	char cPreviousThreeSecondFlag = xTimerBalance.xKeyboardTimePressed[i][cActiveColumn].cThreeSecondsFlag;
-    	xTimerBalance.xKeyboardTimePressed[i][cActiveColumn].cThreeSecondsFlag = ((uiPreviously+10 >= 3000 || cPreviousThreeSecondFlag) && xKeyValue)? 1 : 0;
-    	xTimerBalance.xKeyboardTimePressed[i][cActiveColumn].usTimeSpendPressed = (xKeyValue == 0)? 0 : (uiPreviously + 10)%3000;
+    	xTimerBalance.xKeyboardTimePressed[i][cActiveColumn].cThreeSecondsFlag = ((uiPreviously+40 >= 3000 || cPreviousThreeSecondFlag) && xKeyValue)? 1 : 0;
+    	xTimerBalance.xKeyboardTimePressed[i][cActiveColumn].usTimeSpendPressed = (xKeyValue == 0)? 0 : (uiPreviously + 40)%3000;
 
     	if (!cPreviousThreeSecondFlag && xTimerBalance.xKeyboardTimePressed[i][cActiveColumn].cThreeSecondsFlag)
     		vMatrixKeyboardThreeSecPressedCallback(cVisualKeyboardMapping[i][cActiveColumn]);
 
-    	if (!(xTimerBalance.xKeyboardTimePressed[i][cActiveColumn].usTimeSpendPressed % 500))
+    	if (xTimerBalance.xKeyboardTimePressed[i][cActiveColumn].usTimeSpendPressed != 0 && !(xTimerBalance.xKeyboardTimePressed[i][cActiveColumn].usTimeSpendPressed % 500))
     		vMatrixKeyboardHalfSecPressedCallback(cVisualKeyboardMapping[i][cActiveColumn]);
     }
 
+    first_line[0] = xMatrixKeys.cKeayboardValues[0][0];
+    first_line[1] = xMatrixKeys.cKeayboardValues[0][1];
+    first_line[2] = xMatrixKeys.cKeayboardValues[0][2];
+    first_line[3] = xMatrixKeys.cKeayboardValues[0][3];
 }
 
 __weak void vMatrixKeyboardThreeSecPressedCallback (char cKey){}

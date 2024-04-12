@@ -1,0 +1,2 @@
+../Core/Src/buttons.c:21:6:vButtonInit	36	static
+../Core/Src/buttons.c:54:14:xButtonRead	0	static
