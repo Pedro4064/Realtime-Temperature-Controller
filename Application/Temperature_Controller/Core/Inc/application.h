@@ -9,6 +9,7 @@
 // Revision date:    29/Mar/2024                 //
 // **********************************************//
 #include <main.h>
+#include "matrixKeyboard.h"
 
 #include "stm32g4xx_hal.h"
 

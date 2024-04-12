@@ -16,6 +16,13 @@ static MatrixKeyboard xMatrixKeys;
 static int cActiveColumn = 3;
 static MatrixKeyboardTimePressed xTimerBalance;
 
+char cVisualKeyboardMapping[4][4] = {
+		{'1', '2', '3', 'A'},
+		{'4', '5', '6', 'B'},
+		{'7', '8', '9', 'C'},
+		{'*', '0', '#', 'D'},
+};
+
 void vMatrixKeyboardInit(MatrixMapping mapping, TIM_HandleTypeDef* timer) {
     gpio_mapping = mapping;
     HAL_TIM_Base_Start_IT(timer);
@@ -48,8 +55,8 @@ void vMatrixKeyboardUpdateCallback() {
 
 }
 
-__weak vMatrixKeyboardThreeSecPressedCallback (char cKey){}
-__weak vMatrixKeyboardHalfSecPressedCallback(char cKey){}
+__weak void vMatrixKeyboardThreeSecPressedCallback (char cKey){}
+__weak void vMatrixKeyboardHalfSecPressedCallback(char cKey){}
 
 
 

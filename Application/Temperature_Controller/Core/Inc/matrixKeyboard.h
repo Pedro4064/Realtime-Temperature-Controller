@@ -88,12 +88,7 @@ typedef struct {
 // MatrixKeyboard matrix_keyboard;
 // matrix_keyboard.xKeyboard.cB;
 // matrix_keyboard.cKeayboardValues[1][3]
-char cVisualKeyboardMapping = {
-		{'1', '2', '3', 'A'},
-		{'4', '5', '6', 'B'},
-		{'7', '8', '9', 'C'},
-		{'*', '0', '#', 'D'},
-};
+
 
 void vMatrixKeyboardInit(MatrixMapping mapping, TIM_HandleTypeDef* timer);
 

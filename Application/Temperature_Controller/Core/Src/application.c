@@ -25,6 +25,7 @@ static int iCircularNumberHalfSec = 15;
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* timer) {
     if (timer->Instance == TIM6) {
         vMatrixKeyboardUpdateCallback();
+    }
 }
 
 void vMatrixKeyboardThreeSecPressedCallback (char cKey){
@@ -59,8 +60,9 @@ void vMatrixKeyboardHalfSecPressedCallback(char cKey){
 		else
 			vLedTurnOff(DIM_GREEN);
 	}
-
 }
+
+
 
 //A ideia seria ter uma entrada um numero de 5 bits e aih ligar a cor
 void vApplicationTurnOnBinaryLed(MatrixKeyboard* pMatrixKeayboardStatus){
