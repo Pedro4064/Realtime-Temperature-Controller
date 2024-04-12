@@ -1,9 +1,12 @@
-/*
- * matrixKeyboard.h
- *
- *  Created on: Apr 5, 2024
- *      Author: ES670 B
- */
+// **********************************************//
+// File name:        matrixKeyboard.h            //
+// File description: This file implements the    //
+//                   keyboard driver.            //
+// Author name:		 Isabelle Miki Ikuno         //
+//                   Pedro Henrique L. da Cruz   //
+// Creation date:	 12/Abr/2024                 //
+// Revision date:    12/Abr/2024                 //
+// **********************************************//
 #include "stm32g4xx_hal.h"
 
 #ifndef INC_MATRIXKEYBOARD_H_
@@ -37,23 +40,23 @@ typedef struct {
 } KeyboardKeys;
 
 typedef struct {
-	unsigned int usTimeSpendPressed;
-	char cThreeSecondsFlag;
+    unsigned int usTimeSpendPressed;
+    char cThreeSecondsFlag;
 } TimePressedStatus;
 
 typedef struct {
-	TimePressedStatus xOne;
-	TimePressedStatus xTwo;
-	TimePressedStatus xThree;
-	TimePressedStatus xA;
+    TimePressedStatus xOne;
+    TimePressedStatus xTwo;
+    TimePressedStatus xThree;
+    TimePressedStatus xA;
 
-	TimePressedStatus xFour;
-	TimePressedStatus xFive;
-	TimePressedStatus xSix;
-	TimePressedStatus xB;
+    TimePressedStatus xFour;
+    TimePressedStatus xFive;
+    TimePressedStatus xSix;
+    TimePressedStatus xB;
 
-	TimePressedStatus xSeven;
-	TimePressedStatus xEight;
+    TimePressedStatus xSeven;
+    TimePressedStatus xEight;
     TimePressedStatus xNine;
     TimePressedStatus xC;
 
@@ -64,8 +67,8 @@ typedef struct {
 } KeyboardTimePressedStatus;
 
 typedef union {
-	KeyboardTimePressedStatus xKeyboard;
-	TimePressedStatus xKeyboardTimePressed[4][4];
+    KeyboardTimePressedStatus xKeyboard;
+    TimePressedStatus xKeyboardTimePressed[4][4];
 } MatrixKeyboardTimePressed;
 
 typedef union {
@@ -89,14 +92,71 @@ typedef struct {
 // matrix_keyboard.xKeyboard.cB;
 // matrix_keyboard.cKeayboardValues[1][3]
 
+// ********************************************************** //
+// Method name:        vMatrixKeyboardInit                    //
+// Method description: Initialize   the   Matrix   Keyboard   //
+//                     module, using the specified timerand   //
+//                     GPIO mapping.                          //
+// Input params:       mapping                                //
+//                        GPIO    Mapping,   represents   the //
+//                        connection  between  the matrix and //
+//                        MCU                                 //
+//                     timer                                  //
+//                        Pointer  to  the timer to use duing //
+//                        pulling                             //
+// Output params:      void                                   //
+//                        N/A                                 //
+// ********************************************************** //
 void vMatrixKeyboardInit(MatrixMapping mapping, TIM_HandleTypeDef* timer);
 
+// ********************************************************** //
+// Method name:        vMatrixKeyboardUpdateCallback          //
+// Method description: Callback to update the values ofeach   //
+//                     key                                    //
+// Input params:                                              //
+//                                                            //
+// Output params:      void                                   //
+//                        N/A                                 //
+// ********************************************************** //
 void vMatrixKeyboardUpdateCallback();
 
+// ********************************************************** //
+// Method name:        vMatrixKeyboardThreeSecPressedCallback //
+// Method description: Callback function of the longer press  //
+//                     (3 seconds)                            //
+// Input params:       cKey                                   //
+//                        ASCII  Representation  of  the  key //
+//                        pressed (follows the same patter as //
+//                        printed on the keyboard)            //
+// Output params:      void                                   //
+//                        N/A                                 //
+// ********************************************************** //
 void vMatrixKeyboardThreeSecPressedCallback(char cKey);
 
+// ********************************************************** //
+// Method name:        vMatrixKeyboardHalfSecPressedCallback  //
+// Method description: Callback  function to the long press   //
+//                     (0.5 seconds)                          //
+// Input params:       cKey                                   //
+//                        ASCII  Representation  of  the  key //
+//                        pressed (follows the same patter as //
+//                        printed on the keyboard)            //
+// Output params:      void                                   //
+//                        N/A                                 //
+// ********************************************************** //
 void vMatrixKeyboardHalfSecPressedCallback(char cKey);
 
+// ********************************************************** //
+// Method name:        pMatrixKeyboardGetKeys                 //
+// Method description: Get a union  containing the values of  //
+//                     all  keys  (1  for pressed and 0 for   //
+//                     unpressed)                             //
+// Input params:                                              //
+//                                                            //
+// Output params:      MatrixKeyboard                         //
+//                        Pointer  to  the union representing //
+//                        all the values of the keys          //
+// ********************************************************** //
 MatrixKeyboard* pMatrixKeyboardGetKeys();
 
 #endif /* INC_MATRIXKEYBOARD_H_ */

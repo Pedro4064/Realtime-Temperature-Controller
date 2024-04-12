@@ -9,8 +9,8 @@
 // Revision date:    29/Mar/2024                 //
 // **********************************************//
 #include <main.h>
-#include "matrixKeyboard.h"
 
+#include "matrixKeyboard.h"
 #include "stm32g4xx_hal.h"
 
 #ifndef INC_APPLICATION_H_
@@ -62,7 +62,14 @@
 // ********************************************************** //
 void vApplicationStart();
 
-void vApplicationTurnOnBinaryLed(MatrixKeyboard* pMatrixKeayboardStatus);
-
+// ********************************************************** //
+// Method name:        HAL_TIM_PeriodElapsedCallback          //
+// Method description: Callback function for Hardware Timers  //
+// Input params:       timer                                  //
+//                        Pointer to the timmer that resulted //
+//                        in the call of the function         //
+// Output params:      void                                   //
+//                        N/A                                 //
+// ********************************************************** //
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* timer);
 #endif /* INC_APPLICATION_H_ */

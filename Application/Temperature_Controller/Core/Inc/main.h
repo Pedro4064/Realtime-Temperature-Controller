@@ -91,9 +91,6 @@ void Error_Handler(void);
 
 /* USER CODE BEGIN Private defines */
 extern TIM_HandleTypeDef htim6;
-extern char cKeyA;
-extern char first_line[4];
-extern unsigned long int timer_counter;
 
 /* USER CODE END Private defines */
 
