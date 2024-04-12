@@ -61,5 +61,7 @@
 // ********************************************************** //
 void vApplicationStart();
 
+void vApplicationTurnOnBinaryLed(MatrixKeyboard* pMatrixKeayboardStatus);
+
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* timer);
 #endif /* INC_APPLICATION_H_ */
