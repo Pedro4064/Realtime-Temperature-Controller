@@ -17,18 +17,23 @@
 #include "led.h"
 #include "stm32g474xx.h"
 
+#define TEST_RUN 2
 #define INCREMENT_HALF_SEC(x) (x == 15) ? 0 : x + 1
+
 static int iCircularNumberHalfSec = 15;
 static MatrixKeyboard* pMatrixKeayboardStatus;
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* timer) {
     if (timer->Instance == TIM6) {
         vMatrixKeyboardUpdateCallback();
-        //        pMatrixKeayboardStatus = pMatrixKeyboardGetKeys();
-        //        vApplicationTurnOnBinaryLed(pMatrixKeayboardStatus);
+    #if TEST_RUN == 1
+            pMatrixKeayboardStatus = pMatrixKeyboardGetKeys();
+            vApplicationTurnOnBinaryLed(pMatrixKeayboardStatus);
+    #endif
     }
 }
 
+#if TEST_RUN == 2
 void vMatrixKeyboardThreeSecPressedCallback(char cKey) {
     if (cKey == 'A') {
         vLedToggle(DIM_BLUE);
@@ -60,6 +65,7 @@ void vMatrixKeyboardHalfSecPressedCallback(char cKey) {
             vLedTurnOff(DIM_GREEN);
     }
 }
+#endif
 
 // A ideia seria ter uma entrada um numero de 5 bits e aih ligar a cor
 void vApplicationTurnOnBinaryLed(MatrixKeyboard* pMatrixKeayboardStatus) {
