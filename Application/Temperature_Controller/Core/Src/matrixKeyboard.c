@@ -50,7 +50,7 @@ void vMatrixKeyboardUpdateCallback() {
         if (!cPreviousThreeSecondFlag && xTimerBalance.xKeyboardTimePressed[i][cActiveColumn].cThreeSecondsFlag)
             vMatrixKeyboardThreeSecPressedCallback(cVisualKeyboardMapping[i][cActiveColumn]);
 
-        if (xTimerBalance.xKeyboardTimePressed[i][cActiveColumn].usTimeSpendPressed != 0 && !(xTimerBalance.xKeyboardTimePressed[i][cActiveColumn].usTimeSpendPressed % 500))
+        if (xTimerBalance.xKeyboardTimePressed[i][cActiveColumn].usTimeSpendPressed != 0 && !((xTimerBalance.xKeyboardTimePressed[i][cActiveColumn].usTimeSpendPressed + 40) % 500))
             vMatrixKeyboardHalfSecPressedCallback(cVisualKeyboardMapping[i][cActiveColumn]);
     }
 }

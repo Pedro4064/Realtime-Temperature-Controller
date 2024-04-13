@@ -24,13 +24,8 @@ static int iCircularNumberHalfSec = 15;
 static MatrixKeyboard* pMatrixKeayboardStatus;
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* timer) {
-    if (timer->Instance == TIM6) {
+    if (timer->Instance == TIM6)
         vMatrixKeyboardUpdateCallback();
-    #if TEST_RUN == 1
-            pMatrixKeayboardStatus = pMatrixKeyboardGetKeys();
-            vApplicationTurnOnBinaryLed(pMatrixKeayboardStatus);
-    #endif
-    }
 }
 
 #if TEST_RUN == 2
@@ -148,9 +143,14 @@ void vApplicationStart() {
     // Initialize Application
     while (1) {
         // CODE TEST PART 1
-        // To run this part it is necessary to comment the implementations of the __weak functions on this file
+        // To run this part it is necessary to set the preprocessor variable TEST_RUN to 1
+		#if TEST_RUN == 1
+           pMatrixKeayboardStatus = pMatrixKeyboardGetKeys();
+           vApplicationTurnOnBinaryLed(pMatrixKeayboardStatus);
+           HAL_Delay(1);
+		#endif
 
         // CODE TEST PART 2
-        // To run this part it is necessary to comment the vApplicationTurnOnBinaryLed command above
+        // To run this part it is necessary to set the preprocessor variable TEST_RUN to 2
     }
 }
