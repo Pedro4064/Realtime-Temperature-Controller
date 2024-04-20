@@ -80,6 +80,7 @@ void Error_Handler(void);
 #define BTN_RIGHT_EXTI_IRQn EXTI4_IRQn
 #define BTN_ENTER_Pin GPIO_PIN_5
 #define BTN_ENTER_GPIO_Port GPIOC
+#define BTN_ENTER_EXTI_IRQn EXTI9_5_IRQn
 #define KEYBOARD_L4_Pin GPIO_PIN_11
 #define KEYBOARD_L4_GPIO_Port GPIOB
 #define KEYBOARD_L3_Pin GPIO_PIN_12
