@@ -21,7 +21,7 @@ typedef enum {
 	LEFT,
 	RIGHT,
 	CENTER
-} Position;
+} Button;
 
 typedef enum{
 	CHANGED,
@@ -42,27 +42,15 @@ typedef struct{
 }ButtonMapping;
 
 typedef struct {
-	ChangeStatus change_status;
+	ButtonStatus xStatus;
+	ChangeStatus xChangeStatus;
     unsigned int usTimeSpendPressed;
     char cThreeSecondsFlag;
-} TimePressedInfo;
+} PressedInfo;
 
 #define NUMBER_BOARD_BUTTONS 5
 
-// ********************************************************** //
-// Method name:        xButtonRead                            //
-// Method description: Read   the   status  of  the  button   //
-//                     (provided as a parameter) and returns  //
-//                     its status as PRESSED or NOT_PRESSED   //
-// Input params:       xButtonPosition                        //
-//                        Position  of the button to be read, //
-//                        as an enum                          //
-// Output params:      ButtonStatus                           //
-//                        The  status  of  the  button, as an //
-//                        enum. PRESSED or NOT_PRESSED        //
-// ********************************************************** //
-ButtonStatus xButtonRead(Position xButtonPosition);
-
-void vButtonsEventsInit(ButtonMapping (*xBoardButtonMapping)[NUMBER_BOARD_BUTTONS],TIM_HandleTypeDef* pDebounceTim, TIM_HandleTypeDef* pLongPressTim);
+void vButtonsEventsInit(ButtonMapping (*xBoardButtonMapping)[NUMBER_BOARD_BUTTONS],TIM_HandleTypeDef* pDebounceTim, TIM_HandleTypeDef* pLongPressTim, void (*pPressedCallback)(Button), void (*pReleasedCallback)(Button));
 void vButtonsEventsGpioCallback(uint16_t GPIO_Pin);
+void vButtonsEventsTimerCallback(TIM_HandleTypeDef* timer);
 #endif /* INC_BUTTON_H_ */

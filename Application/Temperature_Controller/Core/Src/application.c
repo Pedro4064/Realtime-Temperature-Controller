@@ -21,10 +21,15 @@
 #define TEST_RUN 1
 
 static MatrixKeyboard* pMatrixKeayboardStatus;
+static int single_press_test = 0;
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* timer) {
     if (timer->Instance == TIM6)
         vMatrixKeyboardUpdateCallback();
+
+    else if (timer->Instance == TIM7 || timer->Instance == TIM16)
+        vButtonsEventsTimerCallback(timer);
+    
 }
 
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
@@ -32,6 +37,14 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
 
 }
 
+void vButtonsEventCallbackPressedEvent(Button pressedButton){
+    single_press_test++;
+
+}
+
+void vButtonsEventCallbackReleasedEvent(Button pressedButton){
+
+}
 
 void vApplicationStart() {
     // Initialize LED Drivers
@@ -52,7 +65,7 @@ void vApplicationStart() {
                                         {BTN_RIGHT_GPIO_Port, BTN_RIGHT_EXTI_IRQn, BTN_RIGHT_Pin},
                                         {BTN_ENTER_GPIO_Port, BTN_ENTER_EXTI_IRQn, BTN_ENTER_Pin}
                                     };
-    vButtonsEventsInit(&xBoardButtons, TIM7, TIM16);
+    vButtonsEventsInit(&xBoardButtons, &htim7, &htim16, &vButtonsEventCallbackPressedEvent, &vButtonsEventCallbackReleasedEvent);
 
     // Initialize Matrix Keyboard
     MatrixMapping xKeyboardMapping = {
