@@ -9,10 +9,11 @@
 // Revision date:    29/Mar/2024                 //
 // **********************************************//
 
-#ifndef INC_BUTTON_H_
-#define INC_BUTTON_H_
+#ifndef INC_BUTTONS_EVENTS_H_
+#define INC_BUTTONS_EVENTS_H_
 
-#include "stm32g474xx.h"
+#include <stm32g474xx.h>
+#include <stm32g4xx_hal.h>
 
 typedef enum {
 	UP,
@@ -22,6 +23,11 @@ typedef enum {
 	CENTER
 } Position;
 
+typedef enum{
+	CHANGED,
+	NOT_CHANGED
+} ChangeStatus;
+
 typedef enum {
 	PRESSED = 1,
 	NOT_PRESSED = 0
@@ -30,24 +36,18 @@ typedef enum {
 typedef struct{
 
 	GPIO_TypeDef* xGpioPort;
+	IRQn_Type xExtiModule;
 	char cGpioPin;
 
 }ButtonMapping;
 
-#define NUMBER_BOARD_BUTTONS 5
+typedef struct {
+	ChangeStatus change_status;
+    unsigned int usTimeSpendPressed;
+    char cThreeSecondsFlag;
+} TimePressedInfo;
 
-// ********************************************************** //
-// Method name:        vButtonInit                            //
-// Method description: Initialize  the  board's  buttons by   //
-//                     enabling the clock of their GPIOsand   //
-//                     setting their pins as inputs           //
-// Input params:       xBoardButtons                          //
-//                        Mapping   of  the  buttons  to  the //
-//                        controller pins and ports           //
-// Output params:      void                                   //
-//                        N/A                                 //
-// ********************************************************** //
-void vButtonInit(ButtonMapping (*xBoardButtons)[NUMBER_BOARD_BUTTONS]);
+#define NUMBER_BOARD_BUTTONS 5
 
 // ********************************************************** //
 // Method name:        xButtonRead                            //
@@ -63,4 +63,6 @@ void vButtonInit(ButtonMapping (*xBoardButtons)[NUMBER_BOARD_BUTTONS]);
 // ********************************************************** //
 ButtonStatus xButtonRead(Position xButtonPosition);
 
+void vButtonsEventsInit(ButtonMapping (*xBoardButtonMapping)[NUMBER_BOARD_BUTTONS],TIM_HandleTypeDef* pDebounceTim, TIM_HandleTypeDef* pLongPressTim);
+void vButtonsEventsGpioCallback(uint16_t GPIO_Pin);
 #endif /* INC_BUTTON_H_ */

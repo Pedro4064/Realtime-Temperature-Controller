@@ -9,18 +9,17 @@
 // Revision date:    29/Mar/2024                 //
 // **********************************************//
 
+#include <stm32g474xx.h>
+#include <main.h>
+#include <tim.h>
+
 #include "application.h"
-
-#include <button.h>
-#include <matrixKeyboard.h>
-
+#include "matrixKeyboard.h" 
+#include "buttonsEvents.h"
 #include "led.h"
-#include "stm32g474xx.h"
 
-#define TEST_RUN 2
-#define INCREMENT_HALF_SEC(x) (x == 15) ? 0 : x + 1
+#define TEST_RUN 1
 
-static int iCircularNumberHalfSec = 15;
 static MatrixKeyboard* pMatrixKeayboardStatus;
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* timer) {
@@ -28,129 +27,51 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* timer) {
         vMatrixKeyboardUpdateCallback();
 }
 
-#if TEST_RUN == 2
-void vMatrixKeyboardThreeSecPressedCallback(char cKey) {
-    if (cKey == 'A') {
-        vLedToggle(DIM_BLUE);
-    }
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
+    vButtonsEventsGpioCallback(GPIO_Pin);
+
 }
 
-void vMatrixKeyboardHalfSecPressedCallback(char cKey) {
-    if (cKey == '#') {
-        iCircularNumberHalfSec = INCREMENT_HALF_SEC(iCircularNumberHalfSec);
-
-        if (((iCircularNumberHalfSec >> 0) & 1) == HIGH)
-            vLedTurnOn(SOLID_GREEN);
-        else
-            vLedTurnOff(SOLID_GREEN);
-
-        if (((iCircularNumberHalfSec >> 1) & 1) == HIGH)
-            vLedTurnOn(SOLID_YELLOW);
-        else
-            vLedTurnOff(SOLID_YELLOW);
-
-        if (((iCircularNumberHalfSec >> 2) & 1) == HIGH)
-            vLedTurnOn(DIM_RED);
-        else
-            vLedTurnOff(DIM_RED);
-
-        if (((iCircularNumberHalfSec >> 3) & 1) == HIGH)
-            vLedTurnOn(DIM_GREEN);
-        else
-            vLedTurnOff(DIM_GREEN);
-    }
-}
-#endif
-
-// A ideia seria ter uma entrada um numero de 5 bits e aih ligar a cor
-void vApplicationTurnOnBinaryLed(MatrixKeyboard* pMatrixKeayboardStatus) {
-    // Finds the key position pressed
-    int iKeyNumber = 0;
-    for (int i = 1; i <= 16; i++) {
-        if (pMatrixKeayboardStatus->cKeyboard1dValues[i - 1] == 1) {
-            iKeyNumber = i;
-        }
-    }
-
-    if (((iKeyNumber >> 0) & 1) == HIGH)
-        vLedTurnOn(SOLID_GREEN);
-    else
-        vLedTurnOff(SOLID_GREEN);
-
-    if (((iKeyNumber >> 1) & 1) == HIGH)
-        vLedTurnOn(SOLID_YELLOW);
-    else
-        vLedTurnOff(SOLID_YELLOW);
-
-    if (((iKeyNumber >> 2) & 1) == HIGH)
-        vLedTurnOn(DIM_RED);
-    else
-        vLedTurnOff(DIM_RED);
-
-    if (((iKeyNumber >> 3) & 1) == HIGH)
-        vLedTurnOn(DIM_GREEN);
-    else
-        vLedTurnOff(DIM_GREEN);
-
-    if (((iKeyNumber >> 4) & 1) == HIGH)
-        vLedTurnOn(DIM_BLUE);
-    else
-        vLedTurnOff(DIM_BLUE);
-}
 
 void vApplicationStart() {
     // Initialize LED Drivers
-    LedMapping xBoardLeds[] =
-        {
-            {GPIOA, LED_SOLID_GREEN_PIN},
-            {GPIOA, LED_SOLID_YELLOW_PIN},
-            {GPIOB, LED_DIM_RED_PIN},
-            {GPIOA, LED_DIM_GREEN_PIN},
-            {GPIOB, LED_DIM_BLUE_PIN}};
-
+    LedMapping xBoardLeds[] = {
+                                {GPIOA, LED_SOLID_GREEN_PIN},
+                                {GPIOA, LED_SOLID_YELLOW_PIN},
+                                {GPIOB, LED_DIM_RED_PIN},
+                                {GPIOA, LED_DIM_GREEN_PIN},
+                                {GPIOB, LED_DIM_BLUE_PIN}
+                              };
     vLedInit(&xBoardLeds);
 
     // Initialize Button Drivers
-    ButtonMapping xBoardButtons[] =
-        {
-            {GPIOC, BUTTON_UP_PIN},
-            {GPIOC, BUTTON_DOWN_PIN},
-            {GPIOC, BUTTON_LEFT_PIN},
-            {GPIOC, BUTTON_RIGHT_PIN},
-            {GPIOB, BUTTON_CENTER_PIN}};
-
-    vButtonInit(&xBoardButtons);
+    ButtonMapping xBoardButtons[] = {
+                                        {BTN_UP_GPIO_Port,    BTN_UP_EXTI_IRQn, BTN_UP_Pin},
+                                        {BTN_DOWN_GPIO_Port,  BTN_DOWN_EXTI_IRQn, BTN_DOWN_Pin},
+                                        {BTN_LEFT_GPIO_Port,  BTN_LEFT_EXTI_IRQn, BTN_LEFT_Pin},
+                                        {BTN_RIGHT_GPIO_Port, BTN_RIGHT_EXTI_IRQn, BTN_RIGHT_Pin},
+                                        {BTN_ENTER_GPIO_Port, BTN_ENTER_EXTI_IRQn, BTN_ENTER_Pin}
+                                    };
+    vButtonsEventsInit(&xBoardButtons, TIM7, TIM16);
 
     // Initialize Matrix Keyboard
-    MatrixMapping xKeyboardMapping =
-        {
-            rows : {
-                {KEYBOARD_L1_GPIO_Port, KEYBOARD_L1_Pin},
-                {KEYBOARD_L2_GPIO_Port, KEYBOARD_L2_Pin},
-                {KEYBOARD_L3_GPIO_Port, KEYBOARD_L3_Pin},
-                {KEYBOARD_L4_GPIO_Port, KEYBOARD_L4_Pin}},
+    MatrixMapping xKeyboardMapping = {
+                                        rows : {
+                                            {KEYBOARD_L1_GPIO_Port, KEYBOARD_L1_Pin},
+                                            {KEYBOARD_L2_GPIO_Port, KEYBOARD_L2_Pin},
+                                            {KEYBOARD_L3_GPIO_Port, KEYBOARD_L3_Pin},
+                                            {KEYBOARD_L4_GPIO_Port, KEYBOARD_L4_Pin}},
 
-            columns : {
-                {KEYBOARD_C1_GPIO_Port, KEYBOARD_C1_Pin},
-                {KEYBOARD_C2_GPIO_Port, KEYBOARD_C2_Pin},
-                {KEYBOARD_C3_GPIO_Port, KEYBOARD_C3_Pin},
-                {KEYBOARD_C4_GPIO_Port, KEYBOARD_C4_Pin}}
+                                        columns : {
+                                            {KEYBOARD_C1_GPIO_Port, KEYBOARD_C1_Pin},
+                                            {KEYBOARD_C2_GPIO_Port, KEYBOARD_C2_Pin},
+                                            {KEYBOARD_C3_GPIO_Port, KEYBOARD_C3_Pin},
+                                            {KEYBOARD_C4_GPIO_Port, KEYBOARD_C4_Pin}}
 
-        };
-
+                                    };
     vMatrixKeyboardInit(xKeyboardMapping, &htim6);
 
     // Initialize Application
     while (1) {
-        // CODE TEST PART 1
-        // To run this part it is necessary to set the preprocessor variable TEST_RUN to 1
-		#if TEST_RUN == 1
-           pMatrixKeayboardStatus = pMatrixKeyboardGetKeys();
-           vApplicationTurnOnBinaryLed(pMatrixKeayboardStatus);
-           HAL_Delay(1);
-		#endif
-
-        // CODE TEST PART 2
-        // To run this part it is necessary to set the preprocessor variable TEST_RUN to 2
     }
 }
