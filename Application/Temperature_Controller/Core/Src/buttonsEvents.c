@@ -65,11 +65,13 @@ void vButtonsEventsGpioCallback(uint16_t GPIO_Pin){
       pressed right before the end of the count up has no impact on safety) as to ensure a minimum debounce
       time for all pressed events.
     */
-    // pDebounceTimer->Instance->CNT = 0;
+//    __HAL_GPIO_EXTI_CLEAR_IT(GPIO_Pin);
+    pDebounceTimer->Instance->CNT = 0;
     HAL_TIM_Base_Start_IT(pDebounceTimer);
 }
 
 void vButtonsEventsSinglePressCallback(){
+	HAL_TIM_Base_Stop_IT(pDebounceTimer);
     for (int iButtonIndex = 0; iButtonIndex < NUMBER_BOARD_BUTTONS; iButtonIndex++){
 
             if (xBoardButtonsPressedStatus[iButtonIndex].xChangeStatus == NOT_CHANGED)
@@ -85,8 +87,10 @@ void vButtonsEventsSinglePressCallback(){
 
             
             xBoardButtonsPressedStatus[iButtonIndex].xChangeStatus = NOT_CHANGED;
+            __HAL_GPIO_EXTI_CLEAR_IT((*xBoardButtonArray)[iButtonIndex].cGpioPin);
             HAL_NVIC_EnableIRQ((*xBoardButtonArray)[iButtonIndex].xExtiModule);
         }
+
     }
 
 void vButtonsEventsLongPressCallback(){
