@@ -147,9 +147,9 @@ void vApplicationStart() {
     // Initialize Application
     while (1) {
         
-        // TEST 1 - To Teste the assignment part 1, ust set the TEST_RUN preprocessor variable to 1
+        // TEST 1 - To Teste the assignment part 1, set the TEST_RUN preprocessor variable to 1
 
-        // TEST 2 - To Teste the assignment part 2, ust set the TEST_RUN preprocessor variable to 2
+        // TEST 2 - To Teste the assignment part 2, set the TEST_RUN preprocessor variable to 2
         #if TEST_RUN==2
             vApplicationTurnOnBinaryLed(iBinaryCounter);
         #endif

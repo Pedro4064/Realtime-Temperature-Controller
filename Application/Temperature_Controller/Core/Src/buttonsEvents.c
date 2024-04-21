@@ -28,6 +28,99 @@ static void (*pButtonReleasedCallback)(Button);
 static void (*pButtonHalfSecondCallback)(Button);
 static void (*pButtonThreeSecondCallback)(Button);
 
+// ********************************************************** //
+// Method name:        iGetButtonIndex                        //
+// Method description: Get  the  index of the button on the   //
+//                     user defined GPIO mapping array from   //
+//                     its unique GPIO PIN                    //
+// Input params:       GPIO_Pin                               //
+//                        Unique  GPIO  Pin  number  from the //
+//                        button                              //
+// Output params:      int                                    //
+//                        The index of the target button from //
+//                        the user defined mapping array      //
+// ********************************************************** //
+int iGetButtonIndex(uint16_t GPIO_Pin){
+    for (int iButtonIndex = 0; iButtonIndex < NUMBER_BOARD_BUTTONS; iButtonIndex++)
+    {
+        if ((*xBoardButtonArray)[iButtonIndex].cGpioPin == GPIO_Pin)
+            return iButtonIndex;
+        
+    }
+
+    return 0;
+    
+}
+
+// ********************************************************** //
+// Method name:        vButtonsEventsSinglePressCallback      //
+// Method description: Callback  function  responsible  for   //
+//                     handling debounce timer interrupts     //
+// Input params:                                              //
+//                        N/A                                 //
+// Output params:      void                                   //
+//                        N/A                                 //
+// ********************************************************** //
+void vButtonsEventsSinglePressCallback(){
+	HAL_TIM_Base_Stop_IT(pDebounceTimer);
+    for (int iButtonIndex = 0; iButtonIndex < NUMBER_BOARD_BUTTONS; iButtonIndex++){
+
+            if (xBoardButtonsPressedStatus[iButtonIndex].xChangeStatus == NOT_CHANGED)
+                continue;
+
+            ButtonMapping xCurrentButton = (*xBoardButtonArray)[iButtonIndex];
+            xBoardButtonsPressedStatus[iButtonIndex].xStatus = HAL_GPIO_ReadPin(xCurrentButton.xGpioPort, xCurrentButton.cGpioPin);
+
+            if(xBoardButtonsPressedStatus[iButtonIndex].xStatus == PRESSED)
+                (*pButtonPressedCallback)(iButtonIndex);
+            else 
+                (*pButtonReleasedCallback)(iButtonIndex);
+
+            
+            xBoardButtonsPressedStatus[iButtonIndex].xChangeStatus = NOT_CHANGED;
+            __HAL_GPIO_EXTI_CLEAR_IT((*xBoardButtonArray)[iButtonIndex].cGpioPin);
+            HAL_NVIC_EnableIRQ((*xBoardButtonArray)[iButtonIndex].xExtiModule);
+        }
+
+    }
+
+// ********************************************************** //
+// Method name:        vButtonsEventsLongPressCallback        //
+// Method description: Callback  function  responsible  for   //
+//                     handling the timer interrupt for long  //
+//                     press functionality                    //
+// Input params:                                              //
+//                        N/A                                 //
+// Output params:      void                                   //
+//                        N/A                                 //
+// ********************************************************** //
+void vButtonsEventsLongPressCallback(){
+
+	GPIO_PinState xPressedButtons = 0;
+
+    for (int iButtonIndex = 0; iButtonIndex < NUMBER_BOARD_BUTTONS; iButtonIndex++){
+
+    	GPIO_PinState xIsPressed = HAL_GPIO_ReadPin((*xBoardButtonArray)[iButtonIndex].xGpioPort, (*xBoardButtonArray)[iButtonIndex].cGpioPin);
+        unsigned int uiPreviousePressedTime = xBoardButtonsPressedStatus[iButtonIndex].usTimeSpendPressed;
+        char cPreviouseThreeSecondFlag = xBoardButtonsPressedStatus[iButtonIndex].cThreeSecondsFlag;
+
+        xBoardButtonsPressedStatus[iButtonIndex].cThreeSecondsFlag = ((uiPreviousePressedTime + 10 >= 3000 || cPreviouseThreeSecondFlag) && xIsPressed) ? 1:0;
+        xBoardButtonsPressedStatus[iButtonIndex].usTimeSpendPressed = (!xIsPressed) ? 0 : (uiPreviousePressedTime + 10) % 3000;
+
+        if (!cPreviouseThreeSecondFlag && xBoardButtonsPressedStatus[iButtonIndex].cThreeSecondsFlag)
+            (*pButtonThreeSecondCallback)(iButtonIndex);
+
+        if (xBoardButtonsPressedStatus[iButtonIndex].usTimeSpendPressed != 0 && !(xBoardButtonsPressedStatus[iButtonIndex].usTimeSpendPressed % 500))
+            (*pButtonHalfSecondCallback)(iButtonIndex);
+
+        xPressedButtons |= xIsPressed;
+    }
+
+    if (!xPressedButtons)
+        HAL_TIM_Base_Stop_IT(pLongPressTimer);
+    
+}
+
 void vButtonsEventsInit(ButtonMapping (*xBoardButtonMapping)[NUMBER_BOARD_BUTTONS],TIM_HandleTypeDef* pDebounceTim, TIM_HandleTypeDef* pLongPressTim, void (*pPressedCallback)(Button), void (*pReleasedCallback)(Button), void (*pHalfSecondCallback)(Button),  void (*pThreeSecondCallback)(Button)){
     pDebounceTimer = pDebounceTim;
     pLongPressTimer= pLongPressTim;
@@ -39,19 +132,6 @@ void vButtonsEventsInit(ButtonMapping (*xBoardButtonMapping)[NUMBER_BOARD_BUTTON
 
     pButtonHalfSecondCallback = pHalfSecondCallback;
     pButtonThreeSecondCallback= pThreeSecondCallback;
-}
-
-
-int iGetButtonIndex(uint16_t GPIO_Pin){
-    for (int iButtonIndex = 0; iButtonIndex < NUMBER_BOARD_BUTTONS; iButtonIndex++)
-    {
-        if ((*xBoardButtonArray)[iButtonIndex].cGpioPin == GPIO_Pin)
-            return iButtonIndex;
-        
-    }
-
-    return 0;
-    
 }
 
 void vButtonsEventsGpioCallback(uint16_t GPIO_Pin){
@@ -80,56 +160,6 @@ void vButtonsEventsGpioCallback(uint16_t GPIO_Pin){
     HAL_TIM_Base_Start_IT(pLongPressTimer);
 }
 
-void vButtonsEventsSinglePressCallback(){
-	HAL_TIM_Base_Stop_IT(pDebounceTimer);
-    for (int iButtonIndex = 0; iButtonIndex < NUMBER_BOARD_BUTTONS; iButtonIndex++){
-
-            if (xBoardButtonsPressedStatus[iButtonIndex].xChangeStatus == NOT_CHANGED)
-                continue;
-
-            ButtonMapping xCurrentButton = (*xBoardButtonArray)[iButtonIndex];
-            xBoardButtonsPressedStatus[iButtonIndex].xStatus = HAL_GPIO_ReadPin(xCurrentButton.xGpioPort, xCurrentButton.cGpioPin);
-
-            if(xBoardButtonsPressedStatus[iButtonIndex].xStatus == PRESSED)
-                (*pButtonPressedCallback)(iButtonIndex);
-            else 
-                (*pButtonReleasedCallback)(iButtonIndex);
-
-            
-            xBoardButtonsPressedStatus[iButtonIndex].xChangeStatus = NOT_CHANGED;
-            __HAL_GPIO_EXTI_CLEAR_IT((*xBoardButtonArray)[iButtonIndex].cGpioPin);
-            HAL_NVIC_EnableIRQ((*xBoardButtonArray)[iButtonIndex].xExtiModule);
-        }
-
-    }
-
-void vButtonsEventsLongPressCallback(){
-
-	GPIO_PinState xPressedButtons = 0;
-
-    for (int iButtonIndex = 0; iButtonIndex < NUMBER_BOARD_BUTTONS; iButtonIndex++){
-
-    	GPIO_PinState xIsPressed = HAL_GPIO_ReadPin((*xBoardButtonArray)[iButtonIndex].xGpioPort, (*xBoardButtonArray)[iButtonIndex].cGpioPin);
-        unsigned int uiPreviousePressedTime = xBoardButtonsPressedStatus[iButtonIndex].usTimeSpendPressed;
-        char cPreviouseThreeSecondFlag = xBoardButtonsPressedStatus[iButtonIndex].cThreeSecondsFlag;
-
-        xBoardButtonsPressedStatus[iButtonIndex].cThreeSecondsFlag = ((uiPreviousePressedTime + 10 >= 3000 || cPreviouseThreeSecondFlag) && xIsPressed) ? 1:0;
-        xBoardButtonsPressedStatus[iButtonIndex].usTimeSpendPressed = (!xIsPressed) ? 0 : (uiPreviousePressedTime + 10) % 3000;
-
-        if (!cPreviouseThreeSecondFlag && xBoardButtonsPressedStatus[iButtonIndex].cThreeSecondsFlag)
-            (*pButtonThreeSecondCallback)(iButtonIndex);
-
-        if (xBoardButtonsPressedStatus[iButtonIndex].usTimeSpendPressed != 0 && !(xBoardButtonsPressedStatus[iButtonIndex].usTimeSpendPressed % 500))
-            (*pButtonHalfSecondCallback)(iButtonIndex);
-
-        xPressedButtons |= xIsPressed;
-    }
-
-    if (!xPressedButtons)
-        HAL_TIM_Base_Stop_IT(pLongPressTimer);
-    
-}
-
 void vButtonsEventsTimerCallback(TIM_HandleTypeDef* timer){
 
     if (timer == pDebounceTimer)
@@ -137,4 +167,3 @@ void vButtonsEventsTimerCallback(TIM_HandleTypeDef* timer){
     else 
         vButtonsEventsLongPressCallback();
 }
-

@@ -50,7 +50,62 @@ typedef struct {
 
 #define NUMBER_BOARD_BUTTONS 5
 
+// ********************************************************** //
+// Method name:        vButtonsEventsInit                     //
+// Method description: Initialize   all   the  buttons  and   //
+//                     necessary  timers for long press and   //
+//                     debounce functionalities               //
+// Input params:       xBoardButtonMapping                    //
+//                        The  array  responsible for mapping //
+//                        the  Buttons to the Target mCU GPIO //
+//                        Peripherals                         //
+//                     pDebounceTim                           //
+//                        Pointer to the timer responsiblefor //
+//                        debouncing                          //
+//                     pLongPressTim                          //
+//                        Pointer to the timer responsiblefor //
+//                        long press functionality            //
+//                     pPressedCallback                       //
+//                        Pointer to user defined callbackfor //
+//                        handling simple button press        //
+//                     pReleasedCallback                      //
+//                        Pointer to user defined functionsto //
+//                        handle  the  callback  from  simple //
+//                        release of button                   //
+//                     pHalfSecondCallback                    //
+//                        Pointer  to  user  defined callback //
+//                        function      of     Long     press //
+//                        capacibilities (500ms)              //
+//                     pThreeSecondCallback                   //
+//                        Pointer  to  user  defined callback //
+//                        function      of     Long     press //
+//                        capacibilities (3s)                 //
+// Output params:      void                                   //
+//                        N/A                                 //
+// ********************************************************** //
 void vButtonsEventsInit(ButtonMapping (*xBoardButtonMapping)[NUMBER_BOARD_BUTTONS],TIM_HandleTypeDef* pDebounceTim, TIM_HandleTypeDef* pLongPressTim, void (*pPressedCallback)(Button), void (*pReleasedCallback)(Button), void (*pHalfSecondCallback)(Button),  void (*pThreeSecondCallback)(Button));
+
+// ********************************************************** //
+// Method name:        vButtonsEventsGpioCallback             //
+// Method description: Callback  function  to  handle  GPIO   //
+//                     Interrupt                              //
+// Input params:       GPIO_Pin                               //
+//                        GPIO Pin responsible for generating //
+//                        the interrupt                       //
+// Output params:      void                                   //
+//                        N/A                                 //
+// ********************************************************** //
 void vButtonsEventsGpioCallback(uint16_t GPIO_Pin);
+
+// ********************************************************** //
+// Method name:        vButtonsEventsTimerCallback            //
+// Method description: Callback  function  for dealing with   //
+//                     both debounce and long press timers    //
+// Input params:       timer                                  //
+//                        Pointer to the timer responsiblefor //
+//                        the interrupt                       //
+// Output params:      void                                   //
+//                        N/A                                 //
+// ********************************************************** //
 void vButtonsEventsTimerCallback(TIM_HandleTypeDef* timer);
 #endif /* INC_BUTTON_H_ */
