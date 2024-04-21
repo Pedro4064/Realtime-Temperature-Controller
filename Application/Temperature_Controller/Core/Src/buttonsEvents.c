@@ -105,7 +105,7 @@ void vButtonsEventsSinglePressCallback(){
 
 void vButtonsEventsLongPressCallback(){
 
-    char cPressedButtons = FALSE;
+	GPIO_PinState xPressedButtons = FALSE;
     GPIO_PinState xIsPressed;
     for (int iButtonIndex = 0; iButtonIndex < NUMBER_BOARD_BUTTONS; iButtonIndex++){
 
@@ -117,16 +117,16 @@ void vButtonsEventsLongPressCallback(){
         xBoardButtonsPressedStatus[iButtonIndex].usTimeSpendPressed = (!xIsPressed) ? 0 : (uiPreviousePressedTime + 10) % 3000;
 
         if (!cPreviouseThreeSecondFlag && xBoardButtonsPressedStatus[iButtonIndex].cThreeSecondsFlag)
-            (*pButtonHalfSecondCallback)(iButtonIndex);
-
-        if (xBoardButtonsPressedStatus[iButtonIndex].usTimeSpendPressed != 0 && !(xBoardButtonsPressedStatus[iButtonIndex].usTimeSpendPressed % 500))
             (*pButtonThreeSecondCallback)(iButtonIndex);
 
-        cPressedButtons |= xIsPressed;
+        if (xBoardButtonsPressedStatus[iButtonIndex].usTimeSpendPressed != 0 && !(xBoardButtonsPressedStatus[iButtonIndex].usTimeSpendPressed % 500))
+            (*pButtonHalfSecondCallback)(iButtonIndex);
+
+        xPressedButtons |= xIsPressed;
     }
 
-    if (!xIsPressed)
-        HAL_TIM_Base_Stop_IT(pLongPressTimer);
+    // if (!xIsPressed)
+        // HAL_TIM_Base_Stop_IT(pLongPressTimer);
     
 }
 

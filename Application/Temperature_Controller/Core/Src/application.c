@@ -24,6 +24,7 @@ static MatrixKeyboard* pMatrixKeayboardStatus;
 static int single_press_test = 0;
 static int five_hundred_ms_press_test = 0;
 static int three_press_test = 0;
+static int iBinaryCounter = 0;
 
 ButtonMapping xBoardButtons[] = {
                                         {BTN_UP_GPIO_Port,    BTN_UP_EXTI_IRQn, BTN_UP_Pin},
@@ -62,6 +63,13 @@ void vButtonsEventCallbackPressedEvent(Button pressedButton){
         vLedToggle(SOLID_YELLOW);
     #endif
 
+    #if TEST_RUN==2
+        if(pressedButton == UP)
+            iBinaryCounter++;
+        else if (pressedButton == DOWN)
+            iBinaryCounter--;
+    #endif
+
     single_press_test++;
 
 }
@@ -71,12 +79,51 @@ void vButtonsEventCallbackReleasedEvent(Button pressedButton){
 }
 
 void vButtonsEventHalfSecondEvent(Button pressedButton){
+    #if TEST_RUN==2
+        if(pressedButton == UP)
+            iBinaryCounter++;
+        else if (pressedButton == DOWN)
+            iBinaryCounter--;
+    #endif
     five_hundred_ms_press_test++;
 }
 
 void vButtonsEventThreeSecondEvent(Button pressedButton){
+    #if TEST_RUN==2
+        if(pressedButton == CENTER)
+            iBinaryCounter = 0;
+    #endif
     three_press_test++;
 }
+
+void vApplicationTurnOnBinaryLed(int iCounter) {
+
+    if (((iCounter >> 0) & 1) == HIGH)
+        vLedTurnOn(SOLID_GREEN);
+    else
+        vLedTurnOff(SOLID_GREEN);
+
+    if (((iCounter >> 1) & 1) == HIGH)
+        vLedTurnOn(SOLID_YELLOW);
+    else
+        vLedTurnOff(SOLID_YELLOW);
+
+    if (((iCounter >> 2) & 1) == HIGH)
+        vLedTurnOn(DIM_RED);
+    else
+        vLedTurnOff(DIM_RED);
+
+    if (((iCounter >> 3) & 1) == HIGH)
+        vLedTurnOn(DIM_GREEN);
+    else
+        vLedTurnOff(DIM_GREEN);
+
+    if (((iCounter >> 4) & 1) == HIGH)
+        vLedTurnOn(DIM_BLUE);
+    else
+        vLedTurnOff(DIM_BLUE);
+}
+
 
 void vApplicationStart() {
     // Initialize LED Drivers
@@ -117,5 +164,7 @@ void vApplicationStart() {
     	right_status = HAL_GPIO_ReadPin(BTN_RIGHT_GPIO_Port, BTN_RIGHT_Pin);
     	down_status  = HAL_GPIO_ReadPin(BTN_DOWN_GPIO_Port, BTN_DOWN_Pin);
     	enter_status = HAL_GPIO_ReadPin(BTN_ENTER_GPIO_Port, BTN_ENTER_Pin);
+
+        vApplicationTurnOnBinaryLed(iBinaryCounter);
     }
 }
