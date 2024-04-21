@@ -24,8 +24,8 @@ typedef enum {
 } Button;
 
 typedef enum{
-	CHANGED,
-	NOT_CHANGED
+	NOT_CHANGED,
+	CHANGED
 } ChangeStatus;
 
 typedef enum {

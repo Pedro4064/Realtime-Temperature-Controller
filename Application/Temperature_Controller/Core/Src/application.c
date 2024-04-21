@@ -22,6 +22,18 @@
 
 static MatrixKeyboard* pMatrixKeayboardStatus;
 static int single_press_test = 0;
+ButtonMapping xBoardButtons[] = {
+                                        {BTN_UP_GPIO_Port,    BTN_UP_EXTI_IRQn, BTN_UP_Pin},
+                                        {BTN_DOWN_GPIO_Port,  BTN_DOWN_EXTI_IRQn, BTN_DOWN_Pin},
+                                        {BTN_LEFT_GPIO_Port,  BTN_LEFT_EXTI_IRQn, BTN_LEFT_Pin},
+                                        {BTN_RIGHT_GPIO_Port, BTN_RIGHT_EXTI_IRQn, BTN_RIGHT_Pin},
+                                        {BTN_ENTER_GPIO_Port, BTN_ENTER_EXTI_IRQn, BTN_ENTER_Pin}
+                                    };
+int up_status = 0;
+int down_status = 0;
+int left_status = 0;
+int right_status = 0;
+int enter_status = 0;
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* timer) {
     if (timer->Instance == TIM6)
@@ -58,13 +70,7 @@ void vApplicationStart() {
     vLedInit(&xBoardLeds);
 
     // Initialize Button Drivers
-    ButtonMapping xBoardButtons[] = {
-                                        {BTN_UP_GPIO_Port,    BTN_UP_EXTI_IRQn, BTN_UP_Pin},
-                                        {BTN_DOWN_GPIO_Port,  BTN_DOWN_EXTI_IRQn, BTN_DOWN_Pin},
-                                        {BTN_LEFT_GPIO_Port,  BTN_LEFT_EXTI_IRQn, BTN_LEFT_Pin},
-                                        {BTN_RIGHT_GPIO_Port, BTN_RIGHT_EXTI_IRQn, BTN_RIGHT_Pin},
-                                        {BTN_ENTER_GPIO_Port, BTN_ENTER_EXTI_IRQn, BTN_ENTER_Pin}
-                                    };
+    
     vButtonsEventsInit(&xBoardButtons, &htim7, &htim16, &vButtonsEventCallbackPressedEvent, &vButtonsEventCallbackReleasedEvent);
 
     // Initialize Matrix Keyboard
@@ -82,9 +88,14 @@ void vApplicationStart() {
                                             {KEYBOARD_C4_GPIO_Port, KEYBOARD_C4_Pin}}
 
                                     };
-    vMatrixKeyboardInit(xKeyboardMapping, &htim6);
+//    vMatrixKeyboardInit(xKeyboardMapping, &htim6);
 
     // Initialize Application
     while (1) {
+    	up_status    = HAL_GPIO_ReadPin(BTN_UP_GPIO_Port, BTN_UP_Pin);
+    	left_status  = HAL_GPIO_ReadPin(BTN_LEFT_GPIO_Port, BTN_LEFT_Pin);
+    	right_status = HAL_GPIO_ReadPin(BTN_RIGHT_GPIO_Port, BTN_RIGHT_Pin);
+    	down_status  = HAL_GPIO_ReadPin(BTN_DOWN_GPIO_Port, BTN_DOWN_Pin);
+    	enter_status = HAL_GPIO_ReadPin(BTN_ENTER_GPIO_Port, BTN_ENTER_Pin);
     }
 }

@@ -36,7 +36,7 @@ void vButtonsEventsInit(ButtonMapping (*xBoardButtonMapping)[NUMBER_BOARD_BUTTON
 int iGetButtonIndex(uint16_t GPIO_Pin){
     for (int iButtonIndex = 0; iButtonIndex < NUMBER_BOARD_BUTTONS; iButtonIndex++)
     {
-        if (xBoardButtonArray[iButtonIndex]->cGpioPin == GPIO_Pin)
+        if ((*xBoardButtonArray)[iButtonIndex].cGpioPin == GPIO_Pin)
             return iButtonIndex;
         
     }
@@ -55,7 +55,7 @@ void vButtonsEventsGpioCallback(uint16_t GPIO_Pin){
      the position of the pin on the user defined GPIO mapping to determine which button is pressed.
     */
     int iPressedButtonIndex = iGetButtonIndex(GPIO_Pin);
-    HAL_NVIC_DisableIRQ(xBoardButtonArray[iPressedButtonIndex]->xExtiModule);
+    HAL_NVIC_DisableIRQ((*xBoardButtonArray)[iPressedButtonIndex].xExtiModule);
     xBoardButtonsPressedStatus[iPressedButtonIndex].xChangeStatus = CHANGED;
 
     /*  Furthermore, since we disable the NVIC capabilities from the peripheral after the first call, 
@@ -65,7 +65,7 @@ void vButtonsEventsGpioCallback(uint16_t GPIO_Pin){
       pressed right before the end of the count up has no impact on safety) as to ensure a minimum debounce
       time for all pressed events.
     */
-    pDebounceTimer->Instance->CNT = 0;
+    // pDebounceTimer->Instance->CNT = 0;
     HAL_TIM_Base_Start_IT(pDebounceTimer);
 }
 
@@ -75,8 +75,8 @@ void vButtonsEventsSinglePressCallback(){
             if (xBoardButtonsPressedStatus[iButtonIndex].xChangeStatus == NOT_CHANGED)
                 continue;
 
-            ButtonMapping* xCurrentButton = xBoardButtonArray[iButtonIndex];
-            xBoardButtonsPressedStatus[iButtonIndex].xStatus = HAL_GPIO_ReadPin(xCurrentButton->xGpioPort, xCurrentButton->cGpioPin);
+            ButtonMapping xCurrentButton = (*xBoardButtonArray)[iButtonIndex];
+            xBoardButtonsPressedStatus[iButtonIndex].xStatus = HAL_GPIO_ReadPin(xCurrentButton.xGpioPort, xCurrentButton.cGpioPin);
 
             if(xBoardButtonsPressedStatus[iButtonIndex].xStatus == PRESSED)
                 (*pButtonPressedCallback)(iButtonIndex);
@@ -85,7 +85,7 @@ void vButtonsEventsSinglePressCallback(){
 
             
             xBoardButtonsPressedStatus[iButtonIndex].xChangeStatus = NOT_CHANGED;
-            HAL_NVIC_EnableIRQ(xBoardButtonArray[iButtonIndex]->xExtiModule);
+            HAL_NVIC_EnableIRQ((*xBoardButtonArray)[iButtonIndex].xExtiModule);
         }
     }
 
