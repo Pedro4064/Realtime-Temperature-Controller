@@ -50,6 +50,15 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
 }
 
 void vButtonsEventCallbackPressedEvent(Button pressedButton){
+
+    #if TEST_RUN==1
+        vLedToggle(DIM_BLUE);
+        vLedToggle(DIM_GREEN);
+        vLedToggle(DIM_RED);
+        vLedToggle(SOLID_GREEN);
+        vLedToggle(SOLID_YELLOW);
+    #endif
+
     single_press_test++;
 
 }
