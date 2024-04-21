@@ -50,7 +50,7 @@ typedef struct {
 
 #define NUMBER_BOARD_BUTTONS 5
 
-void vButtonsEventsInit(ButtonMapping (*xBoardButtonMapping)[NUMBER_BOARD_BUTTONS],TIM_HandleTypeDef* pDebounceTim, TIM_HandleTypeDef* pLongPressTim, void (*pPressedCallback)(Button), void (*pReleasedCallback)(Button));
+void vButtonsEventsInit(ButtonMapping (*xBoardButtonMapping)[NUMBER_BOARD_BUTTONS],TIM_HandleTypeDef* pDebounceTim, TIM_HandleTypeDef* pLongPressTim, void (*pPressedCallback)(Button), void (*pReleasedCallback)(Button), void (*pHalfSecondCallback)(Button),  void (*pThreeSecondCallback)(Button));
 void vButtonsEventsGpioCallback(uint16_t GPIO_Pin);
 void vButtonsEventsTimerCallback(TIM_HandleTypeDef* timer);
 #endif /* INC_BUTTON_H_ */

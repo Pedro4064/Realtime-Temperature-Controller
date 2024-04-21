@@ -13,6 +13,9 @@
 #include "buttonsEvents.h"
 #include <gpio.h>
 
+#define FALSE 0
+#define TRUE  1
+
 static TIM_HandleTypeDef* pDebounceTimer;
 static TIM_HandleTypeDef* pLongPressTimer;
 
@@ -22,7 +25,10 @@ static PressedInfo xBoardButtonsPressedStatus[NUMBER_BOARD_BUTTONS];
 static void (*pButtonPressedCallback)(Button);
 static void (*pButtonReleasedCallback)(Button);
 
-void vButtonsEventsInit(ButtonMapping (*xBoardButtonMapping)[NUMBER_BOARD_BUTTONS],TIM_HandleTypeDef* pDebounceTim, TIM_HandleTypeDef* pLongPressTim, void (*pPressedCallback)(Button), void (*pReleasedCallback)(Button)){
+static void (*pButtonHalfSecondCallback)(Button);
+static void (*pButtonThreeSecondCallback)(Button);
+
+void vButtonsEventsInit(ButtonMapping (*xBoardButtonMapping)[NUMBER_BOARD_BUTTONS],TIM_HandleTypeDef* pDebounceTim, TIM_HandleTypeDef* pLongPressTim, void (*pPressedCallback)(Button), void (*pReleasedCallback)(Button), void (*pHalfSecondCallback)(Button),  void (*pThreeSecondCallback)(Button)){
     pDebounceTimer = pDebounceTim;
     pLongPressTimer= pLongPressTim;
 
@@ -30,6 +36,9 @@ void vButtonsEventsInit(ButtonMapping (*xBoardButtonMapping)[NUMBER_BOARD_BUTTON
 
     pButtonPressedCallback = pPressedCallback;
     pButtonReleasedCallback= pReleasedCallback;
+
+    pButtonHalfSecondCallback = pHalfSecondCallback;
+    pButtonThreeSecondCallback= pThreeSecondCallback;
 }
 
 
@@ -65,9 +74,10 @@ void vButtonsEventsGpioCallback(uint16_t GPIO_Pin){
       pressed right before the end of the count up has no impact on safety) as to ensure a minimum debounce
       time for all pressed events.
     */
-//    __HAL_GPIO_EXTI_CLEAR_IT(GPIO_Pin);
+    //__HAL_GPIO_EXTI_CLEAR_IT(GPIO_Pin);
     pDebounceTimer->Instance->CNT = 0;
     HAL_TIM_Base_Start_IT(pDebounceTimer);
+    HAL_TIM_Base_Start_IT(pLongPressTimer);
 }
 
 void vButtonsEventsSinglePressCallback(){
@@ -95,6 +105,29 @@ void vButtonsEventsSinglePressCallback(){
 
 void vButtonsEventsLongPressCallback(){
 
+    char cPressedButtons = FALSE;
+    GPIO_PinState xIsPressed;
+    for (int iButtonIndex = 0; iButtonIndex < NUMBER_BOARD_BUTTONS; iButtonIndex++){
+
+        xIsPressed = HAL_GPIO_ReadPin((*xBoardButtonArray)[iButtonIndex].xGpioPort, (*xBoardButtonArray)[iButtonIndex].cGpioPin);
+        unsigned int uiPreviousePressedTime = xBoardButtonsPressedStatus[iButtonIndex].usTimeSpendPressed;
+        char cPreviouseThreeSecondFlag = xBoardButtonsPressedStatus[iButtonIndex].cThreeSecondsFlag;
+
+        xBoardButtonsPressedStatus[iButtonIndex].cThreeSecondsFlag = ((uiPreviousePressedTime + 10 >= 3000 || cPreviouseThreeSecondFlag) && xIsPressed) ? 1:0;
+        xBoardButtonsPressedStatus[iButtonIndex].usTimeSpendPressed = (!xIsPressed) ? 0 : (uiPreviousePressedTime + 10) % 3000;
+
+        if (!cPreviouseThreeSecondFlag && xBoardButtonsPressedStatus[iButtonIndex].cThreeSecondsFlag)
+            (*pButtonHalfSecondCallback)(iButtonIndex);
+
+        if (xBoardButtonsPressedStatus[iButtonIndex].usTimeSpendPressed != 0 && !(xBoardButtonsPressedStatus[iButtonIndex].usTimeSpendPressed % 500))
+            (*pButtonThreeSecondCallback)(iButtonIndex);
+
+        cPressedButtons |= xIsPressed;
+    }
+
+    if (!xIsPressed)
+        HAL_TIM_Base_Stop_IT(pLongPressTimer);
+    
 }
 
 void vButtonsEventsTimerCallback(TIM_HandleTypeDef* timer){

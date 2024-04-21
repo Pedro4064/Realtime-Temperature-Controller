@@ -18,10 +18,13 @@
 #include "buttonsEvents.h"
 #include "led.h"
 
-#define TEST_RUN 1
+#define TEST_RUN 2
 
 static MatrixKeyboard* pMatrixKeayboardStatus;
 static int single_press_test = 0;
+static int five_hundred_ms_press_test = 0;
+static int three_press_test = 0;
+
 ButtonMapping xBoardButtons[] = {
                                         {BTN_UP_GPIO_Port,    BTN_UP_EXTI_IRQn, BTN_UP_Pin},
                                         {BTN_DOWN_GPIO_Port,  BTN_DOWN_EXTI_IRQn, BTN_DOWN_Pin},
@@ -67,6 +70,14 @@ void vButtonsEventCallbackReleasedEvent(Button pressedButton){
 
 }
 
+void vButtonsEventHalfSecondEvent(Button pressedButton){
+    five_hundred_ms_press_test++;
+}
+
+void vButtonsEventThreeSecondEvent(Button pressedButton){
+    three_press_test++;
+}
+
 void vApplicationStart() {
     // Initialize LED Drivers
     LedMapping xBoardLeds[] = {
@@ -80,7 +91,7 @@ void vApplicationStart() {
 
     // Initialize Button Drivers
     
-    vButtonsEventsInit(&xBoardButtons, &htim7, &htim16, &vButtonsEventCallbackPressedEvent, &vButtonsEventCallbackReleasedEvent);
+    vButtonsEventsInit(&xBoardButtons, &htim7, &htim16, &vButtonsEventCallbackPressedEvent, &vButtonsEventCallbackReleasedEvent, &vButtonsEventHalfSecondEvent, &vButtonsEventThreeSecondEvent);
 
     // Initialize Matrix Keyboard
     MatrixMapping xKeyboardMapping = {
