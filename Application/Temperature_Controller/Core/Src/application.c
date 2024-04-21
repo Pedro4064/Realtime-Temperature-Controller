@@ -18,26 +18,10 @@
 #include "buttonsEvents.h"
 #include "led.h"
 
-#define TEST_RUN 2
+#define TEST_RUN 1
 
 static MatrixKeyboard* pMatrixKeayboardStatus;
-static int single_press_test = 0;
-static int five_hundred_ms_press_test = 0;
-static int three_press_test = 0;
 static int iBinaryCounter = 0;
-
-ButtonMapping xBoardButtons[] = {
-                                        {BTN_UP_GPIO_Port,    BTN_UP_EXTI_IRQn, BTN_UP_Pin},
-                                        {BTN_DOWN_GPIO_Port,  BTN_DOWN_EXTI_IRQn, BTN_DOWN_Pin},
-                                        {BTN_LEFT_GPIO_Port,  BTN_LEFT_EXTI_IRQn, BTN_LEFT_Pin},
-                                        {BTN_RIGHT_GPIO_Port, BTN_RIGHT_EXTI_IRQn, BTN_RIGHT_Pin},
-                                        {BTN_ENTER_GPIO_Port, BTN_ENTER_EXTI_IRQn, BTN_ENTER_Pin}
-                                    };
-int up_status = 0;
-int down_status = 0;
-int left_status = 0;
-int right_status = 0;
-int enter_status = 0;
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* timer) {
     if (timer->Instance == TIM6)
@@ -69,9 +53,6 @@ void vButtonsEventCallbackPressedEvent(Button pressedButton){
         else if (pressedButton == DOWN)
             iBinaryCounter--;
     #endif
-
-    single_press_test++;
-
 }
 
 void vButtonsEventCallbackReleasedEvent(Button pressedButton){
@@ -85,7 +66,6 @@ void vButtonsEventHalfSecondEvent(Button pressedButton){
         else if (pressedButton == DOWN)
             iBinaryCounter--;
     #endif
-    five_hundred_ms_press_test++;
 }
 
 void vButtonsEventThreeSecondEvent(Button pressedButton){
@@ -93,7 +73,6 @@ void vButtonsEventThreeSecondEvent(Button pressedButton){
         if(pressedButton == CENTER)
             iBinaryCounter = 0;
     #endif
-    three_press_test++;
 }
 
 void vApplicationTurnOnBinaryLed(int iCounter) {
@@ -137,7 +116,13 @@ void vApplicationStart() {
     vLedInit(&xBoardLeds);
 
     // Initialize Button Drivers
-    
+    ButtonMapping xBoardButtons[] = {
+                                        {BTN_UP_GPIO_Port,    BTN_UP_EXTI_IRQn, BTN_UP_Pin},
+                                        {BTN_DOWN_GPIO_Port,  BTN_DOWN_EXTI_IRQn, BTN_DOWN_Pin},
+                                        {BTN_LEFT_GPIO_Port,  BTN_LEFT_EXTI_IRQn, BTN_LEFT_Pin},
+                                        {BTN_RIGHT_GPIO_Port, BTN_RIGHT_EXTI_IRQn, BTN_RIGHT_Pin},
+                                        {BTN_ENTER_GPIO_Port, BTN_ENTER_EXTI_IRQn, BTN_ENTER_Pin}
+                                    };
     vButtonsEventsInit(&xBoardButtons, &htim7, &htim16, &vButtonsEventCallbackPressedEvent, &vButtonsEventCallbackReleasedEvent, &vButtonsEventHalfSecondEvent, &vButtonsEventThreeSecondEvent);
 
     // Initialize Matrix Keyboard
@@ -155,16 +140,18 @@ void vApplicationStart() {
                                             {KEYBOARD_C4_GPIO_Port, KEYBOARD_C4_Pin}}
 
                                     };
-//    vMatrixKeyboardInit(xKeyboardMapping, &htim6);
+    #if TEST_RUN==0
+        vMatrixKeyboardInit(xKeyboardMapping, &htim6);
+    #endif
 
     // Initialize Application
     while (1) {
-    	up_status    = HAL_GPIO_ReadPin(BTN_UP_GPIO_Port, BTN_UP_Pin);
-    	left_status  = HAL_GPIO_ReadPin(BTN_LEFT_GPIO_Port, BTN_LEFT_Pin);
-    	right_status = HAL_GPIO_ReadPin(BTN_RIGHT_GPIO_Port, BTN_RIGHT_Pin);
-    	down_status  = HAL_GPIO_ReadPin(BTN_DOWN_GPIO_Port, BTN_DOWN_Pin);
-    	enter_status = HAL_GPIO_ReadPin(BTN_ENTER_GPIO_Port, BTN_ENTER_Pin);
+        
+        // TEST 1 - To Teste the assignment part 1, ust set the TEST_RUN preprocessor variable to 1
 
-        vApplicationTurnOnBinaryLed(iBinaryCounter);
+        // TEST 2 - To Teste the assignment part 2, ust set the TEST_RUN preprocessor variable to 2
+        #if TEST_RUN==2
+            vApplicationTurnOnBinaryLed(iBinaryCounter);
+        #endif
     }
 }
