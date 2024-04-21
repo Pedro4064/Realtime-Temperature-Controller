@@ -105,11 +105,11 @@ void vButtonsEventsSinglePressCallback(){
 
 void vButtonsEventsLongPressCallback(){
 
-	GPIO_PinState xPressedButtons = FALSE;
-    GPIO_PinState xIsPressed;
+	GPIO_PinState xPressedButtons = 0;
+
     for (int iButtonIndex = 0; iButtonIndex < NUMBER_BOARD_BUTTONS; iButtonIndex++){
 
-        xIsPressed = HAL_GPIO_ReadPin((*xBoardButtonArray)[iButtonIndex].xGpioPort, (*xBoardButtonArray)[iButtonIndex].cGpioPin);
+    	GPIO_PinState xIsPressed = HAL_GPIO_ReadPin((*xBoardButtonArray)[iButtonIndex].xGpioPort, (*xBoardButtonArray)[iButtonIndex].cGpioPin);
         unsigned int uiPreviousePressedTime = xBoardButtonsPressedStatus[iButtonIndex].usTimeSpendPressed;
         char cPreviouseThreeSecondFlag = xBoardButtonsPressedStatus[iButtonIndex].cThreeSecondsFlag;
 
@@ -125,8 +125,8 @@ void vButtonsEventsLongPressCallback(){
         xPressedButtons |= xIsPressed;
     }
 
-    // if (!xIsPressed)
-        // HAL_TIM_Base_Stop_IT(pLongPressTimer);
+    if (!xPressedButtons)
+        HAL_TIM_Base_Stop_IT(pLongPressTimer);
     
 }
 
