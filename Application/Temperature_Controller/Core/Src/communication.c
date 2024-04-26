@@ -28,11 +28,14 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef* pHUart){
         return;
 
     char cTransmittedData = pMessageBuffer[iCurrentBufferPosition];
-    iCurrentBufferPosition = CIRCULAR_INDEX_INCREMENT(iCurrentBufferPosition, iMessageBufferSize);
 
     if(cTransmittedData == cMessageDelimiter){
+        pMessageBuffer[iCurrentBufferPosition] = '\0';
         (*pMessageCallBack)();
         iCurrentBufferPosition = 0;
+    }
+    else{
+        iCurrentBufferPosition = CIRCULAR_INDEX_INCREMENT(iCurrentBufferPosition, iMessageBufferSize);
     }
 
     HAL_UART_Receive_IT(pUartPeripheral, pMessageBuffer+iCurrentBufferPosition, 1);

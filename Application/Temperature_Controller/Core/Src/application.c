@@ -19,6 +19,7 @@
 #include "buttonsEvents.h"
 #include "communication.h"
 #include "led.h"
+#include "parser.h"
 
 #define TEST_RUN 1
 #define UART_BUFFER_SIZE 10
@@ -26,8 +27,10 @@
 static MatrixKeyboard* pMatrixKeayboardStatus;
 static int iBinaryCounter = 0;
 
-static char cUartMessage[UART_BUFFER_SIZE];
-static char message[] = {'O', 'K'};
+static unsigned char cUartMessage[UART_BUFFER_SIZE];
+static unsigned char cMessageOutOfRange[] = "Numero fora do intervalo\n\r";
+static unsigned char cFloatMessage[11];
+
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* timer) {
     if (timer->Instance == TIM6)
@@ -110,7 +113,19 @@ void vApplicationTurnOnBinaryLed(int iCounter) {
 }
 
 void vApplicationUartMessageCallback(){
-    HAL_UART_Transmit_IT(&hlpuart1, &message, 2);
+    pParserStandardizeNumericInput(&cUartMessage, UART_BUFFER_SIZE);
+    float fInputNumber =  fParserToFloat(&cUartMessage);
+
+    //Verify the range
+    if(fInputNumber < -1000 || fInputNumber > 1000){
+        HAL_UART_Transmit_IT(&hlpuart1, cMessageOutOfRange, sizeof(cMessageOutOfRange));
+    }
+    else{
+    	float fInverseNumber = 1/fInputNumber;
+    	pParserFloatToString(cFloatMessage, fInverseNumber);
+        HAL_UART_Transmit_IT(&hlpuart1, cFloatMessage, sizeof(cFloatMessage));
+    }
+
 }
 
 void vApplicationStart() {
