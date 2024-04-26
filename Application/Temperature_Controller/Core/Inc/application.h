@@ -72,4 +72,14 @@ void vApplicationStart();
 //                        N/A                                 //
 // ********************************************************** //
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* timer);
+
+// ********************************************************** //
+// Method name:        vApplicationUartMessageCallback        //
+// Method description: UART message callback application      //
+// Input params:       void                                   //
+//                        N/A                                 //
+// Output params:      void                                   //
+//                        N/A                                 //
+// ********************************************************** //
+void vApplicationUartMessageCallback();
 #endif /* INC_APPLICATION_H_ */
