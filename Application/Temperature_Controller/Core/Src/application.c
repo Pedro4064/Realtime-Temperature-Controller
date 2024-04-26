@@ -154,7 +154,7 @@ void vApplicationStart() {
     #endif
 
     // Initialize UART Communication library
-    vCommunicationInit(&hlpuart1, UART_BUFFER_SIZE, &vApplicationUartMessageCallback, &cUartMessage, '\n');
+    vCommunicationInit(&hlpuart1, UART_BUFFER_SIZE, &vApplicationUartMessageCallback, &cUartMessage, '\r');
 
     // Initialize Application
     while (1) {
