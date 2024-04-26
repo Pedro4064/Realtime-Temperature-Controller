@@ -11,17 +11,23 @@
 
 #include <stm32g474xx.h>
 #include <main.h>
+#include <usart.h>
 #include <tim.h>
 
 #include "application.h"
 #include "matrixKeyboard.h" 
 #include "buttonsEvents.h"
+#include "communication.h"
 #include "led.h"
 
 #define TEST_RUN 1
+#define UART_BUFFER_SIZE 10
 
 static MatrixKeyboard* pMatrixKeayboardStatus;
 static int iBinaryCounter = 0;
+
+static char cUartMessage[UART_BUFFER_SIZE];
+static char message[] = {'O', 'K'};
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* timer) {
     if (timer->Instance == TIM6)
@@ -103,6 +109,9 @@ void vApplicationTurnOnBinaryLed(int iCounter) {
         vLedTurnOff(DIM_BLUE);
 }
 
+void vApplicationUartMessageCallback(){
+    HAL_UART_Transmit_IT(&hlpuart1, &message, 2);
+}
 
 void vApplicationStart() {
     // Initialize LED Drivers
@@ -143,6 +152,9 @@ void vApplicationStart() {
     #if TEST_RUN==0
         vMatrixKeyboardInit(xKeyboardMapping, &htim6);
     #endif
+
+    // Initialize UART Communication library
+    vCommunicationInit(&hlpuart1, UART_BUFFER_SIZE, &vApplicationUartMessageCallback, &cUartMessage, '\n');
 
     // Initialize Application
     while (1) {
