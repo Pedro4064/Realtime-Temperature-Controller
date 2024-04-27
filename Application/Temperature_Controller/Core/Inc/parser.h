@@ -21,7 +21,7 @@
 // Output params:      void                                   //
 //                        N/A                                 //
 // ********************************************************** //
-void pParserFloatToString(unsigned char* ucStringBuffer, float fNumberInput);
+void vParserFloatToString(unsigned char* ucStringBuffer, float fNumberInput);
 
 // ********************************************************** //
 // Method name:        pParserStandardizeNumericInput         //
@@ -37,7 +37,7 @@ void pParserFloatToString(unsigned char* ucStringBuffer, float fNumberInput);
 // Output params:      void                                   //
 //                        N/A                                 //
 // ********************************************************** //
-void pParserStandardizeNumericInput(unsigned char* cUartMessage, int iMessageMaxSize);
+void vParserStandardizeNumericInput(unsigned char* cUartMessage, int iMessageMaxSize);
 
 // ********************************************************** //
 // Method name:        fParserToFloat                         //

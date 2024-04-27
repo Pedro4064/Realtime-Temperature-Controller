@@ -12,7 +12,7 @@
 #define DECIMAL_DIGIT_EXTRACT(x,y) (int)(fmod(fabs(y) * pow(10,x), 10))
 
 
-void pParserStandardizeNumericInput(unsigned char* cUartMessage, int iMessageMaxSize){
+void vParserStandardizeNumericInput(unsigned char* cUartMessage, int iMessageMaxSize){
 	int iCommaPosition = -1;
 
 	for(int iIndex = 0; iIndex <=iMessageMaxSize; iIndex++ ){
@@ -33,7 +33,7 @@ float fParserToFloat(unsigned char* cUartMessage){
 	return atof(cUartMessage);
 }
 
-void pParserFloatToString(unsigned char* ucStringBuffer, float fNumberInput){
+void vParserFloatToString(unsigned char* ucStringBuffer, float fNumberInput){
 
 	if(fNumberInput<0){
 		ucStringBuffer[0] = '-';

@@ -17,7 +17,7 @@
 #include "application.h"
 #include "matrixKeyboard.h" 
 #include "buttonsEvents.h"
-#include "communication.h"
+#include "communicationStateMachine.h"
 #include "led.h"
 #include "parser.h"
 
@@ -45,6 +45,11 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* timer) {
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
     vButtonsEventsGpioCallback(GPIO_Pin);
 
+}
+
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef* pHUart){
+    if (pHUart == &hlpuart1)
+        vCommunicationStateMachineProcessByte();
 }
 
 void vButtonsEventCallbackPressedEvent(Button pressedButton){
@@ -170,7 +175,7 @@ void vApplicationStart() {
     #endif
 
     // Initialize UART Communication library
-    vCommunicationInit(&hlpuart1, UART_BUFFER_SIZE, &vApplicationUartMessageCallback, &cUartMessage, '\r');
+    vCommunicationStateMachineInit(&hlpuart1);
 
     // Initialize Application
     while (1) {

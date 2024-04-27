@@ -9,5 +9,7 @@
 #define INC_COMMUNICATIONSTATEMACHINE_H_
 
 
+void vCommunicationStateMachineInit(UART_HandleTypeDef* pHUart);
+void vCommunicationStateMachineProcessByte();
 
 #endif /* INC_COMMUNICATIONSTATEMACHINE_H_ */
