@@ -32,6 +32,7 @@ static unsigned char cMessageOutOfRange[] = "Numero fora do intervalo\n\r";
 static unsigned char cFloatMessage[11];
 
 
+
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* timer) {
     if (timer->Instance == TIM6)
         vMatrixKeyboardUpdateCallback();
