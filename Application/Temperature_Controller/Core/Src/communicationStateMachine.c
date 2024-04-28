@@ -7,6 +7,10 @@
 
 #include <main.h>
 #include "parser.h"
+#include "application.h"
+
+#define VALIDATED_INPUT(x) ((x >= '0' && x <= '9') || x == ',')
+#define MAX_BUFFER_SIZE 7
 
 typedef enum {
     IDLE,
@@ -31,9 +35,10 @@ typedef enum {
 
 static State xCurrentState = IDLE;
 static ParamID xTargetParam;
-static unsigned char ucBufferIndex;
 static UART_HandleTypeDef* pUartPeripheral;
 static unsigned char ucCommByte;
+
+static SystemParameters* xSystemParameters;
 
 void vStateHandleReady(){
     switch (ucCommByte)
@@ -79,7 +84,6 @@ void vStateHandleSet(){
         case BUTTON_LOCK:
             xTargetParam = ucCommByte;
             xCurrentState = VALUE;
-            ucBufferIndex = 0;
             break;
         
         default:
@@ -95,14 +99,70 @@ void vStateHandleParam(){
         return;
 
     static char message[11];
-    //! TODO - Add switch to set the variable float fTargetValue to the correct one (and add to the init a pointer to config struct)
-    //! Maybe change the vParserFloatToString argument from a simple pointer to a pointer to a vector since the size is well established
-    // vParserFloatToString(&message, )
+    float fTargetValue;
+
+    switch (xTargetParam)
+    {
+    case TEMPERATURE_CURRENT:
+        fTargetValue = (*xSystemParameters).fTemperatureCurrent;
+        break;
+
+    case VELOCITY_COOLER:
+        fTargetValue = (float)(*xSystemParameters).uiVelocityCooler;
+        break;
+    
+    default:
+        return;
+        break;
+    }
+
+    vParserFloatToString(&message, fTargetValue);
+    HAL_UART_Transmit_IT(pUartPeripheral, message, 11);
         
         
 }
 
+void vStateHandleValue(){
 
+    static unsigned char ucBufferIndex = 0;
+    static unsigned char* ucBuffer[MAX_BUFFER_SIZE + 1];
+
+    if(VALIDATED_INPUT(ucCommByte) && ucBufferIndex <= MAX_BUFFER_SIZE){
+        ucBuffer[ucBufferIndex++] = ucCommByte;
+        return;
+    }
+
+    else if(ucCommByte == ';'){
+        ucBuffer[ucBufferIndex] = '\0';
+        const float fTargetValue = fParserToFloat(ucBuffer);
+
+        switch (xTargetParam)
+        {
+            case TEMPERATURE_TARGET:
+                xSystemParameters->fTemperatureTarget = fTargetValue;
+                break;
+
+            case DUTY_CYCLE_HEATER:
+                xSystemParameters->usDutyCycleHeater = (unsigned char)fTargetValue;
+                break;
+            
+            case DUTY_CYCLE_COOLER:
+                xSystemParameters->usDutyCycleCooler = (unsigned char)fTargetValue;
+                break;
+
+            case BUTTON_LOCK:
+                xSystemParameters->usButtonLock = (unsigned char)fTargetValue;
+                break;
+            
+            default:
+                break;
+        }
+
+    }
+
+    ucBufferIndex = 0;
+    xCurrentState = IDLE;
+}
 
 void vCommunicationStateMachineProcessByte(){
 
@@ -129,6 +189,11 @@ void vCommunicationStateMachineProcessByte(){
             break;
 
         case PARAM:
+            vStateHandleParam();
+            break;
+
+        case VALUE:
+            vStateHandleValue();
             break;
 
         default:
@@ -138,8 +203,9 @@ void vCommunicationStateMachineProcessByte(){
     HAL_UART_Receive_IT(pUartPeripheral, &ucCommByte, 1);
 }
 
-void vCommunicationStateMachineInit(UART_HandleTypeDef* pHUart){
+void vCommunicationStateMachineInit(UART_HandleTypeDef* pHUart, SystemParameters* xSysParam){
     pUartPeripheral = pHUart;
+    xSysParam = xSysParam;
     HAL_UART_Receive_IT(pUartPeripheral, &ucCommByte, 1);
 
 }
