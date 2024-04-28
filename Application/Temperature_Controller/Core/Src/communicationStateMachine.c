@@ -125,7 +125,7 @@ void vStateHandleParam(){
 void vStateHandleValue(){
 
     static unsigned char ucBufferIndex = 0;
-    static unsigned char* ucBuffer[MAX_BUFFER_SIZE + 1];
+    static unsigned char ucBuffer[MAX_BUFFER_SIZE + 1];
 
     if(VALIDATED_INPUT(ucCommByte) && ucBufferIndex <= MAX_BUFFER_SIZE){
         ucBuffer[ucBufferIndex++] = ucCommByte;
