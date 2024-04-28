@@ -27,9 +27,7 @@
 static MatrixKeyboard* pMatrixKeayboardStatus;
 static int iBinaryCounter = 0;
 
-static unsigned char cUartMessage[UART_BUFFER_SIZE];
-static unsigned char cMessageOutOfRange[] = "Numero fora do intervalo\n\r";
-static unsigned char cFloatMessage[11];
+SystemParameters xSystemParameters;
 
 
 
@@ -118,22 +116,6 @@ void vApplicationTurnOnBinaryLed(int iCounter) {
         vLedTurnOff(DIM_BLUE);
 }
 
-void vApplicationUartMessageCallback(){
-    pParserStandardizeNumericInput(&cUartMessage, UART_BUFFER_SIZE);
-    float fInputNumber =  fParserToFloat(&cUartMessage);
-
-    //Verify the range
-    if(fInputNumber < -1000 || fInputNumber > 1000){
-        HAL_UART_Transmit_IT(&hlpuart1, cMessageOutOfRange, sizeof(cMessageOutOfRange));
-    }
-    else{
-    	float fInverseNumber = 1/fInputNumber;
-    	pParserFloatToString(cFloatMessage, fInverseNumber);
-        HAL_UART_Transmit_IT(&hlpuart1, cFloatMessage, sizeof(cFloatMessage));
-    }
-
-}
-
 void vApplicationStart() {
     // Initialize LED Drivers
     LedMapping xBoardLeds[] = {
@@ -175,7 +157,7 @@ void vApplicationStart() {
     #endif
 
     // Initialize UART Communication library
-    vCommunicationStateMachineInit(&hlpuart1);
+    vCommunicationStateMachineInit(&hlpuart1, &xSystemParameters);
 
     // Initialize Application
     while (1) {
