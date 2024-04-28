@@ -134,7 +134,7 @@ void vStateHandleValue(){
 
     else if(ucCommByte == ';'){
         ucBuffer[ucBufferIndex] = '\0';
-        const float fTargetValue = fParserToFloat(ucBuffer);
+        const float fTargetValue = fParserToFloat(ucBuffer, MAX_BUFFER_SIZE + 1);
 
         switch (xTargetParam)
         {
