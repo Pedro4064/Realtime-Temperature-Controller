@@ -48,6 +48,18 @@
 #define KEYBOARD_C2_GPIO_Port GPIOC
 #define KEYBOARD_C1_GPIO_Port GPIOA
 
+typedef struct{
+	float fTemperatureTarget;
+	unsigned char usButtonLock;
+	unsigned char usDutyCycleCooler;
+	unsigned char usDutyCycleHeater;
+}SetConfigurableParameters;
+
+typedef struct{
+	float fTemperatureCurrent;
+	unsigned int uiVelocityCooler;
+}GetConfigurableParameters;
+
 // ********************************************************** //
 // Method name:        vApplicationStart                      //
 // Method description: All   the   code   responsible   for   //
