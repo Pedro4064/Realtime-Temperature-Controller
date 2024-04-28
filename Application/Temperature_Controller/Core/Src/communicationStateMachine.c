@@ -16,7 +16,7 @@ typedef enum {
     IDLE,
     READY,
     GET,
-    SET,
+    VAL_SET,
     PARAM,
     VALUE
 } State;
@@ -48,7 +48,7 @@ void vStateHandleReady(){
         break;
 
     case 's':
-        xCurrentState = SET;
+        xCurrentState = VAL_SET;
         break;
 
     default:
@@ -184,7 +184,7 @@ void vCommunicationStateMachineProcessByte(){
             vStateHandleGet();
             break;
 
-        case SET:
+        case VAL_SET:
             vStateHandleSet();
             break;
 
