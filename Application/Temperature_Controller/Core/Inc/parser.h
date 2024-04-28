@@ -50,7 +50,7 @@ void vParserStandardizeNumericInput(unsigned char* cUartMessage, int iMessageMax
 //                        Numeric  value  converted  to float //
 //                        type                                //
 // ********************************************************** //
-float fParserToFloat(unsigned char* cUartMessage);
+float fParserToFloat(unsigned char* cUartMessage, int iBufferMaxSize);
 
 
 #endif /* INC_PARSER_H_ */

@@ -29,7 +29,8 @@ void vParserStandardizeNumericInput(unsigned char* cUartMessage, int iMessageMax
 	}
 }
 
-float fParserToFloat(unsigned char* cUartMessage){
+float fParserToFloat(unsigned char* cUartMessage, int iBufferMaxSize){
+	vParserStandardizeNumericInput(cUartMessage, iBufferMaxSize);
 	return atof(cUartMessage);
 }
 
