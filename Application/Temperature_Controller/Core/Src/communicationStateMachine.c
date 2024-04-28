@@ -166,6 +166,7 @@ void vStateHandleValue(){
 
 void vCommunicationStateMachineProcessByte(){
 
+    HAL_UART_Receive_IT(pUartPeripheral, &ucCommByte, 1);
     if(ucCommByte == '#'){
         xCurrentState = READY;
         return;
@@ -200,7 +201,6 @@ void vCommunicationStateMachineProcessByte(){
             break;
     }
 
-    HAL_UART_Receive_IT(pUartPeripheral, &ucCommByte, 1);
 }
 
 void vCommunicationStateMachineInit(UART_HandleTypeDef* pHUart, SystemParameters* pSysParam){
