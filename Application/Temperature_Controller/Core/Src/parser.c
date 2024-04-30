@@ -1,9 +1,18 @@
-/*
- * parser.c
- *
- *  Created on: Apr 26, 2024
- *      Author: pedro
- */
+// **********************************************//
+// File name:        parser.c                    //
+// File description: Implementation file 		 //
+//					 containing parser functions //
+//					 for converting parameter    //
+//					 values between string and   //
+//					 float formats, ensuring 	 //
+//					 standardized formatting.	 //
+//                   parser.                     //
+// Author name:		 Isabelle Miki Ikuno         //
+//                   Pedro Henrique L. da Cruz   //
+// Creation date:	 19/Abr/2024                 //
+// Revision date:    26/Abr/2024                 //
+// **********************************************//
+
 #include <stdlib.h>
 #include <math.h>
 

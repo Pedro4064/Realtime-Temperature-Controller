@@ -52,9 +52,9 @@ typedef struct{
 	float fTemperatureCurrent;
 	float fTemperatureTarget;
 	unsigned int uiVelocityCooler;
-	unsigned char usButtonLock;
-	unsigned char usDutyCycleCooler;
-	unsigned char usDutyCycleHeater;
+	unsigned char ucButtonLock;
+	unsigned char ucDutyCycleCooler;
+	unsigned char ucDutyCycleHeater;
 }SystemParameters;
 
 // ********************************************************** //
@@ -83,12 +83,89 @@ void vApplicationStart();
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* timer);
 
 // ********************************************************** //
-// Method name:        vApplicationUartMessageCallback        //
-// Method description: UART message callback application      //
-// Input params:       void                                   //
-//                        N/A                                 //
+// Method name:        HAL_GPIO_EXTI_Callback                 //
+// Method description: This  function  implements  the GPIO   //
+//                     EXTI callback application.             //
+// Input params:       GPIO_Pin                               //
+//                        GPIO pin to be used.                //
 // Output params:      void                                   //
 //                        N/A                                 //
 // ********************************************************** //
-void vApplicationUartMessageCallback();
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin);
+
+// ********************************************************** //
+// Method name:        HAL_UART_RxCpltCallback                //
+// Method description: This  function  implements  the UART   //
+//                     message callback application.          //
+// Input params:       pHUart                                 //
+//                        Pointer  to  UART  peripheral to be //
+//                        used.                               //
+// Output params:      void                                   //
+//                        N/A                                 //
+// ********************************************************** //
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef* pHUart);
+
+// ********************************************************** //
+// Method name:        vButtonsEventHalfSecondEvent           //
+// Method description: This  function  implements the event   //
+//                     triggered  when a specific button is   //
+//                     pressed once							  //
+// Input params:       pressedButton                          //
+//                        Button that is pressed              //
+// Output params:      void                                   //
+//                        N/A                                 //
+// ********************************************************** //
+void vButtonsEventCallbackPressedEvent(Button pressedButton);
+
+// ********************************************************** //
+// Method name:        vButtonsEventHalfSecondEvent           //
+// Method description: This  function  implements the event   //
+//                     triggered  when a specific button is   //
+//                     released. 							  //
+// Input params:       pressedButton                          //
+//                        Button that is pressed              //
+// Output params:      void                                   //
+//                        N/A                                 //
+// ********************************************************** //
+void vButtonsEventCallbackReleasedEvent(Button pressedButton);
+
+// ********************************************************** //
+// Method name:        vButtonsEventHalfSecondEvent           //
+// Method description: This  function  implements the event   //
+//                     triggered  when a specific button is   //
+//                     pressed for more or equal than half a  //
+//                     second.                                //
+// Input params:       pressedButton                          //
+//                        Button that is pressed              //
+// Output params:      void                                   //
+//                        N/A                                 //
+// ********************************************************** //
+void vButtonsEventHalfSecondEvent(Button pressedButton);
+
+// ********************************************************** //
+// Method name:        vButtonsEventHalfSecondEvent           //
+// Method description: This  function  implements the event   //
+//                     triggered  when a specific button is   //
+//                     pressed for more or equal than three   //
+//                     seconds.                               //
+// Input params:       pressedButton                          //
+//                        Button that is pressed              //
+// Output params:      void                                   //
+//                        N/A                                 //
+// ********************************************************** //
+void vButtonsEventThreeSecondEvent(Button pressedButton);
+
+// ********************************************************** //
+// Method name:        vApplicationTurnOnBinaryLed            //
+// Method description: This  function,  given  an  integer,   //
+//                     turns  on  the  LEDs  in  a  row  to   //
+//                     represent a binary number.             //
+// Input params:       iCounter                               //
+//                        Number to be represented as a binary//
+//                        number using LEDs                   //
+// Output params:      void                                   //
+//                        N/A                                 //
+// ********************************************************** //
+void vApplicationTurnOnBinaryLed(int iCounter);
+
 #endif /* INC_APPLICATION_H_ */

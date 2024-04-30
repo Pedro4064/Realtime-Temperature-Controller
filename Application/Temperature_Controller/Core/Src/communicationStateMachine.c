@@ -1,16 +1,20 @@
-/*
- * communicationStateMachine.c
- *
- *  Created on: Apr 27, 2024
- *      Author: ES670 B
- */
+// **********************************************//
+// File name:        communicationStateMachine.c //
+// File description: This file implements the    //
+//                   state machine communication //
+//                   to set or get parameters    //
+//                   such as temperature target, //
+//                   velocyty of cooler and      //
+//                   others                      //   
+// Author name:		 Isabelle Miki Ikuno         //
+//                   Pedro Henrique L. da Cruz   //
+// Creation date:	 26/Abr/2024                 //
+// Revision date:    29/Abr/2024                 //
+// **********************************************//
 
 #include <main.h>
 #include "parser.h"
 #include "application.h"
-
-#define VALIDATED_INPUT(x) ((x >= '0' && x <= '9') || x == ',')
-#define MAX_BUFFER_SIZE 7
 
 typedef enum {
     IDLE,
@@ -33,14 +37,16 @@ typedef enum {
     BUTTON_LOCK = 'b',
 } ParamID;
 
+#define VALIDATED_INPUT(x) ((x >= '0' && x <= '9') || x == ',')
+#define MAX_BUFFER_SIZE 7
+
 static State xCurrentState = IDLE;
 static ParamID xTargetParam;
 static UART_HandleTypeDef* pUartPeripheral;
 static unsigned char ucCommByte;
-
 static SystemParameters* pSystemParameters;
 
-void vStateHandleReady(){
+void vCommunicationStateMachineStateHandleReady(){
     switch (ucCommByte)
     {
     case 'g':
@@ -57,7 +63,7 @@ void vStateHandleReady(){
     }
 }
 
-void vStateHandleGet(){
+void vCommunicationStateMachineStateHandleGet(){
     switch (ucCommByte)
     {
     case TEMPERATURE_CURRENT:
@@ -74,7 +80,7 @@ void vStateHandleGet(){
     }
 }
 
-void vStateHandleSet(){
+void vCommunicationStateMachineStateHandleSet(){
     
     switch (ucCommByte)
     {
@@ -93,7 +99,7 @@ void vStateHandleSet(){
 
 }
 
-void vStateHandleParam(){
+void vCommunicationStateMachineStateHandleParam(){
     xCurrentState = IDLE;
     if(ucCommByte != ';')
         return;
@@ -122,7 +128,7 @@ void vStateHandleParam(){
         
 }
 
-void vStateHandleValue(){
+void vCommunicationStateMachineStateHandleValue(){
 
     static unsigned char ucBufferIndex = 0;
     static unsigned char ucBuffer[MAX_BUFFER_SIZE + 1];
@@ -143,15 +149,15 @@ void vStateHandleValue(){
                 break;
 
             case DUTY_CYCLE_HEATER:
-                pSystemParameters->usDutyCycleHeater = (unsigned char)fTargetValue;
+                pSystemParameters->ucDutyCycleHeater = (unsigned char)fTargetValue;
                 break;
             
             case DUTY_CYCLE_COOLER:
-                pSystemParameters->usDutyCycleCooler = (unsigned char)fTargetValue;
+                pSystemParameters->ucDutyCycleCooler = (unsigned char)fTargetValue;
                 break;
 
             case BUTTON_LOCK:
-                pSystemParameters->usButtonLock = (unsigned char)fTargetValue;
+                pSystemParameters->ucButtonLock = (unsigned char)fTargetValue;
                 break;
             
             default:

@@ -1,9 +1,14 @@
-/*
- * parser.h
- *
- *  Created on: Apr 26, 2024
- *      Author: pedro
- */
+// **********************************************//
+// File name:        parser.h                    //
+// File description: This file declare functions //
+//                   interface and data types for//
+//                   parser.                     //
+// Author name:		 Isabelle Miki Ikuno         //
+//                   Pedro Henrique L. da Cruz   //
+// Creation date:	 19/Abr/2024                 //
+// Revision date:    26/Abr/2024                 //
+// **********************************************//
+
 
 #ifndef INC_PARSER_H_
 #define INC_PARSER_H_

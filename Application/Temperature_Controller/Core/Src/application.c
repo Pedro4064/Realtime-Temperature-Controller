@@ -42,7 +42,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* timer) {
 
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
     vButtonsEventsGpioCallback(GPIO_Pin);
-
 }
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef* pHUart){
@@ -69,7 +68,6 @@ void vButtonsEventCallbackPressedEvent(Button pressedButton){
 }
 
 void vButtonsEventCallbackReleasedEvent(Button pressedButton){
-
 }
 
 void vButtonsEventHalfSecondEvent(Button pressedButton){
