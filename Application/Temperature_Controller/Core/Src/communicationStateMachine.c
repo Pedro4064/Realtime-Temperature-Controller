@@ -184,23 +184,23 @@ void vCommunicationStateMachineProcessByte(){
             return;
         
         case READY:
-            vStateHandleReady();
+            vCommunicationStateMachineStateHandleReady();
             break;
 
         case GET:
-            vStateHandleGet();
+            vCommunicationStateMachineStateHandleGet();
             break;
 
         case VAL_SET:
-            vStateHandleSet();
+            vCommunicationStateMachineStateHandleSet();
             break;
 
         case PARAM:
-            vStateHandleParam();
+            vCommunicationStateMachineStateHandleParam();
             break;
 
         case VALUE:
-            vStateHandleValue();
+            vCommunicationStateMachineStateHandleValue();
             break;
 
         default:

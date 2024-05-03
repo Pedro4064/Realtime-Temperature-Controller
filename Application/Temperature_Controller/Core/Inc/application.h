@@ -11,6 +11,7 @@
 #include <main.h>
 
 #include "matrixKeyboard.h"
+#include "buttonsEvents.h"
 #include "stm32g4xx_hal.h"
 
 #ifndef INC_APPLICATION_H_
