@@ -23,6 +23,9 @@
 #define CMD_DECREMENT_CURSOR    0x04 /* shift cursor to left */
 #define CMD_INCREMENT_CURSOR    0x06 /* shift cursor to right */
 
+#define SIG_ENABLE 0x4
+#define SIG_DATA_W 0x1
+
 
 /* RS and Enable definitions*/
 #define LCD_RS_DATA				1U

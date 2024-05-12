@@ -22,6 +22,7 @@
 #define MAX_COLUMN  15U
 
 static LcdConfig* pLcdConfiguration;
+static char cBacklightStatus;
 
 // Function with local scope
 static void vLcdWrite2Lcd(unsigned char ucBuffer,  unsigned char cDataType);
@@ -42,19 +43,11 @@ void vLcdInitLcd(LcdConfig* lcdConfiguration)
 	// Time to the LCD's microcontroller start
 	HAL_Delay(20);
 
-	// These delays are described in the datasheet, they are needed for
-	// the correct LCD initialization ib 4-bit mode.
-	HAL_Delay(50);
-	ucTemp = 0x30 | LCD_BIT_E;
-	HAL_I2C_Master_Transmit_IT(pLcdConfiguration->pHi2c, pLcdConfiguration->cAddress<<1, &ucTemp, 1);
-	HAL_Delay(5);
-	ucTemp = 0x30 | LCD_BIT_E;
+	// set LCD to 4-bit mode
+	ucTemp = 0x20 | LCD_BIT_E;
 	HAL_I2C_Master_Transmit_IT(pLcdConfiguration->pHi2c, pLcdConfiguration->cAddress<<1, &ucTemp, 1);
 	HAL_Delay(1);
-	ucTemp = 0x30 | LCD_BIT_E;
-	HAL_I2C_Master_Transmit_IT(pLcdConfiguration->pHi2c, pLcdConfiguration->cAddress<<1, &ucTemp, 1);
-	HAL_Delay(10);
-	ucTemp = 0x20 | LCD_BIT_E;
+	ucTemp = 0x20;
 	HAL_I2C_Master_Transmit_IT(pLcdConfiguration->pHi2c, pLcdConfiguration->cAddress<<1, &ucTemp, 1);
 	HAL_Delay(2);
 
@@ -158,6 +151,14 @@ void vLcdDummyText(void)
 	vLcdWriteString("Prj Sis Embarcad");
 }
 
+void vLcdBacklightON(){
+	cBacklightStatus = 1;
+}
+
+void vLcdBacklightOFF(){
+	cBacklightStatus = 0;
+}
+
 /* ************************************************ */
 /* Method name: 	   vLcdWrite2Lcd         		*/
 /* Method description: Send command or data to LCD  */
@@ -170,7 +171,62 @@ static void vLcdWrite2Lcd(unsigned char ucBuffer,  unsigned char cDataType)
 {
 	// cDataType indica se deve ser enviado um dado ou um comando ao display
 	// Se cDataType for igual a LCD_RS_CMD, deve ser enviado um comando (Pino RS do display em nível baixo)
-	// Se cDataType for igual a LCD_RS_DATA, deve ser enviado um comando (Pino RS do display em nível alto)
+	// Se cDataType for igual a LCD_RS_DATA, deve ser enviado um dado (Pino RS do display em nível alto)
+	unsigned char ucDataPackage = ucBuffer;
+
+	switch (cDataType)
+	{
+	case LCD_RS_CMD:
+		// Send first 4 MSB plus the enable signal
+		ucDataPackage = (ucDataPackage & 0xF0) | SIG_ENABLE;
+	 	HAL_I2C_Master_Transmit_IT(pLcdConfiguration->pHi2c, pLcdConfiguration->cAddress<<1, &ucDataPackage, 1);
+		HAL_Delay(1);
+
+		// Pull down enable pin 
+		ucDataPackage &= ~SIG_ENABLE;
+	 	HAL_I2C_Master_Transmit_IT(pLcdConfiguration->pHi2c, pLcdConfiguration->cAddress<<1, &ucDataPackage, 1);
+		HAL_Delay(2);
+
+		// Send Last 4 LSB plus enable signal
+		ucDataPackage = (ucBuffer << 4) | SIG_ENABLE;
+		HAL_I2C_Master_Transmit_IT(pLcdConfiguration->pHi2c, pLcdConfiguration->cAddress<<1, &ucDataPackage, 1);
+		HAL_Delay(1);
+
+		// Pull down enable pin 
+		ucDataPackage &= ~SIG_ENABLE;
+	 	HAL_I2C_Master_Transmit_IT(pLcdConfiguration->pHi2c, pLcdConfiguration->cAddress<<1, &ucDataPackage, 1);
+		HAL_Delay(2);
+		break;
+	
+	case LCD_RS_DATA:
+		// First set the cursor shift functionality, which automatically increments the cursor one to the left after
+		// a write operation to the DDRAM
+		vLcdSendCommand(0b00000110);
+
+		// Send the first 4 MSB plus the enable signal, the RS as write data and the backlight
+		ucDataPackage = (ucBuffer & 0xF0) | (SIG_ENABLE | SIG_DATA_W | cBacklightStatus << 3);
+		HAL_I2C_Master_Transmit_IT(pLcdConfiguration->pHi2c, pLcdConfiguration->cAddress<<1, &ucDataPackage, 1);
+		HAL_Delay(1);
+
+		// Pull down enable pin 
+		ucDataPackage &= ~SIG_ENABLE;
+	 	HAL_I2C_Master_Transmit_IT(pLcdConfiguration->pHi2c, pLcdConfiguration->cAddress<<1, &ucDataPackage, 1);
+		HAL_Delay(2);
+
+		// Send Last 4 LSB plus enable signal
+		ucDataPackage = (ucBuffer << 4) | (SIG_ENABLE | SIG_DATA_W | cBacklightStatus << 3);
+		HAL_I2C_Master_Transmit_IT(pLcdConfiguration->pHi2c, pLcdConfiguration->cAddress<<1, &ucDataPackage, 1);
+		HAL_Delay(1);
+
+		// Pull down enable pin 
+		ucDataPackage &= ~SIG_ENABLE;
+	 	HAL_I2C_Master_Transmit_IT(pLcdConfiguration->pHi2c, pLcdConfiguration->cAddress<<1, &ucDataPackage, 1);
+		HAL_Delay(2);
+		break;
+
+	default:
+		break;
+	}
 
 	// Vocês irão enviar o byte de dados ou comando em duas etapas
 	// Na primeira etapa serão enviados os 4 bits mais significativos
