@@ -56,7 +56,7 @@ typedef struct lcdConfig
 /* Output params:      *hi2c=>pointer to the i2c    */
 /*                     cAddress=>LCD I2C address    */
 /* ************************************************ */
-void vLcdInitLcd(I2C_HandleTypeDef *hi2c, char cAddress);
+void vLcdInitLcd(LcdConfig* lcdConfiguration);
 
 
 /* ************************************************ */
@@ -104,6 +104,10 @@ void vLcdSetCursor(unsigned char cLine, unsigned char cColumn);
 /* Output params:      n/a                          */
 /* ************************************************ */
 void vLcdDummyText(void);
+
+void vLcdBacklightON();
+
+void vLcdBacklightOFF();
 
 
 #endif /* SOURCES_LCD_H_ */

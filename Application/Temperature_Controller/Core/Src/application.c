@@ -16,9 +16,15 @@
 #include <tim.h>
 
 #include "application.h"
+#include "lcd.h"
 
+LcdConfig pLcdConfiguration = {&hi2c1, 0x27};
 
 void vApplicationStart() {
+	vLcdInitLcd(&pLcdConfiguration);
     while (1) {
+    	vLcdBacklightON();
+    	vLcdWriteString("Teste Grupo B3");
+		HAL_Delay(500);
     }
 }
