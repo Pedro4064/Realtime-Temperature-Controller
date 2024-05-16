@@ -18,8 +18,18 @@
 #include "pwmConfig.h"
 
 pwmConfig xHeaterConfig = {&htim1, TIM_CHANNEL_1};
+pwmConfig xCoolerConfig = {&htim8, TIM_CHANNEL_1};
 
 void vApplicationStart() {
+
+	heaterAndCoolerInit(&xHeaterConfig, &xCoolerConfig);
+	vHeaterSetPwmDuty(0.5);
+	vCoolerFanSetPwmDuty(0.3);
+
+	vHeaterStart();
+	vCoolerStart();
+
     while (1) {
+
     }
 }

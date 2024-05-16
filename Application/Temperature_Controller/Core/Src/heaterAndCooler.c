@@ -11,16 +11,15 @@ void heaterAndCoolerInit(pwmConfig* pHeaterConfig, pwmConfig* pCoolerConfig){
     pCoolerConfiguration = pCoolerConfig;
 
     HAL_TIM_PWM_Init(pHeaterConfiguration->pTimeHandle);
-    //! Just commenting so we can test one pwm tim configuration at a time
-    // HAL_TIM_PWM_Init(pCoolerConfiguration->pTimeHandle);
+    HAL_TIM_PWM_Init(pCoolerConfiguration->pTimeHandle);
 }
 
 void vCoolerFanSetPwmDuty(float fCoolerPWM){
-    __HAL_TIM_SET_COMPARE(pCoolerConfiguration->pTimeHandle, pCoolerConfiguration->uiChannel, fCoolerPWM*100);
+    __HAL_TIM_SET_COMPARE(pCoolerConfiguration->pTimeHandle, pCoolerConfiguration->uiChannel, fCoolerPWM*10000);
 }
 
 void vHeaterSetPwmDuty(float fHeaterPWM){
-    __HAL_TIM_SET_COMPARE(pHeaterConfiguration->pTimeHandle, pHeaterConfiguration->uiChannel, fHeaterPWM*100);
+    __HAL_TIM_SET_COMPARE(pHeaterConfiguration->pTimeHandle, pHeaterConfiguration->uiChannel, fHeaterPWM*10000);
 }
 
 void vCoolerStart(void){
