@@ -13,6 +13,7 @@
 #include <usart.h>
 #include <tim.h>
 
+#include "buzzer.h"
 #include "pwmConfig.h"
 #include "application.h"
 #include "buttonsEvents.h"
@@ -29,6 +30,7 @@ float fHeaterDutyCycle = 0;
 // Config Settings 
 pwmConfig xHeaterConfig = {&htim1, TIM_CHANNEL_1};
 pwmConfig xCoolerConfig = {&htim8, TIM_CHANNEL_1};
+pwmConfig xBuzzerConfig = {&htim20,TIM_CHANNEL_1};
 
 ButtonMapping xBoardButtons[] = {
                                         {BTN_UP_GPIO_Port,    BTN_UP_EXTI_IRQn, BTN_UP_Pin},
@@ -43,6 +45,9 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* pTimer){
 
 	if(pTimer->Instance == TIM7 || pTimer->Instance == TIM16)
 		vButtonsEventsTimerCallback(pTimer);
+
+	else if(pTimer->Instance == TIM5)
+		vBuzzerStop();
 
 }
 
@@ -98,7 +103,10 @@ void vApplicationStart() {
 	vHeaterStart();
 	vCoolerStart();
 
+	vBuzzerInit(&xBuzzerConfig, &htim5, 1000, 5000);
 	vButtonsEventsInit(&xBoardButtons, &htim7, &htim16, &vApplicationButtonPressed, &vApplicationButtonReleased, &vApplicationButtonHalfSecondPressed, &vApplicationButtonThreeSecondPressed);
+
+	vBuzzerPlay();
 
 
     while (1) {

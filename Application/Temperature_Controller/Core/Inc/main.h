@@ -81,6 +81,8 @@ void Error_Handler(void);
 #define BTN_ENTER_Pin GPIO_PIN_0
 #define BTN_ENTER_GPIO_Port GPIOB
 #define BTN_ENTER_EXTI_IRQn EXTI0_IRQn
+#define BUZZER_PWM_Pin GPIO_PIN_2
+#define BUZZER_PWM_GPIO_Port GPIOB
 #define KEYBOARD_L4_Pin GPIO_PIN_11
 #define KEYBOARD_L4_GPIO_Port GPIOB
 #define KEYBOARD_L3_Pin GPIO_PIN_12
