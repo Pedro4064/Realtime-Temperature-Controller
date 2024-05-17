@@ -103,21 +103,11 @@ void vApplicationStart() {
 	// vHeaterStart();
 	// vCoolerStart();
 
-	 vBuzzerInit(&xBuzzerConfig, &htim5, 1000, 5000);
+	 vBuzzerInit(&xBuzzerConfig, &htim5);
+	 vBuzzerConfig(1000, 500);
 	// vButtonsEventsInit(&xBoardButtons, &htim7, &htim16, &vApplicationButtonPressed, &vApplicationButtonReleased, &vApplicationButtonHalfSecondPressed, &vApplicationButtonThreeSecondPressed);
 
 	 vBuzzerPlay();
-	// HAL_TIM_Base_Init(&htim17);
-	// HAL_TIM_Base_Start_IT(&htim17);
-	// HAL_TIM_Base_Init(&htim5);
-
-	// htim5.Instance->PSC=8500;
-	// htim5.Instance->ARR=1000000;
-	// htim5.Instance->EGR = TIM_EGR_UG;
-	// htim5.Instance->SR = 0;
-
-	HAL_TIM_Base_Start_IT(&htim5);
-
 
     while (1) {
 

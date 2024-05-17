@@ -17,6 +17,9 @@ void vBuzzerInit(pwmConfig* pBuzzerConfig, TIM_HandleTypeDef* pPeriodTim, unsign
     // Initialize the necessary timers
     HAL_TIM_PWM_Init(pBuzzerConfiguration->pTimeHandle);
     HAL_TIM_Base_Init(pPeriodTimer);
+}
+
+void vBuzzerConfig(unsigned short int usFrequency, unsigned short int usPeriod){
 
     // From the function's input, calculate the necessary pre-scaler values and compare value for the pwm signal, 
     // keeping fixed the auto-reload counter value
@@ -27,7 +30,7 @@ void vBuzzerInit(pwmConfig* pBuzzerConfig, TIM_HandleTypeDef* pPeriodTim, unsign
     unsigned int uiTimerPreScaler = CALCULATE_PRESCALER(fTargetTimerFrequency, uiCounter);
 
     // After calculating the values, it is necessary to assign the values to the correct timers, 
-    // it is important to point out, however, that the updates normal are only applied after the 
+    // it is important to point out, however, that the updates normally are only applied after the 
     // first full cycle of each timer, but in our case it would call an interrupt based on the 
     // default timer configuration period, which we do not want. 
     // To avoid that, we force reset the timer peripherals in use (which rises an RS flag indicating)
@@ -42,8 +45,8 @@ void vBuzzerInit(pwmConfig* pBuzzerConfig, TIM_HandleTypeDef* pPeriodTim, unsign
     __HAL_TIM_SET_PRESCALER(pBuzzerConfiguration->pTimeHandle, uiPwmPreScaler);
     __HAL_TIM_SET_PRESCALER(pPeriodTimer, uiTimerPreScaler);
 
-    PUSH_TIM_CONFIGS(pBuzzerConfig->pTimeHandle);
-    PUSH_TIM_CONFIGS(pPeriodTim);
+    PUSH_TIM_CONFIGS(pBuzzerConfiguration->pTimeHandle);
+    PUSH_TIM_CONFIGS(pPeriodTimer);
 
 }
 
