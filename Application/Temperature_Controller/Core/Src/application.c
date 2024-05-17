@@ -109,12 +109,12 @@ void vApplicationStart() {
 
 	//   vBuzzerInit(&xBuzzerConfig, &htim5);
 	//   vBuzzerConfig(1000, 1000);
-	// vButtonsEventsInit(&xBoardButtons, &htim7, &htim16, &vApplicationButtonPressed, &vApplicationButtonReleased, &vApplicationButtonHalfSecondPressed, &vApplicationButtonThreeSecondPressed);
+	vButtonsEventsInit(&xBoardButtons, &htim7, &htim16, &vApplicationButtonPressed, &vApplicationButtonReleased, &vApplicationButtonHalfSecondPressed, &vApplicationButtonThreeSecondPressed);
 
 	//   vBuzzerPlay();
 
-//	vTachometerInit(&htim4, &htim3, 500);
-//	vTachometerStartReadings();
+	vTachometerInit(&htim4, &htim3, 500);
+	vTachometerStartReadings();
 
     while (1) {
 

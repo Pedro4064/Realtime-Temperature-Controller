@@ -40,7 +40,7 @@ void vTachometerStartReadings(void){
 void vTachometerUpdateSpeed(void){
     unsigned int uiNumberOfPulses = pCounterTimer->Instance->CNT;
     uiNumberOfPulses = uiNumberOfPulses / 9;                        // To get the number of pulses per fan blade
-    fTachometerMeasuredSpeed = uiNumberOfPulses/uiCountingPeriod;   // To get the frequency just divide the number of pulses per blade by the period of measurement
+    fTachometerMeasuredSpeed = 60*uiNumberOfPulses/((float)uiCountingPeriod/1000.0);   // To get the frequency just divide the number of pulses per blade by the period of measurement
 
 
     pCounterTimer->Instance->CNT = 0;                               // Reset the pulse counter to 0 to get new measurements
