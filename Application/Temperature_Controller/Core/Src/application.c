@@ -12,6 +12,7 @@
 #include <main.h>
 #include <usart.h>
 #include <tim.h>
+#include <adc.h>
 
 #include "parser.h"
 #include "buzzer.h"
@@ -29,6 +30,7 @@
 float fCoolerDutyCycle = 0;
 float fHeaterDutyCycle = 0;
 unsigned char ucUartVelocityMessage[11];
+unsigned int uiRawTempVoltage = 0;
 
 // Config Settings 
 pwmConfig xHeaterConfig = {&htim1, TIM_CHANNEL_1};
@@ -147,22 +149,20 @@ void vApplicationButtonHalfSecondPressed(Button xPressedButton){
 }
 
 void vApplicationStart() {
-
 	heaterAndCoolerInit(&xHeaterConfig, &xCoolerConfig);
 	vHeaterStart();
 	vCoolerStart();
 
-	vBuzzerInit(&xBuzzerConfig, &htim5);
-	vBuzzerConfig(1000, 1000);
-	vBuzzerPlay();
-
 	vButtonsEventsInit(&xBoardButtons, &htim7, &htim16, &vApplicationButtonPressed, &vApplicationButtonReleased, &vApplicationButtonHalfSecondPressed, &vApplicationButtonThreeSecondPressed);
-
 
 	vTachometerInit(&htim4, &htim3, 500);
 	vTachometerStartReadings();
 
-    while (1) {
 
+    HAL_ADCEx_Calibration_Start(&hadc1, ADC_SINGLE_ENDED);
+	HAL_ADC_Start_DMA(&hadc1, &uiRawTempVoltage, 1);
+
+
+    while (1) {
     }
 }
