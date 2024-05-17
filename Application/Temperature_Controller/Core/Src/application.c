@@ -21,6 +21,7 @@
 #include "application.h"
 #include "buttonsEvents.h"
 #include "heaterAndCooler.h"
+#include "temperatureSensor.h"
 
 // Application Specific Macros 
 #define PWM_DUTYCYCLE_INCREMENT(x, delta) x+delta > 1 ? 1 : x+delta
@@ -29,8 +30,8 @@
 // Application Test Variables
 float fCoolerDutyCycle = 0;
 float fHeaterDutyCycle = 0;
+float fRawTempVoltage  = 0;
 unsigned char ucUartVelocityMessage[11];
-unsigned int uiRawTempVoltage = 0;
 
 // Config Settings 
 pwmConfig xHeaterConfig = {&htim1, TIM_CHANNEL_1};
@@ -159,10 +160,9 @@ void vApplicationStart() {
 	vTachometerStartReadings();
 
 
-    HAL_ADCEx_Calibration_Start(&hadc1, ADC_SINGLE_ENDED);
-	HAL_ADC_Start_DMA(&hadc1, &uiRawTempVoltage, 1);
-
+	vTemperatureSensorInit(&hadc1);
 
     while (1) {
+		fRawTempVoltage = fTemperatureSensorGetCurrentTemperature();
     }
 }
