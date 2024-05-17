@@ -13,12 +13,13 @@
 #include <usart.h>
 #include <tim.h>
 
+#include "parser.h"
 #include "buzzer.h"
 #include "pwmConfig.h"
+#include "tachometer.h"
 #include "application.h"
 #include "buttonsEvents.h"
 #include "heaterAndCooler.h"
-#include "tachometer.h"
 
 // Application Specific Macros 
 #define PWM_DUTYCYCLE_INCREMENT(x, delta) x+delta > 1 ? 1 : x+delta
@@ -27,6 +28,7 @@
 // Application Test Variables
 float fCoolerDutyCycle = 0;
 float fHeaterDutyCycle = 0;
+unsigned char ucUartVelocityMessage[11];
 
 // Config Settings 
 pwmConfig xHeaterConfig = {&htim1, TIM_CHANNEL_1};
@@ -50,8 +52,11 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* pTimer){
 	else if(pTimer->Instance == TIM5)
 		vBuzzerStop();
 
-	else if(pTimer->Instance == TIM4)
+	else if(pTimer->Instance == TIM4){
 		vTachometerUpdateSpeed();
+		vParserFloatToString(&ucUartVelocityMessage, fTachometerMeasuredSpeed);
+		HAL_UART_Transmit_IT(&hlpuart1, &ucUartVelocityMessage, 11);
+	}
 
 }
 
@@ -107,11 +112,12 @@ void vApplicationStart() {
 	vHeaterStart();
 	vCoolerStart();
 
-	//   vBuzzerInit(&xBuzzerConfig, &htim5);
-	//   vBuzzerConfig(1000, 1000);
+	vBuzzerInit(&xBuzzerConfig, &htim5);
+	vBuzzerConfig(1000, 1000);
+	vBuzzerPlay();
+
 	vButtonsEventsInit(&xBoardButtons, &htim7, &htim16, &vApplicationButtonPressed, &vApplicationButtonReleased, &vApplicationButtonHalfSecondPressed, &vApplicationButtonThreeSecondPressed);
 
-	//   vBuzzerPlay();
 
 	vTachometerInit(&htim4, &htim3, 500);
 	vTachometerStartReadings();
