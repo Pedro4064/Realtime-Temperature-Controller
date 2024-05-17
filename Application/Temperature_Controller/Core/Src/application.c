@@ -66,6 +66,16 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
 
 }
 
+// ********************************************************** //
+// Method name:        vApplicationButtonPressed              //
+// Method description: Callback   function  for  pressed      //
+//                     event                                  //
+// Input params:       xPressedButton                         //
+//                        Button  that caused the half second //
+//                        long press event                    //
+// Output params:      void                                   //
+//                        N/A                                 //
+// ********************************************************** //
 void vApplicationButtonPressed(Button xPressedButton){
 	if (xPressedButton == UP)
 		fCoolerDutyCycle = PWM_DUTYCYCLE_INCREMENT(fCoolerDutyCycle, 0.1);
@@ -84,10 +94,40 @@ void vApplicationButtonPressed(Button xPressedButton){
 	vCoolerFanSetPwmDuty(fCoolerDutyCycle);
 }
 
+// ********************************************************** //
+// Method name:        vApplicationButtonReleased             //
+// Method description: Callback   function  for  released     //
+//                     event                                  //
+// Input params:       xPressedButton                         //
+//                        Button  that caused the half second //
+//                        long press event                    //
+// Output params:      void                                   //
+//                        N/A                                 //
+// ********************************************************** //
 void vApplicationButtonReleased(Button xPressedButton){}
 
+// ********************************************************** //
+// Method name:        vApplicationButtonThreeSecondPressed   //
+// Method description: Callback   function  for  the  three   //
+//                     second long press event                //
+// Input params:       xPressedButton                         //
+//                        Button  that caused the half second //
+//                        long press event                    //
+// Output params:      void                                   //
+//                        N/A                                 //
+// ********************************************************** //
 void vApplicationButtonThreeSecondPressed(Button xPressedButton){}
 
+// ********************************************************** //
+// Method name:        vApplicationButtonHalfSecondPressed    //
+// Method description: Callback function for the button half  //
+//                     second long press                      //
+// Input params:       xPressedButton                         //
+//                        Button  that caused the half second //
+//                        long press event                    //
+// Output params:      void                                   //
+//                        N/A                                 //
+// ********************************************************** //
 void vApplicationButtonHalfSecondPressed(Button xPressedButton){
 
 	if (xPressedButton == UP)
