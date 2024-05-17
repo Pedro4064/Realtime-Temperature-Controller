@@ -71,6 +71,8 @@ void Error_Handler(void);
 #define BTN_LEFT_Pin GPIO_PIN_3
 #define BTN_LEFT_GPIO_Port GPIOC
 #define BTN_LEFT_EXTI_IRQn EXTI3_IRQn
+#define TEMPERATURE_ADC_Pin GPIO_PIN_0
+#define TEMPERATURE_ADC_GPIO_Port GPIOA
 #define LPUART1_TX_Pin GPIO_PIN_2
 #define LPUART1_TX_GPIO_Port GPIOA
 #define LPUART1_RX_Pin GPIO_PIN_3
