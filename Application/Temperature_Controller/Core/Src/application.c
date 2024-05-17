@@ -18,6 +18,7 @@
 #include "application.h"
 #include "buttonsEvents.h"
 #include "heaterAndCooler.h"
+#include "tachometer.h"
 
 // Application Specific Macros 
 #define PWM_DUTYCYCLE_INCREMENT(x, delta) x+delta > 1 ? 1 : x+delta
@@ -48,6 +49,9 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* pTimer){
 
 	else if(pTimer->Instance == TIM5)
 		vBuzzerStop();
+
+	else if(pTimer->Instance == TIM4)
+		vTachometerUpdateSpeed();
 
 }
 
@@ -99,15 +103,18 @@ void vApplicationButtonHalfSecondPressed(Button xPressedButton){
 
 void vApplicationStart() {
 
-	// heaterAndCoolerInit(&xHeaterConfig, &xCoolerConfig);
-	// vHeaterStart();
-	// vCoolerStart();
+	heaterAndCoolerInit(&xHeaterConfig, &xCoolerConfig);
+	vHeaterStart();
+	vCoolerStart();
 
-	 vBuzzerInit(&xBuzzerConfig, &htim5);
-	 vBuzzerConfig(1000, 500);
+	//   vBuzzerInit(&xBuzzerConfig, &htim5);
+	//   vBuzzerConfig(1000, 1000);
 	// vButtonsEventsInit(&xBoardButtons, &htim7, &htim16, &vApplicationButtonPressed, &vApplicationButtonReleased, &vApplicationButtonHalfSecondPressed, &vApplicationButtonThreeSecondPressed);
 
-	 vBuzzerPlay();
+	//   vBuzzerPlay();
+
+//	vTachometerInit(&htim4, &htim3, 500);
+//	vTachometerStartReadings();
 
     while (1) {
 
