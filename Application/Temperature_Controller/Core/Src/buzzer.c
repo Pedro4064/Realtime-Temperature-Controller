@@ -9,7 +9,7 @@
 static pwmConfig* pBuzzerConfiguration;
 static TIM_HandleTypeDef* pPeriodTimer;
 
-void vBuzzerInit(pwmConfig* pBuzzerConfig, TIM_HandleTypeDef* pPeriodTim, unsigned short int usFrequency, unsigned short int usPeriod){
+void vBuzzerInit(pwmConfig* pBuzzerConfig, TIM_HandleTypeDef* pPeriodTim){
     // Save configuration parameters
     pBuzzerConfiguration = pBuzzerConfig;
     pPeriodTimer = pPeriodTim;
