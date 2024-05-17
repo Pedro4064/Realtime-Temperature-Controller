@@ -23,7 +23,7 @@ void vBuzzerConfig(unsigned short int usFrequency, unsigned short int usPeriod){
 
     // From the function's input, calculate the necessary pre-scaler values and compare value for the pwm signal, 
     // keeping fixed the auto-reload counter value
-    unsigned int uiCounter = 100000;
+    unsigned int uiCounter = 10000;
     float fTargetTimerFrequency = 1.0 / ((float)usPeriod / 1000.0);
 
     unsigned int uiPwmPreScaler   = CALCULATE_PRESCALER(usFrequency, uiCounter);
