@@ -58,6 +58,7 @@
 extern DMA_HandleTypeDef hdma_adc1;
 extern UART_HandleTypeDef hlpuart1;
 extern TIM_HandleTypeDef htim1;
+extern TIM_HandleTypeDef htim2;
 extern TIM_HandleTypeDef htim4;
 extern TIM_HandleTypeDef htim5;
 extern TIM_HandleTypeDef htim6;
@@ -319,6 +320,20 @@ void TIM1_TRG_COM_TIM17_IRQHandler(void)
 }
 
 /**
+  * @brief This function handles TIM2 global interrupt.
+  */
+void TIM2_IRQHandler(void)
+{
+  /* USER CODE BEGIN TIM2_IRQn 0 */
+
+  /* USER CODE END TIM2_IRQn 0 */
+  HAL_TIM_IRQHandler(&htim2);
+  /* USER CODE BEGIN TIM2_IRQn 1 */
+
+  /* USER CODE END TIM2_IRQn 1 */
+}
+
+/**
   * @brief This function handles TIM4 global interrupt.
   */
 void TIM4_IRQHandler(void)
@@ -400,20 +415,6 @@ void LPUART1_IRQHandler(void)
   /* USER CODE BEGIN LPUART1_IRQn 1 */
 
   /* USER CODE END LPUART1_IRQn 1 */
-}
-
-/**
-  * @brief This function handles DMAMUX overrun interrupt.
-  */
-void DMAMUX_OVR_IRQHandler(void)
-{
-  /* USER CODE BEGIN DMAMUX_OVR_IRQn 0 */
-
-  /* USER CODE END DMAMUX_OVR_IRQn 0 */
-
-  /* USER CODE BEGIN DMAMUX_OVR_IRQn 1 */
-
-  /* USER CODE END DMAMUX_OVR_IRQn 1 */
 }
 
 /* USER CODE BEGIN 1 */

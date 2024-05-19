@@ -13,7 +13,9 @@
 #include <usart.h>
 #include <tim.h>
 #include <adc.h>
+#include <i2c.h>
 
+#include "lcd.h"
 #include "parser.h"
 #include "buzzer.h"
 #include "pwmConfig.h"
@@ -31,12 +33,13 @@
 float fCoolerDutyCycle = 0;
 float fHeaterDutyCycle = 0;
 float fRawTempVoltage  = 0;
-unsigned char ucUartVelocityMessage[11];
+unsigned char ucUartTemperatureMessage[11];
 
 // Config Settings 
 pwmConfig xHeaterConfig = {&htim1, TIM_CHANNEL_1};
 pwmConfig xCoolerConfig = {&htim8, TIM_CHANNEL_1};
 pwmConfig xBuzzerConfig = {&htim20,TIM_CHANNEL_1};
+LcdConfig pLcdConfiguration = {&hi2c1, 0x27};
 
 ButtonMapping xBoardButtons[] = {
                                         {BTN_UP_GPIO_Port,    BTN_UP_EXTI_IRQn, BTN_UP_Pin},
@@ -55,10 +58,17 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* pTimer){
 	else if(pTimer->Instance == TIM5)
 		vBuzzerStop();
 
-	else if(pTimer->Instance == TIM4){
+	else if(pTimer->Instance == TIM4)
 		vTachometerUpdateSpeed();
-		vParserFloatToString(&ucUartVelocityMessage, fTachometerMeasuredSpeed);
-		HAL_UART_Transmit_IT(&hlpuart1, &ucUartVelocityMessage, 11);
+
+	else if(pTimer->Instance == TIM2){
+		fRawTempVoltage = fTemperatureSensorGetCurrentTemperature();
+
+		vParserFloatToString(&ucUartTemperatureMessage, fRawTempVoltage);
+		HAL_UART_Transmit_IT(&hlpuart1, &ucUartTemperatureMessage, 11);
+
+		vLcdSetCursor(0, 0);
+		vLcdWriteString(ucUartTemperatureMessage);
 	}
 
 }
@@ -162,7 +172,11 @@ void vApplicationStart() {
 
 	vTemperatureSensorInit(&hadc1);
 
+
+	vLcdInitLcd(&pLcdConfiguration);
+	vLcdBacklightON();
+
+
     while (1) {
-		fRawTempVoltage = fTemperatureSensorGetCurrentTemperature();
     }
 }
