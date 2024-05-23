@@ -34,6 +34,7 @@ float fCoolerDutyCycle = 0;
 float fHeaterDutyCycle = 0;
 float fRawTempVoltage  = 0;
 unsigned char ucUartTemperatureMessage[11];
+unsigned char ucLcdTemperatureMessage[11];
 
 // Config Settings 
 pwmConfig xHeaterConfig = {&htim1, TIM_CHANNEL_1};
@@ -64,11 +65,15 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* pTimer){
 	else if(pTimer->Instance == TIM2){
 		fRawTempVoltage = fTemperatureSensorGetCurrentTemperature();
 
+		// Format the string and send the data via UART 
 		vParserFloatToString(&ucUartTemperatureMessage, fRawTempVoltage);
 		HAL_UART_Transmit_IT(&hlpuart1, &ucUartTemperatureMessage, 11);
 
-		vLcdSetCursor(0, 0);
-		vLcdWriteString(ucUartTemperatureMessage);
+		// Format the string to be shown on the LCD display, but remove the last two elements (\n and \r) that are only needed for the UART string
+		vParserFloatToString(&ucLcdTemperatureMessage, fRawTempVoltage);
+		ucLcdTemperatureMessage[8] = '\0';
+		ucLcdTemperatureMessage[9] = '\0';
+
 	}
 
 }
@@ -175,8 +180,14 @@ void vApplicationStart() {
 
 	vLcdInitLcd(&pLcdConfiguration);
 	vLcdBacklightON();
+//	vLcdSendCommand(CMD_CLEAR);
+
+	HAL_TIM_Base_Init(&htim2);
+	HAL_TIM_Base_Start_IT(&htim2);
 
 
     while (1) {
+		vLcdSetCursor(0, 0);
+		vLcdWriteString(&ucLcdTemperatureMessage);
     }
 }

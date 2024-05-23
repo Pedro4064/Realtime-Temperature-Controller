@@ -178,7 +178,7 @@ static void vLcdWrite2Lcd(unsigned char ucBuffer,  unsigned char cDataType)
 	{
 	case LCD_RS_CMD:
 		// Send first 4 MSB plus the enable signal
-		ucDataPackage = (ucDataPackage & 0xF0) | SIG_ENABLE;
+		ucDataPackage = (ucDataPackage & 0xF0) | (SIG_ENABLE | cBacklightStatus << 3);
 	 	HAL_I2C_Master_Transmit_IT(pLcdConfiguration->pHi2c, pLcdConfiguration->cAddress<<1, &ucDataPackage, 1);
 		HAL_Delay(1);
 
@@ -188,7 +188,7 @@ static void vLcdWrite2Lcd(unsigned char ucBuffer,  unsigned char cDataType)
 		HAL_Delay(2);
 
 		// Send Last 4 LSB plus enable signal
-		ucDataPackage = (ucBuffer << 4) | SIG_ENABLE;
+		ucDataPackage = (ucBuffer << 4) | (SIG_ENABLE | cBacklightStatus << 3);
 		HAL_I2C_Master_Transmit_IT(pLcdConfiguration->pHi2c, pLcdConfiguration->cAddress<<1, &ucDataPackage, 1);
 		HAL_Delay(1);
 
@@ -201,7 +201,7 @@ static void vLcdWrite2Lcd(unsigned char ucBuffer,  unsigned char cDataType)
 	case LCD_RS_DATA:
 		// First set the cursor shift functionality, which automatically increments the cursor one to the left after
 		// a write operation to the DDRAM
-		vLcdSendCommand(0b00000110);
+//		vLcdSendCommand(0b00000110);
 
 		// Send the first 4 MSB plus the enable signal, the RS as write data and the backlight
 		ucDataPackage = (ucBuffer & 0xF0) | (SIG_ENABLE | SIG_DATA_W | cBacklightStatus << 3);
