@@ -2,7 +2,7 @@
 #include "adc.h"
 
 #define CONVERSION_RATE (10.0/1000.0)
-#define MAX_ADC_VALUE (2<<12)
+#define MAX_ADC_VALUE (4096)
 #define MAX_TEMP_VALUE 150
 #define ADC_VREF 3.25
 
