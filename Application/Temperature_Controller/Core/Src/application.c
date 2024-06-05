@@ -16,6 +16,7 @@
 #include <i2c.h>
 
 #include "lcd.h"
+#include "pid.h"
 #include "parser.h"
 #include "buzzer.h"
 #include "pwmConfig.h"
@@ -33,6 +34,13 @@
 float fCoolerDutyCycle = 0;
 float fHeaterDutyCycle = 0;
 float fRawTempVoltage  = 0;
+
+unsigned short usPidWindUp = 2;
+float fActuatorSaturation = 3.3;
+float fKp = 0.18;
+float fKi = 2.34;
+float fKd = 0.05;
+
 unsigned char ucUartTemperatureMessage[11];
 unsigned char ucLcdTemperatureMessage[11];
 unsigned char ucTestStart = 0;
@@ -66,11 +74,13 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* pTimer){
 	else if(pTimer->Instance == TIM2){
 		fRawTempVoltage = fTemperatureSensorGetCurrentTemperature();
 
+		// Update Actuator Effort
+		float fTargetVoltage = fPidUpdateData(fRawTempVoltage, 50);
+		fHeaterDutyCycle = fTargetVoltage/fActuatorSaturation;
+
 		// Format the string and send the data via UART 
-		if (ucTestStart){
-			vParserFloatToString(&ucUartTemperatureMessage, fRawTempVoltage);
-			HAL_UART_Transmit_IT(&hlpuart1, &ucUartTemperatureMessage, 11);
-		}
+		vParserFloatToString(&ucUartTemperatureMessage, fRawTempVoltage);
+		HAL_UART_Transmit_IT(&hlpuart1, &ucUartTemperatureMessage, 11);
 
 		// Format the string to be shown on the LCD display, but remove the last two elements (\n and \r) that are only needed for the UART string
 		vParserFloatToString(&ucLcdTemperatureMessage, fRawTempVoltage);
@@ -185,6 +195,7 @@ void vApplicationStart() {
 
 
 	vTemperatureSensorInit(&hadc1);
+	vPidInit(fKp, fKi, fKd, usPidWindUp, fActuatorSaturation);
 
 
 	vLcdInitLcd(&pLcdConfiguration);
