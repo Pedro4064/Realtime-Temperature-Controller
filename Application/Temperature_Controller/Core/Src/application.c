@@ -35,7 +35,7 @@ float fCoolerDutyCycle = 0;
 float fHeaterDutyCycle = 0;
 float fRawTempVoltage  = 0;
 
-unsigned short usPidWindUp = 2;
+unsigned short usPidWindUp = 1500;
 float fActuatorSaturation = 3.3;
 float fKp = 0.18;
 float fKi = 2.34;
@@ -43,7 +43,7 @@ float fKd = 0.05;
 
 unsigned char ucUartTemperatureMessage[11];
 unsigned char ucLcdTemperatureMessage[11];
-unsigned char ucTestStart = 0;
+unsigned char ucTestStart = 1;
 
 // Config Settings 
 pwmConfig xHeaterConfig = {&htim1, TIM_CHANNEL_1};
@@ -75,8 +75,11 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* pTimer){
 		fRawTempVoltage = fTemperatureSensorGetCurrentTemperature();
 
 		// Update Actuator Effort
-		float fTargetVoltage = fPidUpdateData(fRawTempVoltage, 50);
-		fHeaterDutyCycle = fTargetVoltage/fActuatorSaturation;
+		if (ucTestStart){
+			float fTargetVoltage = fPidUpdateData(fRawTempVoltage, 50);
+			fHeaterDutyCycle = fTargetVoltage/fActuatorSaturation;
+			vHeaterSetPwmDuty(fHeaterDutyCycle);
+		}
 
 		// Format the string and send the data via UART 
 		vParserFloatToString(&ucUartTemperatureMessage, fRawTempVoltage);
@@ -121,8 +124,9 @@ void vApplicationButtonPressed(Button xPressedButton){
 	}
 
 	else if (xPressedButton == LEFT){
-	 	fHeaterDutyCycle = 0;
 		ucTestStart = 0;
+	 	fHeaterDutyCycle = 0;
+	 	fCoolerDutyCycle = 1;
 		// fHeaterDutyCycle = PWM_DUTYCYCLE_DECREMENT(fHeaterDutyCycle, 0.1);
 	}
 
