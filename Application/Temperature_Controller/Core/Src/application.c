@@ -29,6 +29,7 @@
 // Application Specific Macros 
 #define PWM_DUTYCYCLE_INCREMENT(x, delta) x+delta > 1 ? 1 : x+delta
 #define PWM_DUTYCYCLE_DECREMENT(x, delta) x-delta < 0 ? 0 : x-delta
+#define NEXT_SCREEN(x) x+1 > 2 ? 0 : x+1
 
 // Application Test Variables
 float fCoolerDutyCycle = 0;
@@ -42,7 +43,14 @@ float fKi = 2.34;
 float fKd = 0.05;
 
 unsigned char ucUartTemperatureMessage[11];
+
+unsigned char ucScreen = 0;
 unsigned char ucLcdTemperatureMessage[11];
+unsigned char ucLcdTemperatureTargetMessage[11];
+unsigned char ucLcdDutyCycleMessage[11];
+unsigned char ucLcdKiMessage[11];
+unsigned char ucLcdKpMessage[11];
+unsigned char ucLcdKdMessage[11];
 unsigned char ucTestStart = 1;
 
 // Config Settings 
@@ -116,6 +124,9 @@ void vApplicationButtonPressed(Button xPressedButton){
 
 	else if (xPressedButton == DOWN)
 		fCoolerDutyCycle = PWM_DUTYCYCLE_DECREMENT(fCoolerDutyCycle, 0.1);
+
+	else if (xPressedButton == CENTER)
+		ucScreen = NEXT_SCREEN(ucScreen);
 
 	else if (xPressedButton == RIGHT){
 	 	fHeaterDutyCycle = 1;
@@ -211,7 +222,65 @@ void vApplicationStart() {
 
 
     while (1) {
-		vLcdSetCursor(0, 0);
-		vLcdWriteString(&ucLcdTemperatureMessage);
+		if(ucScreen == 0){
+			// Print to Screen the Current Temperature
+			vLcdSetCursor(0, 0);
+			vLcdWriteString("T: ");
+
+			vLcdSetCursor(0, 3);
+			vLcdWriteString(&ucLcdTemperatureMessage);
+
+			// Print to Screen the Current Actuator Effort
+			vLcdSetCursor(1, 0);
+			vLcdWriteString("D: ");
+
+			vLcdSetCursor(1, 3);
+			vParserFloatToString(&ucLcdDutyCycleMessage, fHeaterDutyCycle);
+			ucLcdDutyCycleMessage[8] = '\0';
+			ucLcdDutyCycleMessage[9] = '\0';
+			vLcdWriteString(&ucLcdDutyCycleMessage);
+		}
+		else if (ucScreen == 1){
+			// Print to Screen the Target Temperature
+			vLcdSetCursor(0, 0);
+			vLcdWriteString("Tt:");
+
+			vLcdSetCursor(0, 3);
+			vParserFloatToString(&ucLcdTemperatureTargetMessage, 50.0);
+			ucLcdTemperatureTargetMessage[8] = '\0';
+			ucLcdTemperatureTargetMessage[9] = '\0';
+			vLcdWriteString(&ucLcdTemperatureTargetMessage);
+
+			// Print to Screen the Current Actuator Effort
+			vLcdSetCursor(1, 0);
+			vLcdWriteString("Kp:");
+
+			vLcdSetCursor(1, 3);
+			vParserFloatToString(&ucLcdKpMessage, fKp);
+			ucLcdKpMessage[8] = '\0';
+			ucLcdKpMessage[9] = '\0';
+			vLcdWriteString(&ucLcdKpMessage);
+		}
+		else{
+			// Print to Screen the Target Temperature
+			vLcdSetCursor(0, 0);
+			vLcdWriteString("Ki:");
+
+			vLcdSetCursor(0, 3);
+			vParserFloatToString(&ucLcdKiMessage, fKi);
+			ucLcdKiMessage[8] = '\0';
+			ucLcdKiMessage[9] = '\0';
+			vLcdWriteString(&ucLcdKiMessage);
+
+			// Print to Screen the Current Actuator Effort
+			vLcdSetCursor(1, 0);
+			vLcdWriteString("Kd:");
+
+			vLcdSetCursor(1, 3);
+			vParserFloatToString(&ucLcdKdMessage, fKd);
+			ucLcdKdMessage[8] = '\0';
+			ucLcdKdMessage[9] = '\0';
+			vLcdWriteString(&ucLcdKdMessage);
+		}
     }
 }
