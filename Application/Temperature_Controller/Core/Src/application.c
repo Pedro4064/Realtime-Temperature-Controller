@@ -35,6 +35,7 @@ float fHeaterDutyCycle = 0;
 float fRawTempVoltage  = 0;
 unsigned char ucUartTemperatureMessage[11];
 unsigned char ucLcdTemperatureMessage[11];
+unsigned char ucTestStart = 0;
 
 // Config Settings 
 pwmConfig xHeaterConfig = {&htim1, TIM_CHANNEL_1};
@@ -66,8 +67,10 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* pTimer){
 		fRawTempVoltage = fTemperatureSensorGetCurrentTemperature();
 
 		// Format the string and send the data via UART 
-		vParserFloatToString(&ucUartTemperatureMessage, fRawTempVoltage);
-		HAL_UART_Transmit_IT(&hlpuart1, &ucUartTemperatureMessage, 11);
+		if (ucTestStart){
+			vParserFloatToString(&ucUartTemperatureMessage, fRawTempVoltage);
+			HAL_UART_Transmit_IT(&hlpuart1, &ucUartTemperatureMessage, 11);
+		}
 
 		// Format the string to be shown on the LCD display, but remove the last two elements (\n and \r) that are only needed for the UART string
 		vParserFloatToString(&ucLcdTemperatureMessage, fRawTempVoltage);
@@ -101,11 +104,17 @@ void vApplicationButtonPressed(Button xPressedButton){
 	else if (xPressedButton == DOWN)
 		fCoolerDutyCycle = PWM_DUTYCYCLE_DECREMENT(fCoolerDutyCycle, 0.1);
 
-	else if (xPressedButton == RIGHT)
-		fHeaterDutyCycle = PWM_DUTYCYCLE_INCREMENT(fHeaterDutyCycle, 0.1);
+	else if (xPressedButton == RIGHT){
+	 	fHeaterDutyCycle = 1;
+		ucTestStart = 1;
+		// fHeaterDutyCycle = PWM_DUTYCYCLE_INCREMENT(fHeaterDutyCycle, 0.1);
+	}
 
-	else if (xPressedButton == LEFT)
-		fHeaterDutyCycle = PWM_DUTYCYCLE_DECREMENT(fHeaterDutyCycle, 0.1);
+	else if (xPressedButton == LEFT){
+	 	fHeaterDutyCycle = 0;
+		ucTestStart = 0;
+		// fHeaterDutyCycle = PWM_DUTYCYCLE_DECREMENT(fHeaterDutyCycle, 0.1);
+	}
 
 
 	vHeaterSetPwmDuty(fHeaterDutyCycle);
