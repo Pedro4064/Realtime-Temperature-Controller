@@ -22,20 +22,30 @@
 #include "pwmConfig.h"
 #include "tachometer.h"
 #include "application.h"
-#include "buttonsEvents.h"
 #include "heaterAndCooler.h"
 #include "temperatureSensor.h"
+#include "applicationButtons.h"
 
 // Application Specific Macros 
 #define PWM_DUTYCYCLE_INCREMENT(x, delta) x+delta > 1 ? 1 : x+delta
 #define PWM_DUTYCYCLE_DECREMENT(x, delta) x-delta < 0 ? 0 : x-delta
 #define NEXT_SCREEN(x) x+1 > 2 ? 0 : x+1
 
+// Application Timers Traceability 
+#define BTN_DEBOUNCE_TIMER htim7
+#define BTN_PRESS_TIMER htim16
+
+#define TAC_ENABLE_TIMER htim4
+#define TAC_PULSE_COUNTER_TIMER htim3
+
+#define TMC_UPDATE_TIMER htim2
+
 // Application Test Variables
 float fCoolerDutyCycle = 0;
 float fHeaterDutyCycle = 0;
 float fRawTempVoltage  = 0;
 
+applicationParameters xApplicationParameters;
 unsigned short usPidWindUp = 1500;
 float fActuatorSaturation = 3.3;
 float fKp = 0.18;
@@ -108,104 +118,16 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
 
 }
 
-// ********************************************************** //
-// Method name:        vApplicationButtonPressed              //
-// Method description: Callback   function  for  pressed      //
-//                     event                                  //
-// Input params:       xPressedButton                         //
-//                        Button  that caused the half second //
-//                        long press event                    //
-// Output params:      void                                   //
-//                        N/A                                 //
-// ********************************************************** //
-void vApplicationButtonPressed(Button xPressedButton){
-	if (xPressedButton == UP)
-		fCoolerDutyCycle = PWM_DUTYCYCLE_INCREMENT(fCoolerDutyCycle, 0.1);
-
-	else if (xPressedButton == DOWN)
-		fCoolerDutyCycle = PWM_DUTYCYCLE_DECREMENT(fCoolerDutyCycle, 0.1);
-
-	else if (xPressedButton == CENTER)
-		ucScreen = NEXT_SCREEN(ucScreen);
-
-	else if (xPressedButton == RIGHT){
-	 	fHeaterDutyCycle = 1;
-		ucTestStart = 1;
-		// fHeaterDutyCycle = PWM_DUTYCYCLE_INCREMENT(fHeaterDutyCycle, 0.1);
-	}
-
-	else if (xPressedButton == LEFT){
-		ucTestStart = 0;
-	 	fHeaterDutyCycle = 0;
-	 	fCoolerDutyCycle = 1;
-		// fHeaterDutyCycle = PWM_DUTYCYCLE_DECREMENT(fHeaterDutyCycle, 0.1);
-	}
-
-
-	vHeaterSetPwmDuty(fHeaterDutyCycle);
-	vCoolerFanSetPwmDuty(fCoolerDutyCycle);
-}
-
-// ********************************************************** //
-// Method name:        vApplicationButtonReleased             //
-// Method description: Callback   function  for  released     //
-//                     event                                  //
-// Input params:       xPressedButton                         //
-//                        Button  that caused the half second //
-//                        long press event                    //
-// Output params:      void                                   //
-//                        N/A                                 //
-// ********************************************************** //
-void vApplicationButtonReleased(Button xPressedButton){}
-
-// ********************************************************** //
-// Method name:        vApplicationButtonThreeSecondPressed   //
-// Method description: Callback   function  for  the  three   //
-//                     second long press event                //
-// Input params:       xPressedButton                         //
-//                        Button  that caused the half second //
-//                        long press event                    //
-// Output params:      void                                   //
-//                        N/A                                 //
-// ********************************************************** //
-void vApplicationButtonThreeSecondPressed(Button xPressedButton){}
-
-// ********************************************************** //
-// Method name:        vApplicationButtonHalfSecondPressed    //
-// Method description: Callback function for the button half  //
-//                     second long press                      //
-// Input params:       xPressedButton                         //
-//                        Button  that caused the half second //
-//                        long press event                    //
-// Output params:      void                                   //
-//                        N/A                                 //
-// ********************************************************** //
-void vApplicationButtonHalfSecondPressed(Button xPressedButton){
-
-	if (xPressedButton == UP)
-		fCoolerDutyCycle = PWM_DUTYCYCLE_INCREMENT(fCoolerDutyCycle, 0.2);
-
-	else if (xPressedButton == DOWN)
-		fCoolerDutyCycle = PWM_DUTYCYCLE_DECREMENT(fCoolerDutyCycle, 0.2);
-
-	else if (xPressedButton == RIGHT)
-		fHeaterDutyCycle = PWM_DUTYCYCLE_INCREMENT(fHeaterDutyCycle, 0.2);
-
-	else if (xPressedButton == LEFT)
-		fHeaterDutyCycle = PWM_DUTYCYCLE_DECREMENT(fHeaterDutyCycle, 0.2);
-
-	vHeaterSetPwmDuty(fHeaterDutyCycle);
-	vCoolerFanSetPwmDuty(fCoolerDutyCycle);
-}
 
 void vApplicationStart() {
+
 	heaterAndCoolerInit(&xHeaterConfig, &xCoolerConfig);
 	vHeaterStart();
 	vCoolerStart();
 
-	vButtonsEventsInit(&xBoardButtons, &htim7, &htim16, &vApplicationButtonPressed, &vApplicationButtonReleased, &vApplicationButtonHalfSecondPressed, &vApplicationButtonThreeSecondPressed);
+	vApplicationButtonsInit(&xBoardButtons, &BTN_DEBOUNCE_TIMER, &BTN_PRESS_TIMER, &xApplicationParameters);
 
-	vTachometerInit(&htim4, &htim3, 500);
+	vTachometerInit(&TAC_ENABLE_TIMER, &TAC_PULSE_COUNTER_TIMER, 500);
 	vTachometerStartReadings();
 
 
@@ -215,72 +137,11 @@ void vApplicationStart() {
 
 	vLcdInitLcd(&pLcdConfiguration);
 	vLcdBacklightON();
-//	vLcdSendCommand(CMD_CLEAR);
 
-	HAL_TIM_Base_Init(&htim2);
-	HAL_TIM_Base_Start_IT(&htim2);
+	HAL_TIM_Base_Init(&TMC_UPDATE_TIMER);
+	HAL_TIM_Base_Start_IT(&TMC_UPDATE_TIMER);
 
 
     while (1) {
-		if(ucScreen == 0){
-			// Print to Screen the Current Temperature
-			vLcdSetCursor(0, 0);
-			vLcdWriteString("T: ");
-
-			vLcdSetCursor(0, 3);
-			vLcdWriteString(&ucLcdTemperatureMessage);
-
-			// Print to Screen the Current Actuator Effort
-			vLcdSetCursor(1, 0);
-			vLcdWriteString("D: ");
-
-			vLcdSetCursor(1, 3);
-			vParserFloatToString(&ucLcdDutyCycleMessage, fHeaterDutyCycle);
-			ucLcdDutyCycleMessage[8] = '\0';
-			ucLcdDutyCycleMessage[9] = '\0';
-			vLcdWriteString(&ucLcdDutyCycleMessage);
-		}
-		else if (ucScreen == 1){
-			// Print to Screen the Target Temperature
-			vLcdSetCursor(0, 0);
-			vLcdWriteString("Tt:");
-
-			vLcdSetCursor(0, 3);
-			vParserFloatToString(&ucLcdTemperatureTargetMessage, 50.0);
-			ucLcdTemperatureTargetMessage[8] = '\0';
-			ucLcdTemperatureTargetMessage[9] = '\0';
-			vLcdWriteString(&ucLcdTemperatureTargetMessage);
-
-			// Print to Screen the Current Actuator Effort
-			vLcdSetCursor(1, 0);
-			vLcdWriteString("Kp:");
-
-			vLcdSetCursor(1, 3);
-			vParserFloatToString(&ucLcdKpMessage, fKp);
-			ucLcdKpMessage[8] = '\0';
-			ucLcdKpMessage[9] = '\0';
-			vLcdWriteString(&ucLcdKpMessage);
-		}
-		else{
-			// Print to Screen the Target Temperature
-			vLcdSetCursor(0, 0);
-			vLcdWriteString("Ki:");
-
-			vLcdSetCursor(0, 3);
-			vParserFloatToString(&ucLcdKiMessage, fKi);
-			ucLcdKiMessage[8] = '\0';
-			ucLcdKiMessage[9] = '\0';
-			vLcdWriteString(&ucLcdKiMessage);
-
-			// Print to Screen the Current Actuator Effort
-			vLcdSetCursor(1, 0);
-			vLcdWriteString("Kd:");
-
-			vLcdSetCursor(1, 3);
-			vParserFloatToString(&ucLcdKdMessage, fKd);
-			ucLcdKdMessage[8] = '\0';
-			ucLcdKdMessage[9] = '\0';
-			vLcdWriteString(&ucLcdKdMessage);
-		}
     }
 }

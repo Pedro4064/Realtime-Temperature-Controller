@@ -56,7 +56,7 @@ typedef struct{
 	unsigned char ucButtonLock;
 	unsigned char ucDutyCycleCooler;
 	unsigned char ucDutyCycleHeater;
-}SystemParameters;
+}applicationParameters;
 
 // ********************************************************** //
 // Method name:        vApplicationStart                      //
