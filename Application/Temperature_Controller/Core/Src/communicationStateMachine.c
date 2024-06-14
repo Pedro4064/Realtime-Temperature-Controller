@@ -44,7 +44,7 @@ static State xCurrentState = IDLE;
 static ParamID xTargetParam;
 static UART_HandleTypeDef* pUartPeripheral;
 static unsigned char ucCommByte;
-static SystemParameters* pSystemParameters;
+static applicationParameters* pSystemParameters;
 
 void vCommunicationStateMachineStateHandleReady(){
     switch (ucCommByte)
@@ -110,11 +110,11 @@ void vCommunicationStateMachineStateHandleParam(){
     switch (xTargetParam)
     {
     case TEMPERATURE_CURRENT:
-        fTargetValue = (*pSystemParameters).fTemperatureCurrent;
+        fTargetValue = (*pSystemParameters).tempMgtCtl.fTemperatureCurrent;
         break;
 
     case VELOCITY_COOLER:
-        fTargetValue = (float)(*pSystemParameters).uiVelocityCooler;
+        fTargetValue = (float)(*pSystemParameters).tempMgtCtl.uiVelocityCooler;
         break;
     
     default:
@@ -145,21 +145,17 @@ void vCommunicationStateMachineStateHandleValue(){
         switch (xTargetParam)
         {
             case TEMPERATURE_TARGET:
-                pSystemParameters->fTemperatureTarget = fTargetValue;
+                pSystemParameters->tempMgtCtl.fTemperatureTarget = fTargetValue;
                 break;
 
             case DUTY_CYCLE_HEATER:
-                pSystemParameters->ucDutyCycleHeater = (unsigned char)fTargetValue;
+                pSystemParameters->tempMgtCtl.ucDutyCycleHeater = (unsigned char)fTargetValue;
                 break;
             
             case DUTY_CYCLE_COOLER:
-                pSystemParameters->ucDutyCycleCooler = (unsigned char)fTargetValue;
+                pSystemParameters->tempMgtCtl.ucDutyCycleCooler = (unsigned char)fTargetValue;
                 break;
 
-            case BUTTON_LOCK:
-                pSystemParameters->ucButtonLock = (unsigned char)fTargetValue;
-                break;
-            
             default:
                 break;
         }
@@ -209,7 +205,7 @@ void vCommunicationStateMachineProcessByte(){
 
 }
 
-void vCommunicationStateMachineInit(UART_HandleTypeDef* pHUart, SystemParameters* pSysParam){
+void vCommunicationStateMachineInit(UART_HandleTypeDef* pHUart, applicationParameters* pSysParam){
     pUartPeripheral = pHUart;
     pSystemParameters = pSysParam;
     HAL_UART_Receive_IT(pUartPeripheral, &ucCommByte, 1);

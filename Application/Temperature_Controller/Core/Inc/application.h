@@ -11,7 +11,7 @@
 #include <main.h>
 
 #include "matrixKeyboard.h"
-#include "buttonsEvents.h"
+#include "applicationButtons.h"
 #include "stm32g4xx_hal.h"
 
 #ifndef INC_APPLICATION_H_
@@ -50,12 +50,32 @@
 #define KEYBOARD_C1_GPIO_Port GPIOA
 
 typedef struct{
-	float fTemperatureCurrent;
-	float fTemperatureTarget;
-	unsigned int uiVelocityCooler;
-	unsigned char ucButtonLock;
-	unsigned char ucDutyCycleCooler;
-	unsigned char ucDutyCycleHeater;
+
+	struct TempManParam{
+		float fTemperatureCurrent;
+		float fTemperatureTarget;
+
+		unsigned char ucDutyCycleCooler;
+		unsigned char ucDutyCycleHeater;
+
+		unsigned int uiVelocityCooler;
+	} tempMgtCtl;
+
+	union AppButtons
+	{
+		struct DiscreteMapping{
+			ButtonStatus xUpBtn;
+			ButtonStatus xDownBtn;
+			ButtonStatus xLeftBtn;
+			ButtonStatus xRightBtn;
+			ButtonStatus xCenterBtn;
+		} discreteMapping;
+
+		ButtonStatus indexBased[5];
+
+	}appButtons;
+	
+	
 }applicationParameters;
 
 // ********************************************************** //

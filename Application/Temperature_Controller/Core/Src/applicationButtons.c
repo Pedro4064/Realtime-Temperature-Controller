@@ -3,6 +3,8 @@
 #include "application.h"
 #include "buttonsEvents.h"
 
+static applicationParameters* pApplicationParameters;
+
 // ********************************************************** //
 // Method name:        vApplicationButtonPressed              //
 // Method description: Callback   function  for  pressed      //
@@ -13,7 +15,9 @@
 // Output params:      void                                   //
 //                        N/A                                 //
 // ********************************************************** //
-void vApplicationButtonPressed(Button xPressedButton){}
+void vApplicationButtonPressed(Button xPressedButton){
+	pApplicationParameters->appButtons.indexBased[xPressedButton] = PRESSED;
+}
 
 // ********************************************************** //
 // Method name:        vApplicationButtonReleased             //
@@ -53,5 +57,6 @@ void vApplicationButtonHalfSecondPressed(Button xPressedButton){}
 
 void vApplicationButtonsInit(ButtonMapping (*xBoardButtonMapping)[NUMBER_BOARD_BUTTONS],TIM_HandleTypeDef* pDebounceTim, TIM_HandleTypeDef* pLongPressTim, applicationParameters* pApplicationParam){
 
+	pApplicationParameters = pApplicationParam;
 	vButtonsEventsInit(xBoardButtonMapping, pDebounceTim, pLongPressTim, &vApplicationButtonPressed, &vApplicationButtonReleased, &vApplicationButtonHalfSecondPressed, &vApplicationButtonThreeSecondPressed);
 }

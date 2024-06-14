@@ -29,6 +29,7 @@ typedef enum{
 } ChangeStatus;
 
 typedef enum {
+	LONG_PRESSED = 2,
 	PRESSED = 1,
 	NOT_PRESSED = 0
 } ButtonStatus;

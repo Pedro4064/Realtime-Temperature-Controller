@@ -46,7 +46,7 @@ typedef struct lcdConfig
 {
     I2C_HandleTypeDef* pHi2c;
     char cAddress;
-}LcdConfig;
+}lcdConfig;
 
 
 /* ************************************************ */
@@ -56,7 +56,7 @@ typedef struct lcdConfig
 /* Output params:      *hi2c=>pointer to the i2c    */
 /*                     cAddress=>LCD I2C address    */
 /* ************************************************ */
-void vLcdInitLcd(LcdConfig* lcdConfiguration);
+void vLcdInitLcd(lcdConfig* lcdConfiguration);
 
 
 /* ************************************************ */

@@ -21,7 +21,7 @@
 #define L1C0_BASE	0xC0 /* line 1, column 0 */
 #define MAX_COLUMN  15U
 
-static LcdConfig* pLcdConfiguration;
+static lcdConfig* pLcdConfiguration;
 static char cBacklightStatus;
 
 // Function with local scope
@@ -34,7 +34,7 @@ static void vLcdWrite2Lcd(unsigned char ucBuffer,  unsigned char cDataType);
 /* Output params:      *hi2c=>pointer to the i2c    */
 /*                     addrress=>LCD I2C address    */
 /* ************************************************ */
-void vLcdInitLcd(LcdConfig* lcdConfiguration)
+void vLcdInitLcd(lcdConfig* lcdConfiguration)
 {
 	pLcdConfiguration = lcdConfiguration;
 

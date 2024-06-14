@@ -15,7 +15,6 @@
 #include <adc.h>
 #include <i2c.h>
 
-#include "lcd.h"
 #include "pid.h"
 #include "parser.h"
 #include "buzzer.h"
@@ -23,6 +22,7 @@
 #include "tachometer.h"
 #include "application.h"
 #include "heaterAndCooler.h"
+#include "applicationScreen.h"
 #include "temperatureSensor.h"
 #include "applicationButtons.h"
 
@@ -67,7 +67,7 @@ unsigned char ucTestStart = 1;
 pwmConfig xHeaterConfig = {&htim1, TIM_CHANNEL_1};
 pwmConfig xCoolerConfig = {&htim8, TIM_CHANNEL_1};
 pwmConfig xBuzzerConfig = {&htim20,TIM_CHANNEL_1};
-LcdConfig pLcdConfiguration = {&hi2c1, 0x27};
+lcdConfig xLcdConfiguration = {&hi2c1, 0x27};
 
 ButtonMapping xBoardButtons[] = {
                                         {BTN_UP_GPIO_Port,    BTN_UP_EXTI_IRQn, BTN_UP_Pin},
@@ -125,23 +125,20 @@ void vApplicationStart() {
 	vHeaterStart();
 	vCoolerStart();
 
-	vApplicationButtonsInit(&xBoardButtons, &BTN_DEBOUNCE_TIMER, &BTN_PRESS_TIMER, &xApplicationParameters);
-
 	vTachometerInit(&TAC_ENABLE_TIMER, &TAC_PULSE_COUNTER_TIMER, 500);
 	vTachometerStartReadings();
-
 
 	vTemperatureSensorInit(&hadc1);
 	vPidInit(fKp, fKi, fKd, usPidWindUp, fActuatorSaturation);
 
-
-	vLcdInitLcd(&pLcdConfiguration);
-	vLcdBacklightON();
+	vApplicationButtonsInit(&xBoardButtons, &BTN_DEBOUNCE_TIMER, &BTN_PRESS_TIMER, &xApplicationParameters);
+	vApplicationScreenInit(&xLcdConfiguration, &xApplicationParameters);
 
 	HAL_TIM_Base_Init(&TMC_UPDATE_TIMER);
 	HAL_TIM_Base_Start_IT(&TMC_UPDATE_TIMER);
 
 
     while (1) {
+    	vApplicationScreenUpdate();
     }
 }
