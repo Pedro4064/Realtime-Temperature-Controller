@@ -41,7 +41,9 @@ void vApplicationButtonReleased(Button xPressedButton){}
 // Output params:      void                                   //
 //                        N/A                                 //
 // ********************************************************** //
-void vApplicationButtonThreeSecondPressed(Button xPressedButton){}
+void vApplicationButtonThreeSecondPressed(Button xPressedButton){
+	pApplicationParameters->appButtons.indexBased[xPressedButton] = LONG_PRESSED;
+}
 
 // ********************************************************** //
 // Method name:        vApplicationButtonHalfSecondPressed    //

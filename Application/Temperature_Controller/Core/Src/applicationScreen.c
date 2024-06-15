@@ -2,6 +2,8 @@
 #include "parser.h"
 #include "lcd.h"
 
+#define RESET_BTN_STATUS(btn) btn = NOT_PRESSED
+
 typedef enum {
     INITIAL_SCREEN,
     DATA_SCREEN_1,
@@ -40,6 +42,7 @@ void vInitialScreenHandle(){
 }
 
 void vDataScreen1Handle(){
+    // Write to Screen
     vLcdSetCursor(0,0);
     vLcdWriteString("T.at:");
     vLcdSetCursor(0,5);
@@ -52,6 +55,22 @@ void vDataScreen1Handle(){
     vLcdSetCursor(1,5);
     vParserFloatToString(ucLcdScreenString[1], pApplicationParameters->tempMgtCtl.fTemperatureTarget);
     vLcdWriteString(ucLcdScreenString[1]);
+
+    // Update the state depending on buttons states 
+    if(pApplicationParameters->appButtons.discreteMapping.xDownBtn == PRESSED){
+        xCurrentState = DATA_SCREEN_2;
+        RESET_BTN_STATUS(pApplicationParameters->appButtons.discreteMapping.xDownBtn);
+    }
+    else if(pApplicationParameters->appButtons.discreteMapping.xUpBtn == PRESSED){
+        xCurrentState = DATA_SCREEN_3;
+        RESET_BTN_STATUS(pApplicationParameters->appButtons.discreteMapping.xUpBtn);
+    }
+    else if(pApplicationParameters->appButtons.discreteMapping.xCenterBtn == LONG_PRESSED){
+        xCurrentState = CONFIG_SCREEN_1;
+        RESET_BTN_STATUS(pApplicationParameters->appButtons.discreteMapping.xCenterBtn);
+
+    }
+
 }
 void vDataScreen2Handle(){}
 void vDataScreen3Handle(){}
