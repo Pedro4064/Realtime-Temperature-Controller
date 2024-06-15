@@ -28,12 +28,14 @@ void vInitialScreenHandle(){
         ucEnterTime = ucCurrentTime;
 
         vLcdSetCursor(0,0);
-        vLcdDummyText();
+        vLcdWriteString(" Controlador de ");
+        vLcdSetCursor(1,0);
+        vLcdWriteString("  Temperatura   ");
 
         return;
     }
 
-    else if((ucCurrentTime - ucEnterTime) >= 1000){
+    else if((ucCurrentTime - ucEnterTime) >= 2000){
 
         xCurrentState = DATA_SCREEN_1;
 
