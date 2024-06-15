@@ -42,6 +42,7 @@ void vInitialScreenHandle(){
     else if((ucCurrentTime - ucEnterTime) >= 2000){
 
         xCurrentState = DATA_SCREEN_1;
+        CLEAR_SCREEN();
 
     }
 
@@ -52,14 +53,14 @@ void vDataScreen1Handle(){
     vLcdSetCursor(0,0);
     vLcdWriteString("T.at:");
     vLcdSetCursor(0,5);
-    vParserFloatToString(ucLcdScreenString[0], pApplicationParameters->tempMgtCtl.fTemperatureCurrent);
+    vParserFlexibleFloatToString(ucLcdScreenString[0], 16, pApplicationParameters->tempMgtCtl.fTemperatureCurrent, 2, 2 , ',');
     vLcdWriteString(ucLcdScreenString[0]);
 
 
     vLcdSetCursor(1,0);
     vLcdWriteString("T.ds:");
     vLcdSetCursor(1,5);
-    vParserFloatToString(ucLcdScreenString[1], pApplicationParameters->tempMgtCtl.fTemperatureTarget);
+    vParserFlexibleFloatToString(ucLcdScreenString[1], 16, pApplicationParameters->tempMgtCtl.fTemperatureTarget, 2, 2 , ',');
     vLcdWriteString(ucLcdScreenString[1]);
 
     // Update the state depending on buttons states 

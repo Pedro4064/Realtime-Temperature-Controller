@@ -63,3 +63,32 @@ void vParserFloatToString(unsigned char* ucStringBuffer, float fNumberInput){
 
 }
 
+void vParserFlexibleFloatToString(unsigned char* ucStringBuffer, int iBufferSize, float fNumberInput, int iNumberWholeDigits, int iNumberDecimalDigits, char cDelimiter){
+	int iDigitIndex = 0;
+	int iDecimalIndex = 1;
+
+	if(fNumberInput<0){
+		ucStringBuffer[0] = '-';
+		iDigitIndex++;
+	}
+
+	for(iDigitIndex; iDigitIndex<iBufferSize; iDigitIndex++){
+		if(iNumberWholeDigits > 0){
+			ucStringBuffer[iDigitIndex] = WHOLE_DIGIT_EXTRACT(iNumberWholeDigits, fNumberInput) + 48;
+			iNumberWholeDigits--;
+		}
+		else if(iNumberWholeDigits == 0){
+			ucStringBuffer[iDigitIndex] = cDelimiter;
+			iNumberWholeDigits--;
+		}
+		else if(iNumberDecimalDigits > 0){
+			ucStringBuffer[iDigitIndex] = DECIMAL_DIGIT_EXTRACT(iDecimalIndex, fNumberInput) + 48;
+			iNumberDecimalDigits--;
+			iDecimalIndex++;
+		}
+		else{
+			ucStringBuffer[iDigitIndex] = '\0';
+		}
+	}
+
+}

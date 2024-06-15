@@ -58,5 +58,7 @@ void vParserStandardizeNumericInput(unsigned char* cUartMessage, int iMessageMax
 float fParserToFloat(unsigned char* cUartMessage, int iBufferMaxSize);
 
 
+void vParserFlexibleFloatToString(unsigned char* ucStringBuffer, int iBufferSize, float fNumberInput, int iNumberWholeDigits, int iNumberDecimalDigits, char cDelimiter);
+
 #endif /* INC_PARSER_H_ */
 
