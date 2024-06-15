@@ -51,15 +51,15 @@ void vInitialScreenHandle(){
 void vDataScreen1Handle(){
     // Write to Screen
     vLcdSetCursor(0,0);
-    vLcdWriteString("T.at:");
-    vLcdSetCursor(0,5);
+    vLcdWriteString("Temp. At:");
+    vLcdSetCursor(0,9);
     vParserFlexibleFloatToString(ucLcdScreenString[0], 16, pApplicationParameters->tempMgtCtl.fTemperatureCurrent, 2, 2 , ',');
     vLcdWriteString(ucLcdScreenString[0]);
 
 
     vLcdSetCursor(1,0);
-    vLcdWriteString("T.ds:");
-    vLcdSetCursor(1,5);
+    vLcdWriteString("Temp. Ds:");
+    vLcdSetCursor(1,9);
     vParserFlexibleFloatToString(ucLcdScreenString[1], 16, pApplicationParameters->tempMgtCtl.fTemperatureTarget, 2, 2 , ',');
     vLcdWriteString(ucLcdScreenString[1]);
 

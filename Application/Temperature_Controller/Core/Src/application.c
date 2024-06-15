@@ -91,6 +91,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* pTimer){
 
 	else if(pTimer->Instance == TIM2){
 		fRawTempVoltage = fTemperatureSensorGetCurrentTemperature();
+		xApplicationParameters.tempMgtCtl.fTemperatureCurrent = fRawTempVoltage;
+		xApplicationParameters.tempMgtCtl.fTemperatureTarget = 50;
 
 		// Update Actuator Effort
 		if (ucTestStart){
