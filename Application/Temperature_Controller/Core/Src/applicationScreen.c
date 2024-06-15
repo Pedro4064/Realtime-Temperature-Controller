@@ -3,6 +3,10 @@
 #include "lcd.h"
 
 #define RESET_BTN_STATUS(btn) btn = NOT_PRESSED
+#define CLEAR_SCREEN() vLcdSetCursor(0,0);\
+                       vLcdWriteString("                ");\
+                       vLcdSetCursor(1,0);\
+                       vLcdWriteString("                ")
 
 typedef enum {
     INITIAL_SCREEN,
@@ -62,9 +66,61 @@ void vDataScreen1Handle(){
     if(pApplicationParameters->appButtons.discreteMapping.xDownBtn == PRESSED){
         xCurrentState = DATA_SCREEN_2;
         RESET_BTN_STATUS(pApplicationParameters->appButtons.discreteMapping.xDownBtn);
+        CLEAR_SCREEN();
     }
     else if(pApplicationParameters->appButtons.discreteMapping.xUpBtn == PRESSED){
         xCurrentState = DATA_SCREEN_3;
+        RESET_BTN_STATUS(pApplicationParameters->appButtons.discreteMapping.xUpBtn);
+        CLEAR_SCREEN();
+    }
+    else if(pApplicationParameters->appButtons.discreteMapping.xCenterBtn == LONG_PRESSED){
+        xCurrentState = CONFIG_SCREEN_1;
+        RESET_BTN_STATUS(pApplicationParameters->appButtons.discreteMapping.xCenterBtn);
+        CLEAR_SCREEN();
+    }
+
+}
+void vDataScreen2Handle(){
+    // Write to Screen
+    vLcdSetCursor(0,0);
+    vLcdWriteString("Vel.c:");
+    vLcdSetCursor(0,6);
+    vParserFloatToString(ucLcdScreenString[0], pApplicationParameters->tempMgtCtl.uiVelocityCooler);
+    vLcdWriteString(ucLcdScreenString[0]);
+
+    // Update the state depending on buttons states 
+    if(pApplicationParameters->appButtons.discreteMapping.xDownBtn == PRESSED){
+        xCurrentState = DATA_SCREEN_3;
+        RESET_BTN_STATUS(pApplicationParameters->appButtons.discreteMapping.xDownBtn);
+        CLEAR_SCREEN();
+    }
+    else if(pApplicationParameters->appButtons.discreteMapping.xUpBtn == PRESSED){
+        xCurrentState = DATA_SCREEN_1;
+        RESET_BTN_STATUS(pApplicationParameters->appButtons.discreteMapping.xUpBtn);
+        CLEAR_SCREEN();
+    }
+    else if(pApplicationParameters->appButtons.discreteMapping.xCenterBtn == LONG_PRESSED){
+        xCurrentState = CONFIG_SCREEN_1;
+        RESET_BTN_STATUS(pApplicationParameters->appButtons.discreteMapping.xCenterBtn);
+        CLEAR_SCREEN();
+    }
+}
+
+void vDataScreen3Handle(){
+    // Write to Screen
+    vLcdSetCursor(0,0);
+    vLcdWriteString("Vel.c:");
+    vLcdSetCursor(0,6);
+    vParserFloatToString(ucLcdScreenString[0], pApplicationParameters->tempMgtCtl.uiVelocityCooler);
+    vLcdWriteString(ucLcdScreenString[0]);
+
+    // Update the state depending on buttons states 
+    if(pApplicationParameters->appButtons.discreteMapping.xDownBtn == PRESSED){
+        xCurrentState = DATA_SCREEN_3;
+        RESET_BTN_STATUS(pApplicationParameters->appButtons.discreteMapping.xDownBtn);
+    }
+    else if(pApplicationParameters->appButtons.discreteMapping.xUpBtn == PRESSED){
+        xCurrentState = DATA_SCREEN_1;
         RESET_BTN_STATUS(pApplicationParameters->appButtons.discreteMapping.xUpBtn);
     }
     else if(pApplicationParameters->appButtons.discreteMapping.xCenterBtn == LONG_PRESSED){
@@ -72,10 +128,7 @@ void vDataScreen1Handle(){
         RESET_BTN_STATUS(pApplicationParameters->appButtons.discreteMapping.xCenterBtn);
 
     }
-
 }
-void vDataScreen2Handle(){}
-void vDataScreen3Handle(){}
 
 void vConfigScreen1Handle(){}
 void vConfigScreen2Handle(){}
