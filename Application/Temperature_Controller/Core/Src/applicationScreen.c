@@ -130,12 +130,12 @@ void vDataScreen3Handle(){
 
     // Update the state depending on buttons states 
     if(pApplicationParameters->appButtons.discreteMapping.xDownBtn == PRESSED){
-        xCurrentState = DATA_SCREEN_3;
+        xCurrentState = DATA_SCREEN_1;
         RESET_BTN_STATUS(pApplicationParameters->appButtons.discreteMapping.xDownBtn);
         CLEAR_SCREEN();
     }
     else if(pApplicationParameters->appButtons.discreteMapping.xUpBtn == PRESSED){
-        xCurrentState = DATA_SCREEN_1;
+        xCurrentState = DATA_SCREEN_2;
         RESET_BTN_STATUS(pApplicationParameters->appButtons.discreteMapping.xUpBtn);
         CLEAR_SCREEN();
     }
