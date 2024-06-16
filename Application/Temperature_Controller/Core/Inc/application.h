@@ -59,6 +59,10 @@ typedef struct{
 		unsigned char ucDutyCycleHeater;
 
 		unsigned int uiVelocityCooler;
+
+		float fKi;
+		float fKp;
+		float fKd;
 	} tempMgtCtl;
 
 	union AppButtons

@@ -81,12 +81,13 @@ void vDataScreen1Handle(){
     }
 
 }
+
 void vDataScreen2Handle(){
     // Write to Screen
     vLcdSetCursor(0,0);
-    vLcdWriteString("Vel.c:");
-    vLcdSetCursor(0,6);
-    vParserFloatToString(ucLcdScreenString[0], pApplicationParameters->tempMgtCtl.uiVelocityCooler);
+    vLcdWriteString("Vel. C:");
+    vLcdSetCursor(0,7);
+    vParserFlexibleFloatToString(ucLcdScreenString[0], 16, pApplicationParameters->tempMgtCtl.uiVelocityCooler, 4, 2, ',');
     vLcdWriteString(ucLcdScreenString[0]);
 
     // Update the state depending on buttons states 
@@ -110,24 +111,36 @@ void vDataScreen2Handle(){
 void vDataScreen3Handle(){
     // Write to Screen
     vLcdSetCursor(0,0);
-    vLcdWriteString("Vel.c:");
-    vLcdSetCursor(0,6);
-    vParserFloatToString(ucLcdScreenString[0], pApplicationParameters->tempMgtCtl.uiVelocityCooler);
+    vLcdWriteString("Kp:");
+    vLcdSetCursor(0,3);
+    vParserFlexibleFloatToString(ucLcdScreenString[0], 16, pApplicationParameters->tempMgtCtl.fKp, 2, 2, ',');
     vLcdWriteString(ucLcdScreenString[0]);
+
+    vLcdSetCursor(0,8);
+    vLcdWriteString("Ki:");
+    vLcdSetCursor(0,11);
+    vParserFlexibleFloatToString(ucLcdScreenString[0], 16, pApplicationParameters->tempMgtCtl.fKi, 2, 2, ',');
+
+    vLcdSetCursor(1,0);
+    vLcdWriteString("Kd:");
+    vLcdSetCursor(0,3);
+    vParserFlexibleFloatToString(ucLcdScreenString[0], 16, pApplicationParameters->tempMgtCtl.fKd, 2, 2, ',');
 
     // Update the state depending on buttons states 
     if(pApplicationParameters->appButtons.discreteMapping.xDownBtn == PRESSED){
         xCurrentState = DATA_SCREEN_3;
         RESET_BTN_STATUS(pApplicationParameters->appButtons.discreteMapping.xDownBtn);
+        CLEAR_SCREEN();
     }
     else if(pApplicationParameters->appButtons.discreteMapping.xUpBtn == PRESSED){
         xCurrentState = DATA_SCREEN_1;
         RESET_BTN_STATUS(pApplicationParameters->appButtons.discreteMapping.xUpBtn);
+        CLEAR_SCREEN();
     }
     else if(pApplicationParameters->appButtons.discreteMapping.xCenterBtn == LONG_PRESSED){
         xCurrentState = CONFIG_SCREEN_1;
         RESET_BTN_STATUS(pApplicationParameters->appButtons.discreteMapping.xCenterBtn);
-
+        CLEAR_SCREEN();
     }
 }
 

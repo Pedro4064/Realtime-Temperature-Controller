@@ -45,12 +45,12 @@ float fCoolerDutyCycle = 0;
 float fHeaterDutyCycle = 0;
 float fRawTempVoltage  = 0;
 
-applicationParameters xApplicationParameters;
+applicationParameters xApplicationParameters = {.tempMgtCtl.fKp = 0.18,
+												.tempMgtCtl.fKi = 2.34,
+												.tempMgtCtl.fKd = 0.05
+												};
 unsigned short usPidWindUp = 1500;
 float fActuatorSaturation = 3.3;
-float fKp = 0.18;
-float fKi = 2.34;
-float fKd = 0.05;
 
 unsigned char ucUartTemperatureMessage[11];
 
@@ -131,7 +131,7 @@ void vApplicationStart() {
 	vTachometerStartReadings();
 
 	vTemperatureSensorInit(&hadc1);
-	vPidInit(fKp, fKi, fKd, usPidWindUp, fActuatorSaturation);
+	vPidInit(xApplicationParameters.tempMgtCtl.fKp, xApplicationParameters.tempMgtCtl.fKi, xApplicationParameters.tempMgtCtl.fKd, usPidWindUp, fActuatorSaturation);
 
 	vApplicationButtonsInit(&xBoardButtons, &BTN_DEBOUNCE_TIMER, &BTN_PRESS_TIMER, &xApplicationParameters);
 	vApplicationScreenInit(&xLcdConfiguration, &xApplicationParameters);
@@ -141,6 +141,7 @@ void vApplicationStart() {
 
 
     while (1) {
+		xApplicationParameters.tempMgtCtl.uiVelocityCooler = fTachometerMeasuredSpeed;
     	vApplicationScreenUpdate();
     }
 }
