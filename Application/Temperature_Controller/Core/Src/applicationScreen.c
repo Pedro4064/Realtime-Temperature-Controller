@@ -120,11 +120,13 @@ void vDataScreen3Handle(){
     vLcdWriteString("Ki:");
     vLcdSetCursor(0,11);
     vParserFlexibleFloatToString(ucLcdScreenString[0], 16, pApplicationParameters->tempMgtCtl.fKi, 2, 2, ',');
+    vLcdWriteString(ucLcdScreenString[0]);
 
     vLcdSetCursor(1,0);
     vLcdWriteString("Kd:");
     vLcdSetCursor(0,3);
-    vParserFlexibleFloatToString(ucLcdScreenString[0], 16, pApplicationParameters->tempMgtCtl.fKd, 2, 2, ',');
+    vParserFlexibleFloatToString(ucLcdScreenString[1], 16, pApplicationParameters->tempMgtCtl.fKd, 2, 2, ',');
+    vLcdWriteString(ucLcdScreenString[1]);
 
     // Update the state depending on buttons states 
     if(pApplicationParameters->appButtons.discreteMapping.xDownBtn == PRESSED){
