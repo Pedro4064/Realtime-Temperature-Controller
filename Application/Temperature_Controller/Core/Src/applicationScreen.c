@@ -124,7 +124,7 @@ void vDataScreen3Handle(){
 
     vLcdSetCursor(1,0);
     vLcdWriteString("Kd:");
-    vLcdSetCursor(0,3);
+    vLcdSetCursor(1,3);
     vParserFlexibleFloatToString(ucLcdScreenString[1], 16, pApplicationParameters->tempMgtCtl.fKd, 2, 2, ',');
     vLcdWriteString(ucLcdScreenString[1]);
 
