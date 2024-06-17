@@ -8,6 +8,7 @@
 // Revision date:    12/Abr/2024                 //
 // **********************************************//
 #include "stm32g4xx_hal.h"
+#include "queue.h"
 
 #ifndef INC_MATRIXKEYBOARD_H_
 #define INC_MATRIXKEYBOARD_H_
@@ -107,7 +108,7 @@ typedef struct {
 // Output params:      void                                   //
 //                        N/A                                 //
 // ********************************************************** //
-void vMatrixKeyboardInit(MatrixMapping mapping, TIM_HandleTypeDef* timer);
+void vMatrixKeyboardInit(MatrixMapping mapping, TIM_HandleTypeDef* timer, queue* pKeyQueue);
 
 // ********************************************************** //
 // Method name:        vMatrixKeyboardUpdateCallback          //

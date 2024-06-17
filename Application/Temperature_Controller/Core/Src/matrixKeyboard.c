@@ -41,13 +41,15 @@ void vMatrixKeyboardUpdateCallback() {
 
     // Iterate and read the status for each matrix row
     for (int i = 0; i <= 3; i++) {
-        // Read the GPIO values and save its state
+        // Read the GPIO values 
         GPIO_PinState xKeyValue = HAL_GPIO_ReadPin(xGpioMapping.rows[i].xGpioPort, xGpioMapping.rows[i].cGpioPin);
-        xMatrixKeys.cKeayboardValues[i][cActiveColumn] = xKeyValue;
 
         // If a key was pressed, add it to the keyboard's keystrokes buffer/queue
-        if(xKeyValue)
+        if(xKeyValue && !xMatrixKeys.cKeayboardValues[i][cActiveColumn])
             vQueueInsert(pKeyboardQueue, cVisualKeyboardMapping[i][cActiveColumn]);
+
+        // Update the state of the key as to calculate pressed time between scan/pooling cycle
+        xMatrixKeys.cKeayboardValues[i][cActiveColumn] = xKeyValue;
 
         // Determine Long and Longer press for the button
         unsigned int uiPreviously = xTimerBalance.xKeyboardTimePressed[i][cActiveColumn].usTimeSpendPressed;

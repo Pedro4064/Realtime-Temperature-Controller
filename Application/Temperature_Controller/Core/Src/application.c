@@ -21,10 +21,12 @@
 #include "pwmConfig.h"
 #include "tachometer.h"
 #include "application.h"
+#include "matrixKeyboard.h"
 #include "heaterAndCooler.h"
 #include "applicationScreen.h"
 #include "temperatureSensor.h"
 #include "applicationButtons.h"
+
 
 // Application Specific Macros 
 #define PWM_DUTYCYCLE_INCREMENT(x, delta) x+delta > 1 ? 1 : x+delta
@@ -77,8 +79,26 @@ ButtonMapping xBoardButtons[] = {
                                         {BTN_ENTER_GPIO_Port, BTN_ENTER_EXTI_IRQn, BTN_ENTER_Pin}
                                     };
 
+MatrixMapping xKeyboardMapping ={
+									rows : {
+										{KEYBOARD_L1_GPIO_Port, KEYBOARD_L1_Pin},
+										{KEYBOARD_L2_GPIO_Port, KEYBOARD_L2_Pin},
+										{KEYBOARD_L3_GPIO_Port, KEYBOARD_L3_Pin},
+										{KEYBOARD_L4_GPIO_Port, KEYBOARD_L4_Pin}},
+
+									columns : {
+										{KEYBOARD_C1_GPIO_Port, KEYBOARD_C1_Pin},
+										{KEYBOARD_C2_GPIO_Port, KEYBOARD_C2_Pin},
+										{KEYBOARD_C3_GPIO_Port, KEYBOARD_C3_Pin},
+										{KEYBOARD_C4_GPIO_Port, KEYBOARD_C4_Pin}}
+
+								};
+
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* pTimer){
+
+	if (pTimer->Instance == TIM6)
+        vMatrixKeyboardUpdateCallback();
 
 	if(pTimer->Instance == TIM7 || pTimer->Instance == TIM16)
 		vButtonsEventsTimerCallback(pTimer);
@@ -138,6 +158,10 @@ void vApplicationStart() {
 
 	HAL_TIM_Base_Init(&TMC_UPDATE_TIMER);
 	HAL_TIM_Base_Start_IT(&TMC_UPDATE_TIMER);
+
+
+
+    vMatrixKeyboardInit(xKeyboardMapping, &htim6, &xApplicationParameters.xKeyboardQueue);
 
 
     while (1) {
