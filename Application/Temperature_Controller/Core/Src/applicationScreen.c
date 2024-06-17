@@ -200,8 +200,96 @@ void vConfigScreen1Handle(){
     }
 
 }
-void vConfigScreen2Handle(){}
-void vConfigScreen3Handle(){}
+
+void vConfigScreen2Handle(){
+    // Clear the buffer queue to avoid skipping any screen options due to old user input
+    static char cFirstRendering = 1;
+    if(cFirstRendering){
+        vQueueClear(&pApplicationParameters->xKeyboardQueue);
+        cFirstRendering = 0;
+    }
+
+    // Write to Screen
+    vLcdSetCursor(0,0);
+    vLcdWriteString("2-Kp");
+
+    vLcdSetCursor(1,0);
+    vLcdWriteString("3-Ki");
+
+    // Update the state depending on buttons states 
+    if(pApplicationParameters->appButtons.discreteMapping.xDownBtn == PRESSED){
+        xCurrentState = CONFIG_SCREEN_3;
+        cFirstRendering = 1;
+        RESET_BTN_STATUS(pApplicationParameters->appButtons.discreteMapping.xDownBtn);
+        CLEAR_SCREEN();
+    }
+    else if(pApplicationParameters->appButtons.discreteMapping.xUpBtn == PRESSED){
+        xCurrentState = CONFIG_SCREEN_1;
+        cFirstRendering = 1;
+        RESET_BTN_STATUS(pApplicationParameters->appButtons.discreteMapping.xUpBtn);
+        CLEAR_SCREEN();
+    }
+    else if(pApplicationParameters->appButtons.discreteMapping.xCenterBtn == LONG_PRESSED){
+        xCurrentState = DATA_SCREEN_1;
+        cFirstRendering = 1;
+        RESET_BTN_STATUS(pApplicationParameters->appButtons.discreteMapping.xCenterBtn);
+        CLEAR_SCREEN();
+    }
+    else if(cQueueGet(&pApplicationParameters->xKeyboardQueue) == '2'){
+        xCurrentState = CONFIG_SCREEN_INPUT;
+        cConfigParameter = '2';
+        cFirstRendering = 1;
+        CLEAR_SCREEN();
+    }
+    else if(cQueueGet(&pApplicationParameters->xKeyboardQueue) == '3'){
+        xCurrentState = CONFIG_SCREEN_INPUT;
+        cConfigParameter = '3';
+        cFirstRendering = 1;
+        CLEAR_SCREEN();
+    }
+
+}
+
+void vConfigScreen3Handle(){
+    // Clear the buffer queue to avoid skipping any screen options due to old user input
+    static char cFirstRendering = 1;
+    if(cFirstRendering){
+        vQueueClear(&pApplicationParameters->xKeyboardQueue);
+        cFirstRendering = 0;
+    }
+
+    // Write to Screen
+    vLcdSetCursor(0,0);
+    vLcdWriteString("4-Kd");
+
+    // Update the state depending on buttons states 
+    if(pApplicationParameters->appButtons.discreteMapping.xDownBtn == PRESSED){
+        xCurrentState = CONFIG_SCREEN_1;
+        cFirstRendering = 1;
+        RESET_BTN_STATUS(pApplicationParameters->appButtons.discreteMapping.xDownBtn);
+        CLEAR_SCREEN();
+    }
+    else if(pApplicationParameters->appButtons.discreteMapping.xUpBtn == PRESSED){
+        xCurrentState = CONFIG_SCREEN_2;
+        cFirstRendering = 1;
+        RESET_BTN_STATUS(pApplicationParameters->appButtons.discreteMapping.xUpBtn);
+        CLEAR_SCREEN();
+    }
+    else if(pApplicationParameters->appButtons.discreteMapping.xCenterBtn == LONG_PRESSED){
+        xCurrentState = DATA_SCREEN_1;
+        cFirstRendering = 1;
+        RESET_BTN_STATUS(pApplicationParameters->appButtons.discreteMapping.xCenterBtn);
+        CLEAR_SCREEN();
+    }
+    else if(cQueueGet(&pApplicationParameters->xKeyboardQueue) == '4'){
+        xCurrentState = CONFIG_SCREEN_INPUT;
+        cConfigParameter = '4';
+        cFirstRendering = 1;
+        CLEAR_SCREEN();
+    }
+
+}
+
 void vConfigScreenInputHandle(){
 
     // Clear the buffer queue to avoid skipping any screen options due to old user input the first time
