@@ -15,4 +15,5 @@ char cQueueGet(queue* pQ);
 
 char cQueueIsEmpty(queue* pQ);
 
+void vQueueClear(queue* pQ);
 #endif

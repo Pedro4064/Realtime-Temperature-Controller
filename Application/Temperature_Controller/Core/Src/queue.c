@@ -41,3 +41,11 @@ char cQueueGet(queue* pQ){
 char cQueueIsEmpty(queue* pQ){
     return pQ->iSize == 0;
 }
+
+void vQueueClear(queue* pQ){
+    for (int i = 0; i < BUFFER_SIZE; i++)
+    {
+        pQ->cQ[i] = '\0';
+    }
+    
+}
