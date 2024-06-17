@@ -8,6 +8,8 @@
                        vLcdSetCursor(1,0);\
                        vLcdWriteString("                ")
 
+#define UPDATE_CURSOR(x) (x+1 == 2)? 3: ((x+1 > 4)? 0 : x+1)
+
 typedef enum {
     INITIAL_SCREEN,
     DATA_SCREEN_1,
@@ -15,11 +17,13 @@ typedef enum {
     DATA_SCREEN_3,
     CONFIG_SCREEN_1,
     CONFIG_SCREEN_2,
-    CONFIG_SCREEN_3
+    CONFIG_SCREEN_3,
+    CONFIG_SCREEN_INPUT
 } screenState;
 
 static screenState xCurrentState;
 static applicationParameters* pApplicationParameters;
+static char cConfigParameter;
 
 static unsigned char ucLcdScreenString[2][16];
 
@@ -146,9 +150,91 @@ void vDataScreen3Handle(){
     }
 }
 
-void vConfigScreen1Handle(){}
+void vConfigScreen1Handle(){
+    // Clear the buffer queue to avoid skipping any screen options due to old user input
+    static char cFirstRendering = 1;
+    if(cFirstRendering){
+        vQueueClear(&pApplicationParameters->xKeyboardQueue);
+        cFirstRendering = 0;
+    }
+
+    // Write to Screen
+    vLcdSetCursor(0,0);
+    vLcdWriteString("**Configuracao**");
+
+    vLcdSetCursor(1,0);
+    vLcdWriteString("1-Temp. Desejada");
+
+    // Update the state depending on buttons states 
+    if(pApplicationParameters->appButtons.discreteMapping.xDownBtn == PRESSED){
+        xCurrentState = CONFIG_SCREEN_2;
+        cFirstRendering = 1;
+        RESET_BTN_STATUS(pApplicationParameters->appButtons.discreteMapping.xDownBtn);
+        CLEAR_SCREEN();
+    }
+    else if(pApplicationParameters->appButtons.discreteMapping.xUpBtn == PRESSED){
+        xCurrentState = CONFIG_SCREEN_3;
+        cFirstRendering = 1;
+        RESET_BTN_STATUS(pApplicationParameters->appButtons.discreteMapping.xUpBtn);
+        CLEAR_SCREEN();
+    }
+    else if(pApplicationParameters->appButtons.discreteMapping.xCenterBtn == LONG_PRESSED){
+        xCurrentState = DATA_SCREEN_1;
+        cFirstRendering = 1;
+        RESET_BTN_STATUS(pApplicationParameters->appButtons.discreteMapping.xCenterBtn);
+        CLEAR_SCREEN();
+    }
+    else if(cQueueGet(&pApplicationParameters->xKeyboardQueue) == '1'){
+        xCurrentState = CONFIG_SCREEN_INPUT;
+        cConfigParameter = '1';
+        cFirstRendering = 1;
+        CLEAR_SCREEN();
+    }
+
+}
 void vConfigScreen2Handle(){}
 void vConfigScreen3Handle(){}
+void vConfigScreenInputHandle(){
+
+    // Clear the buffer queue to avoid skipping any screen options due to old user input
+    static char cFirstRendering = 1;
+    static char cBlinkStatus;
+    if(cFirstRendering){
+        vQueueClear(&pApplicationParameters->xKeyboardQueue);
+        cFirstRendering = 0;
+    }
+
+    // Create input buffer for the data
+    static char cUserInput[5] = {'_', '_', ',', '_', '_'};
+    static int iCursorPosition = 0;
+
+    // Blink the cursor until user inputs information
+    cUserInput[iCursorPosition] = (++cBlinkStatus%4 == 0)? ' ': '_';
+
+    // Print to Screen the correct information
+    vLcdSetCursor(0,0);
+    switch (cConfigParameter)
+    {
+    case '1':
+        vLcdWriteString("Temp. Desejada");
+        vLcdSetCursor(1,0);
+        vLcdWriteString(cUserInput);
+        break;
+    
+    default:
+        break;
+    }
+
+    // Update the state depending on buttons states 
+    if(pApplicationParameters->appButtons.discreteMapping.xCenterBtn == PRESSED){
+        xCurrentState = CONFIG_SCREEN_1;
+        cFirstRendering = 1;
+        RESET_BTN_STATUS(pApplicationParameters->appButtons.discreteMapping.xCenterBtn);
+        CLEAR_SCREEN();
+    }
+
+
+}
 
 void vApplicationScreenInit(lcdConfig* pLcdConfiguration, applicationParameters* pAppParam){
 
@@ -189,6 +275,10 @@ void vApplicationScreenUpdate(){
 
         case CONFIG_SCREEN_3:
             vConfigScreen3Handle();
+            break;
+
+        case CONFIG_SCREEN_INPUT:
+            vConfigScreenInputHandle();
             break;
         
         default:
