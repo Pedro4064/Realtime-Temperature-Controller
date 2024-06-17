@@ -2,14 +2,20 @@
 #include "parser.h"
 #include "lcd.h"
 
-#define RESET_BTN_STATUS(btn) btn = NOT_PRESSED
 #define CLEAR_SCREEN() vLcdSetCursor(0,0);\
                        vLcdWriteString("                ");\
                        vLcdSetCursor(1,0);\
                        vLcdWriteString("                ")
 
+#define RESET_INPUT_TEMPLATE(x) x[0] = '_';\ 
+                                x[1] = '_';\
+                                x[2] = ',';\
+                                x[3] = '_'
+
+#define RESET_BTN_STATUS(btn) btn = NOT_PRESSED
 #define UPDATE_CURSOR(x) (x+1 == 2)? 3: ((x+1 > 4)? 0 : x+1)
-#define IS_NUMERIC(x) (x >= 48 && x<= 57) 
+#define IS_NUMERIC(x) (x >= 48 && x<= 57)
+
 
 typedef enum {
     INITIAL_SCREEN,
@@ -19,7 +25,8 @@ typedef enum {
     CONFIG_SCREEN_1,
     CONFIG_SCREEN_2,
     CONFIG_SCREEN_3,
-    CONFIG_SCREEN_INPUT
+    CONFIG_SCREEN_INPUT,
+    MAX_VAL_ERROR_SCREEN
 } screenState;
 
 static screenState xCurrentState;
@@ -213,7 +220,7 @@ void vConfigScreenInputHandle(){
     cUserInput[iCursorPosition] = (++cBlinkStatus%4 == 0)? ' ': '_';
 
     // If any keys were pressed and add to user input until user input is full
-    if(!cQueueIsEmpty(&pApplicationParameters->xKeyboardQueue) && iCursorPosition <= 5){
+    if(!cQueueIsEmpty(&pApplicationParameters->xKeyboardQueue) && iCursorPosition <= 4){
         char cInput = cQueueGet(&pApplicationParameters->xKeyboardQueue);
 
         cUserInput[iCursorPosition] = IS_NUMERIC(cInput)? cInput : cUserInput[iCursorPosition];
@@ -227,8 +234,16 @@ void vConfigScreenInputHandle(){
         case '1':
             
             // When full, convert the value to float and save it to the configuration parameters
-            if(iCursorPosition > 5){
+            if(iCursorPosition > 4){
                 float fConvertedValue = fParserToFloat(cUserInput, 5);
+
+                if(fConvertedValue > 90){
+                    CLEAR_SCREEN();
+                    RESET_INPUT_TEMPLATE(cUserInput);
+                    xCurrentState = MAX_VAL_ERROR_SCREEN;
+                    return;
+                }
+
                 pApplicationParameters->tempMgtCtl.fTemperatureTarget = fConvertedValue;
             }
 
@@ -248,16 +263,38 @@ void vConfigScreenInputHandle(){
     if(pApplicationParameters->appButtons.discreteMapping.xCenterBtn == PRESSED){
         xCurrentState = CONFIG_SCREEN_1;
         cFirstRendering = 1;
-        cUserInput[0] = '_';
-        cUserInput[1] = '_';
-        cUserInput[2] = ',';
-        cUserInput[3] = '_';
-        cUserInput[4] = '_';
+        iCursorPosition = 0;
 
+        RESET_INPUT_TEMPLATE(cUserInput);
         RESET_BTN_STATUS(pApplicationParameters->appButtons.discreteMapping.xCenterBtn);
         CLEAR_SCREEN();
     }
 
+
+}
+
+void vMaxValueExceededScreenHandle(){
+    static unsigned int ucEnterTime;
+    unsigned int ucCurrentTime = HAL_GetTick();
+
+    if (ucEnterTime == 0){
+
+        ucEnterTime = ucCurrentTime;
+
+        vLcdSetCursor(0,0);
+        vLcdWriteString("Max Ultrapassado");
+        vLcdSetCursor(1,0);
+        vLcdWriteString("Verifique Manual");
+
+        return;
+    }
+
+    else if((ucCurrentTime - ucEnterTime) >= 1000){
+
+        xCurrentState = vConfigScreenInputHandle;
+        CLEAR_SCREEN();
+
+    }
 
 }
 
@@ -304,6 +341,10 @@ void vApplicationScreenUpdate(){
 
         case CONFIG_SCREEN_INPUT:
             vConfigScreenInputHandle();
+            break;
+
+        case MAX_VAL_ERROR_SCREEN:
+            vMaxValueExceededScreenHandle();
             break;
         
         default:
