@@ -11,6 +11,7 @@
 #include <main.h>
 
 #include "matrixKeyboard.h"
+#include "queue.h"
 #include "applicationButtons.h"
 #include "stm32g4xx_hal.h"
 
@@ -78,6 +79,8 @@ typedef struct{
 		ButtonStatus indexBased[5];
 
 	}appButtons;
+
+	queue xKeyboardQueue;
 	
 	
 }applicationParameters;
