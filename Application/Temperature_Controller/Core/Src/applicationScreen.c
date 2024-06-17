@@ -9,6 +9,7 @@
                        vLcdWriteString("                ")
 
 #define UPDATE_CURSOR(x) (x+1 == 2)? 3: ((x+1 > 4)? 0 : x+1)
+#define IS_NUMERIC(x) (x >= 48 && x<= 57) 
 
 typedef enum {
     INITIAL_SCREEN,
@@ -196,7 +197,7 @@ void vConfigScreen2Handle(){}
 void vConfigScreen3Handle(){}
 void vConfigScreenInputHandle(){
 
-    // Clear the buffer queue to avoid skipping any screen options due to old user input
+    // Clear the buffer queue to avoid skipping any screen options due to old user input the first time
     static char cFirstRendering = 1;
     static char cBlinkStatus;
     if(cFirstRendering){
@@ -211,24 +212,48 @@ void vConfigScreenInputHandle(){
     // Blink the cursor until user inputs information
     cUserInput[iCursorPosition] = (++cBlinkStatus%4 == 0)? ' ': '_';
 
-    // Print to Screen the correct information
-    vLcdSetCursor(0,0);
+    // If any keys were pressed and add to user input until user input is full
+    if(!cQueueIsEmpty(&pApplicationParameters->xKeyboardQueue) && iCursorPosition <= 5){
+        char cInput = cQueueGet(&pApplicationParameters->xKeyboardQueue);
+
+        cUserInput[iCursorPosition] = IS_NUMERIC(cInput)? cInput : cUserInput[iCursorPosition];
+        iCursorPosition = IS_NUMERIC(cInput)? UPDATE_CURSOR(iCursorPosition) : iCursorPosition;
+    }   
+
+
+    // Parse and Save User input when full and Print to Screen the correct information
     switch (cConfigParameter)
     {
-    case '1':
-        vLcdWriteString("Temp. Desejada");
-        vLcdSetCursor(1,0);
-        vLcdWriteString(cUserInput);
-        break;
-    
-    default:
-        break;
+        case '1':
+            
+            // When full, convert the value to float and save it to the configuration parameters
+            if(iCursorPosition > 5){
+                float fConvertedValue = fParserToFloat(cUserInput, 5);
+                pApplicationParameters->tempMgtCtl.fTemperatureTarget = fConvertedValue;
+            }
+
+            // Print to screen
+            vLcdSetCursor(0,0);
+            vLcdWriteString("Temp. Desejada");
+            vLcdSetCursor(1,0);
+            vLcdWriteString(cUserInput);
+
+            break;
+        
+        default:
+            break;
     }
 
     // Update the state depending on buttons states 
     if(pApplicationParameters->appButtons.discreteMapping.xCenterBtn == PRESSED){
         xCurrentState = CONFIG_SCREEN_1;
         cFirstRendering = 1;
+        cUserInput[0] = '_';
+        cUserInput[1] = '_';
+        cUserInput[2] = ',';
+        cUserInput[3] = '_';
+        cUserInput[4] = '_';
+
         RESET_BTN_STATUS(pApplicationParameters->appButtons.discreteMapping.xCenterBtn);
         CLEAR_SCREEN();
     }
