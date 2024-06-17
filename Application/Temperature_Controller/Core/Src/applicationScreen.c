@@ -342,6 +342,51 @@ void vConfigScreenInputHandle(){
             vLcdWriteString(cUserInput);
 
             break;
+
+        case '2':
+            // When full, convert the value to float and save it to the configuration parameters
+            if(iCursorPosition > 4){
+                float fConvertedValue = fParserToFloat(cUserInput, 5);
+                pApplicationParameters->tempMgtCtl.fKp = fConvertedValue;
+            }
+
+            // Print to screen
+            vLcdSetCursor(0,0);
+            vLcdWriteString("PID - Kp:");
+            vLcdSetCursor(1,0);
+            vLcdWriteString(cUserInput);
+
+            break;
+
+        case '3':
+            // When full, convert the value to float and save it to the configuration parameters
+            if(iCursorPosition > 4){
+                float fConvertedValue = fParserToFloat(cUserInput, 5);
+                pApplicationParameters->tempMgtCtl.fKi = fConvertedValue;
+            }
+
+            // Print to screen
+            vLcdSetCursor(0,0);
+            vLcdWriteString("PID - Ki:");
+            vLcdSetCursor(1,0);
+            vLcdWriteString(cUserInput);
+
+            break;
+
+        case '4':
+            // When full, convert the value to float and save it to the configuration parameters
+            if(iCursorPosition > 4){
+                float fConvertedValue = fParserToFloat(cUserInput, 5);
+                pApplicationParameters->tempMgtCtl.fKd = fConvertedValue;
+            }
+
+            // Print to screen
+            vLcdSetCursor(0,0);
+            vLcdWriteString("PID - Kd:");
+            vLcdSetCursor(1,0);
+            vLcdWriteString(cUserInput);
+
+            break;
         
         default:
             break;
