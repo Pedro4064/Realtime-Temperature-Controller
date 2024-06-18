@@ -271,7 +271,7 @@ void vConfigScreen3Handle(){
     vLcdWriteString("4-Kd");
 
     vLcdSetCursor(1,0);
-    if(pApplicationParameters->tempMgtCtl.ucHeatingOn)
+    if(!pApplicationParameters->tempMgtCtl.ucHeatingOn)
         vLcdWriteString("5-Heater Off");
     else
         vLcdWriteString("5-Heater  On");
