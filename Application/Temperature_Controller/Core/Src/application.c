@@ -112,11 +112,10 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* pTimer){
 	else if(pTimer->Instance == TIM2){
 		fRawTempVoltage = fTemperatureSensorGetCurrentTemperature();
 		xApplicationParameters.tempMgtCtl.fTemperatureCurrent = fRawTempVoltage;
-		xApplicationParameters.tempMgtCtl.fTemperatureTarget = 50;
 
 		// Update Actuator Effort
 		if (ucTestStart){
-			float fTargetVoltage = fPidUpdateData(fRawTempVoltage, 50);
+			float fTargetVoltage = fPidUpdateData(fRawTempVoltage, xApplicationParameters.tempMgtCtl.fTemperatureTarget);
 			fHeaterDutyCycle = fTargetVoltage/fActuatorSaturation;
 			vHeaterSetPwmDuty(fHeaterDutyCycle);
 		}
