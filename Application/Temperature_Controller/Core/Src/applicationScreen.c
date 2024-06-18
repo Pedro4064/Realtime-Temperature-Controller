@@ -218,6 +218,8 @@ void vConfigScreen2Handle(){
     vLcdWriteString("3-Ki");
 
     // Update the state depending on buttons states 
+    char cKeyboardInput = cQueueGet(&pApplicationParameters->xKeyboardQueue);
+
     if(pApplicationParameters->appButtons.discreteMapping.xDownBtn == PRESSED){
         xCurrentState = CONFIG_SCREEN_3;
         cFirstRendering = 1;
@@ -236,13 +238,13 @@ void vConfigScreen2Handle(){
         RESET_BTN_STATUS(pApplicationParameters->appButtons.discreteMapping.xCenterBtn);
         CLEAR_SCREEN();
     }
-    else if(cQueueGet(&pApplicationParameters->xKeyboardQueue) == '2'){
+    else if(cKeyboardInput == '2'){
         xCurrentState = CONFIG_SCREEN_INPUT;
         cConfigParameter = '2';
         cFirstRendering = 1;
         CLEAR_SCREEN();
     }
-    else if(cQueueGet(&pApplicationParameters->xKeyboardQueue) == '3'){
+    else if(cKeyboardInput == '3'){
         xCurrentState = CONFIG_SCREEN_INPUT;
         cConfigParameter = '3';
         cFirstRendering = 1;
