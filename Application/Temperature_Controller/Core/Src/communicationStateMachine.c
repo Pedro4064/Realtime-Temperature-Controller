@@ -149,11 +149,11 @@ void vCommunicationStateMachineStateHandleValue(){
                 break;
 
             case DUTY_CYCLE_HEATER:
-                pSystemParameters->tempMgtCtl.ucDutyCycleHeater = (unsigned char)fTargetValue;
+                pSystemParameters->tempMgtCtl.fDutyCycleHeater = fTargetValue;
                 break;
             
             case DUTY_CYCLE_COOLER:
-                pSystemParameters->tempMgtCtl.ucDutyCycleCooler = (unsigned char)fTargetValue;
+                pSystemParameters->tempMgtCtl.fDutyCycleCooler = fTargetValue;
                 break;
 
             default:

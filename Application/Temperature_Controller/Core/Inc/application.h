@@ -56,8 +56,9 @@ typedef struct{
 		float fTemperatureCurrent;
 		float fTemperatureTarget;
 
-		unsigned char ucDutyCycleCooler;
-		unsigned char ucDutyCycleHeater;
+		unsigned char ucHeatingOn;
+		float fDutyCycleCooler;
+		float fDutyCycleHeater;
 
 		unsigned int uiVelocityCooler;
 

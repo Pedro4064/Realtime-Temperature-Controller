@@ -73,8 +73,13 @@ void vDataScreen1Handle(){
     vLcdSetCursor(1,0);
     vLcdWriteString("Temp. Ds:");
     vLcdSetCursor(1,9);
-    vParserFlexibleFloatToString(ucLcdScreenString[1], 16, pApplicationParameters->tempMgtCtl.fTemperatureTarget, 2, 2 , ',');
-    vLcdWriteString(ucLcdScreenString[1]);
+    if(!pApplicationParameters->tempMgtCtl.ucHeatingOn){
+        vLcdWriteString("-----");
+    }
+    else{
+        vParserFlexibleFloatToString(ucLcdScreenString[1], 16, pApplicationParameters->tempMgtCtl.fTemperatureTarget, 2, 2 , ',');
+        vLcdWriteString(ucLcdScreenString[1]);
+    }
 
     // Update the state depending on buttons states 
     if(pApplicationParameters->appButtons.discreteMapping.xDownBtn == PRESSED){
@@ -265,7 +270,16 @@ void vConfigScreen3Handle(){
     vLcdSetCursor(0,0);
     vLcdWriteString("4-Kd");
 
+    vLcdSetCursor(1,0);
+    if(pApplicationParameters->tempMgtCtl.ucHeatingOn)
+        vLcdWriteString("5-Heater Off");
+    else
+        vLcdWriteString("5-Heater  On");
+
+
+
     // Update the state depending on buttons states 
+    char cKeyboardInput = cQueueGet(&pApplicationParameters->xKeyboardQueue);
     if(pApplicationParameters->appButtons.discreteMapping.xDownBtn == PRESSED){
         xCurrentState = CONFIG_SCREEN_1;
         cFirstRendering = 1;
@@ -284,11 +298,15 @@ void vConfigScreen3Handle(){
         RESET_BTN_STATUS(pApplicationParameters->appButtons.discreteMapping.xCenterBtn);
         CLEAR_SCREEN();
     }
-    else if(cQueueGet(&pApplicationParameters->xKeyboardQueue) == '4'){
+    else if(cKeyboardInput == '4'){
         xCurrentState = CONFIG_SCREEN_INPUT;
         cConfigParameter = '4';
         cFirstRendering = 1;
         CLEAR_SCREEN();
+    }
+    else if(cKeyboardInput == '5'){
+        cFirstRendering = 1;
+        pApplicationParameters->tempMgtCtl.ucHeatingOn = !pApplicationParameters->tempMgtCtl.ucHeatingOn;
     }
 
 }

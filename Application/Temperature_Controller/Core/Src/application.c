@@ -47,7 +47,9 @@ float fCoolerDutyCycle = 0;
 float fHeaterDutyCycle = 0;
 float fRawTempVoltage  = 0;
 
-applicationParameters xApplicationParameters = {.tempMgtCtl.fKp = 0.18,
+applicationParameters xApplicationParameters = {.tempMgtCtl.ucHeatingOn = 1,
+												.tempMgtCtl.fTemperatureTarget = 40,
+												.tempMgtCtl.fKp = 0.18,
 												.tempMgtCtl.fKi = 2.34,
 												.tempMgtCtl.fKd = 0.05
 												};
@@ -110,24 +112,19 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* pTimer){
 		vTachometerUpdateSpeed();
 
 	else if(pTimer->Instance == TIM2){
-		fRawTempVoltage = fTemperatureSensorGetCurrentTemperature();
-		xApplicationParameters.tempMgtCtl.fTemperatureCurrent = fRawTempVoltage;
+		xApplicationParameters.tempMgtCtl.fTemperatureCurrent = fTemperatureSensorGetCurrentTemperature();
 
 		// Update Actuator Effort
-		if (ucTestStart){
-			float fTargetVoltage = fPidUpdateData(fRawTempVoltage, xApplicationParameters.tempMgtCtl.fTemperatureTarget);
-			fHeaterDutyCycle = fTargetVoltage/fActuatorSaturation;
-			vHeaterSetPwmDuty(fHeaterDutyCycle);
+		if (xApplicationParameters.tempMgtCtl.ucHeatingOn){
+			float fTargetVoltage = fPidUpdateData(xApplicationParameters.tempMgtCtl.fTemperatureCurrent, xApplicationParameters.tempMgtCtl.fTemperatureTarget);
+			 xApplicationParameters.tempMgtCtl.fDutyCycleHeater = fTargetVoltage/fActuatorSaturation;
+			vHeaterSetPwmDuty(xApplicationParameters.tempMgtCtl.fDutyCycleHeater);
+			vCoolerFanSetPwmDuty(0);
 		}
-
-		// Format the string and send the data via UART 
-		vParserFloatToString(&ucUartTemperatureMessage, fRawTempVoltage);
-		HAL_UART_Transmit_IT(&hlpuart1, &ucUartTemperatureMessage, 11);
-
-		// Format the string to be shown on the LCD display, but remove the last two elements (\n and \r) that are only needed for the UART string
-		vParserFloatToString(&ucLcdTemperatureMessage, fRawTempVoltage);
-		ucLcdTemperatureMessage[8] = '\0';
-		ucLcdTemperatureMessage[9] = '\0';
+		else{
+			vHeaterSetPwmDuty(0);
+			vCoolerFanSetPwmDuty(100);
+		}
 
 	}
 
