@@ -421,10 +421,10 @@ void vMaxValueExceededScreenHandle(){
 
         return;
     }
+    else if((ucCurrentTime - ucEnterTime) >= 2000){
 
-    else if((ucCurrentTime - ucEnterTime) >= 1000){
-
-        xCurrentState = vConfigScreenInputHandle;
+        xCurrentState = CONFIG_SCREEN_INPUT;
+        ucEnterTime = 0;
         CLEAR_SCREEN();
 
     }
