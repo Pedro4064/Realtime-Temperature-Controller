@@ -10,7 +10,8 @@
 #define RESET_INPUT_TEMPLATE(x) x[0] = '_';\ 
                                 x[1] = '_';\
                                 x[2] = ',';\
-                                x[3] = '_'
+                                x[3] = '_';\
+                                x[4] = '_'
 
 #define RESET_BTN_STATUS(btn) btn = NOT_PRESSED
 #define UPDATE_CURSOR(x) (x+1 == 2)? 3: ((x+1 > 4)? 0 : x+1)
