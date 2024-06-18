@@ -298,6 +298,7 @@ void vConfigScreenInputHandle(){
     // Clear the buffer queue to avoid skipping any screen options due to old user input the first time
     static char cFirstRendering = 1;
     static char cBlinkStatus;
+    static char cIsComplete;
     if(cFirstRendering){
         vQueueClear(&pApplicationParameters->xKeyboardQueue);
         cFirstRendering = 0;
@@ -314,6 +315,7 @@ void vConfigScreenInputHandle(){
     if(!cQueueIsEmpty(&pApplicationParameters->xKeyboardQueue) && iCursorPosition <= 4){
         char cInput = cQueueGet(&pApplicationParameters->xKeyboardQueue);
 
+        cIsComplete = (iCursorPosition == 4)? 1 : 0;
         cUserInput[iCursorPosition] = IS_NUMERIC(cInput)? cInput : cUserInput[iCursorPosition];
         iCursorPosition = IS_NUMERIC(cInput)? UPDATE_CURSOR(iCursorPosition) : iCursorPosition;
     }   
@@ -325,17 +327,23 @@ void vConfigScreenInputHandle(){
         case '1':
             
             // When full, convert the value to float and save it to the configuration parameters
-            if(iCursorPosition > 4){
+            if(cIsComplete){
                 float fConvertedValue = fParserToFloat(cUserInput, 5);
 
-                if(fConvertedValue > 90){
+                if(fConvertedValue < 90){
+                    pApplicationParameters->tempMgtCtl.fTemperatureTarget = fConvertedValue;
+                    xCurrentState = CONFIG_SCREEN_1;
+                }
+                else{
                     CLEAR_SCREEN();
-                    RESET_INPUT_TEMPLATE(cUserInput);
                     xCurrentState = MAX_VAL_ERROR_SCREEN;
-                    return;
                 }
 
-                pApplicationParameters->tempMgtCtl.fTemperatureTarget = fConvertedValue;
+                // Reset input dialog configurations for next config user interaction
+                RESET_INPUT_TEMPLATE(cUserInput);
+                cFirstRendering = 1;
+                iCursorPosition = 0;
+                cIsComplete = 0;
             }
 
             // Print to screen
@@ -348,9 +356,16 @@ void vConfigScreenInputHandle(){
 
         case '2':
             // When full, convert the value to float and save it to the configuration parameters
-            if(iCursorPosition > 4){
+            if(cIsComplete){
                 float fConvertedValue = fParserToFloat(cUserInput, 5);
                 pApplicationParameters->tempMgtCtl.fKp = fConvertedValue;
+                xCurrentState = CONFIG_SCREEN_1;
+
+                // Reset input dialog configurations for next config user interaction
+                RESET_INPUT_TEMPLATE(cUserInput);
+                cFirstRendering = 1;
+                iCursorPosition = 0;
+                cIsComplete = 0;
             }
 
             // Print to screen
@@ -363,9 +378,16 @@ void vConfigScreenInputHandle(){
 
         case '3':
             // When full, convert the value to float and save it to the configuration parameters
-            if(iCursorPosition > 4){
+            if(cIsComplete){
                 float fConvertedValue = fParserToFloat(cUserInput, 5);
                 pApplicationParameters->tempMgtCtl.fKi = fConvertedValue;
+                xCurrentState = CONFIG_SCREEN_1;
+
+                // Reset input dialog configurations for next config user interaction
+                RESET_INPUT_TEMPLATE(cUserInput);
+                cFirstRendering = 1;
+                iCursorPosition = 0;
+                cIsComplete = 0;
             }
 
             // Print to screen
@@ -378,9 +400,16 @@ void vConfigScreenInputHandle(){
 
         case '4':
             // When full, convert the value to float and save it to the configuration parameters
-            if(iCursorPosition > 4){
+            if(cIsComplete){
                 float fConvertedValue = fParserToFloat(cUserInput, 5);
                 pApplicationParameters->tempMgtCtl.fKd = fConvertedValue;
+                xCurrentState = CONFIG_SCREEN_1;
+
+                // Reset input dialog configurations for next config user interaction
+                RESET_INPUT_TEMPLATE(cUserInput);
+                cFirstRendering = 1;
+                iCursorPosition = 0;
+                cIsComplete = 0;
             }
 
             // Print to screen
@@ -405,7 +434,6 @@ void vConfigScreenInputHandle(){
         RESET_BTN_STATUS(pApplicationParameters->appButtons.discreteMapping.xCenterBtn);
         CLEAR_SCREEN();
     }
-
 
 }
 
