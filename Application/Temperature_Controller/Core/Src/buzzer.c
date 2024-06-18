@@ -8,6 +8,7 @@
 
 static pwmConfig* pBuzzerConfiguration;
 static TIM_HandleTypeDef* pPeriodTimer;
+static unsigned int uiCompareValue;
 
 void vBuzzerInit(pwmConfig* pBuzzerConfig, TIM_HandleTypeDef* pPeriodTim){
     // Save configuration parameters
@@ -39,7 +40,8 @@ void vBuzzerConfig(unsigned short int usFrequency, unsigned short int usPeriod){
     __HAL_TIM_SET_AUTORELOAD(pBuzzerConfiguration->pTimeHandle, uiCounter);
     __HAL_TIM_SET_AUTORELOAD(pPeriodTimer, uiCounter);
 
-    __HAL_TIM_SET_COMPARE(pBuzzerConfiguration->pTimeHandle, pBuzzerConfiguration->uiChannel, uiCounter/10);
+    uiCompareValue = uiCounter/10;
+    __HAL_TIM_SET_COMPARE(pBuzzerConfiguration->pTimeHandle, pBuzzerConfiguration->uiChannel, uiCompareValue);
 
 
     __HAL_TIM_SET_PRESCALER(pBuzzerConfiguration->pTimeHandle, uiPwmPreScaler);
@@ -51,6 +53,8 @@ void vBuzzerConfig(unsigned short int usFrequency, unsigned short int usPeriod){
 }
 
 void vBuzzerPlay(void){
+    // Set the compare value to make sure it is started even after BuzzerStop
+    __HAL_TIM_SET_COMPARE(pBuzzerConfiguration->pTimeHandle, pBuzzerConfiguration->uiChannel, uiCompareValue);
     HAL_TIM_PWM_Start(pBuzzerConfiguration->pTimeHandle, pBuzzerConfiguration->uiChannel);
     HAL_TIM_Base_Start_IT(pPeriodTimer);
 }

@@ -81,6 +81,12 @@ typedef struct{
 
 	}appButtons;
 
+	struct BuzzerInterface{
+		unsigned short int usFrequency; 
+		unsigned short int usPeriod;
+		char cPlay;
+	} buzzerInterface;
+
 	queue xKeyboardQueue;
 	
 	

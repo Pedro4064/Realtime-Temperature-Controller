@@ -42,6 +42,8 @@
 
 #define TMC_UPDATE_TIMER htim2
 
+#define BUZZER_PWM_TIMER htim5
+
 // Application Test Variables
 float fCoolerDutyCycle = 0;
 float fHeaterDutyCycle = 0;
@@ -51,7 +53,9 @@ applicationParameters xApplicationParameters = {.tempMgtCtl.ucHeatingOn = 1,
 												.tempMgtCtl.fTemperatureTarget = 40,
 												.tempMgtCtl.fKp = 0.18,
 												.tempMgtCtl.fKi = 2.34,
-												.tempMgtCtl.fKd = 0.05
+												.tempMgtCtl.fKd = 0.05,
+												.buzzerInterface.usFrequency = 1000,
+												.buzzerInterface.usPeriod = 500
 												};
 unsigned short usPidWindUp = 1500;
 float fActuatorSaturation = 3.3;
@@ -152,6 +156,9 @@ void vApplicationStart() {
 	vApplicationButtonsInit(&xBoardButtons, &BTN_DEBOUNCE_TIMER, &BTN_PRESS_TIMER, &xApplicationParameters);
 	vApplicationScreenInit(&xLcdConfiguration, &xApplicationParameters);
 
+	vBuzzerInit(&xBuzzerConfig, &BUZZER_PWM_TIMER);
+	vBuzzerConfig(xApplicationParameters.buzzerInterface.usFrequency, xApplicationParameters.buzzerInterface.usPeriod);
+
 	HAL_TIM_Base_Init(&TMC_UPDATE_TIMER);
 	HAL_TIM_Base_Start_IT(&TMC_UPDATE_TIMER);
 
@@ -163,5 +170,10 @@ void vApplicationStart() {
     while (1) {
 		xApplicationParameters.tempMgtCtl.uiVelocityCooler = fTachometerMeasuredSpeed;
     	vApplicationScreenUpdate();
+
+		if(xApplicationParameters.buzzerInterface.cPlay){
+			vBuzzerPlay();
+			xApplicationParameters.buzzerInterface.cPlay = 0;
+		}
     }
 }

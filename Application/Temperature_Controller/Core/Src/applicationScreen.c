@@ -350,6 +350,7 @@ void vConfigScreenInputHandle(){
 
                 if(fConvertedValue < 90){
                     pApplicationParameters->tempMgtCtl.fTemperatureTarget = fConvertedValue;
+                    pApplicationParameters->buzzerInterface.cPlay = 1;
                     xCurrentState = CONFIG_SCREEN_1;
                 }
                 else{
@@ -377,6 +378,7 @@ void vConfigScreenInputHandle(){
             if(cIsComplete){
                 float fConvertedValue = fParserToFloat(cUserInput, 5);
                 pApplicationParameters->tempMgtCtl.fKp = fConvertedValue;
+                pApplicationParameters->buzzerInterface.cPlay = 1;
                 xCurrentState = CONFIG_SCREEN_1;
 
                 // Reset input dialog configurations for next config user interaction
@@ -399,6 +401,7 @@ void vConfigScreenInputHandle(){
             if(cIsComplete){
                 float fConvertedValue = fParserToFloat(cUserInput, 5);
                 pApplicationParameters->tempMgtCtl.fKi = fConvertedValue;
+                pApplicationParameters->buzzerInterface.cPlay = 1;
                 xCurrentState = CONFIG_SCREEN_1;
 
                 // Reset input dialog configurations for next config user interaction
@@ -421,6 +424,7 @@ void vConfigScreenInputHandle(){
             if(cIsComplete){
                 float fConvertedValue = fParserToFloat(cUserInput, 5);
                 pApplicationParameters->tempMgtCtl.fKd = fConvertedValue;
+                pApplicationParameters->buzzerInterface.cPlay = 1;
                 xCurrentState = CONFIG_SCREEN_1;
 
                 // Reset input dialog configurations for next config user interaction
