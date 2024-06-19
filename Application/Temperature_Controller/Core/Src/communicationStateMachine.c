@@ -26,15 +26,17 @@ typedef enum {
 } State;
 
 typedef enum {
-    // Get Parameters ID
-    TEMPERATURE_CURRENT = 't',
-    VELOCITY_COOLER = 'v',
+    // Param ID
+    TEMPERATURE_CURRENT = 't',  // Get Value
+    VELOCITY_COOLER = 'v',      // Get Value
+    TEMPERATURE_TARGET = 't',   // Set Value
+    BUZZER_PLAY = 'b',          // Set Value
+    BUZZER_FREQ = 'f',          // Set And Get Value
+    BUZZER_PERI = 'T',          // Set And Get Value
+    PID_KP = 'p',               // Set And Get Value
+    PID_KI = 'i',               // Set And Get Value
+    PID_KD = 'd',               // Set And Get Value 
 
-    // Set Parameters ID
-    TEMPERATURE_TARGET = 't',
-    DUTY_CYCLE_HEATER = 'h',
-    DUTY_CYCLE_COOLER = 'c',
-    BUTTON_LOCK = 'b',
 } ParamID;
 
 #define VALIDATED_INPUT(x) ((x >= '0' && x <= '9') || x == ',')
@@ -68,6 +70,11 @@ void vCommunicationStateMachineStateHandleGet(){
     {
     case TEMPERATURE_CURRENT:
     case VELOCITY_COOLER:
+    case BUZZER_FREQ:
+    case BUZZER_PERI:
+    case PID_KP:
+    case PID_KI:
+    case PID_KD:
 
         xCurrentState = PARAM;
         xTargetParam  = ucCommByte;
@@ -85,9 +92,13 @@ void vCommunicationStateMachineStateHandleSet(){
     switch (ucCommByte)
     {
         case TEMPERATURE_TARGET:
-        case DUTY_CYCLE_COOLER:
-        case DUTY_CYCLE_HEATER:
-        case BUTTON_LOCK:
+        case BUZZER_PLAY:
+        case BUZZER_FREQ:
+        case BUZZER_PERI:
+        case PID_KP:
+        case PID_KI:
+        case PID_KD:
+
             xTargetParam = ucCommByte;
             xCurrentState = VALUE;
             break;
@@ -116,6 +127,26 @@ void vCommunicationStateMachineStateHandleParam(){
     case VELOCITY_COOLER:
         fTargetValue = (float)(*pSystemParameters).tempMgtCtl.uiVelocityCooler;
         break;
+
+    case BUZZER_FREQ:
+        fTargetValue = (float)(pSystemParameters->buzzerInterface.usFrequency);
+        break;
+
+    case BUZZER_PERI:
+        fTargetValue = (float)(pSystemParameters->buzzerInterface.usPeriod);
+        break;
+
+    case PID_KP:
+        fTargetValue = pSystemParameters->tempMgtCtl.fKp;
+        break;
+
+    case PID_KI:
+        fTargetValue = pSystemParameters->tempMgtCtl.fKi;
+        break;
+
+    case PID_KD:
+        fTargetValue = pSystemParameters->tempMgtCtl.fKd;
+        break;
     
     default:
         return;
@@ -132,6 +163,7 @@ void vCommunicationStateMachineStateHandleValue(){
 
     static unsigned char ucBufferIndex = 0;
     static unsigned char ucBuffer[MAX_BUFFER_SIZE + 1];
+    char cSaveSuccessful;
 
     if(VALIDATED_INPUT(ucCommByte) && ucBufferIndex <= MAX_BUFFER_SIZE){
         ucBuffer[ucBufferIndex++] = ucCommByte;
@@ -145,25 +177,62 @@ void vCommunicationStateMachineStateHandleValue(){
         switch (xTargetParam)
         {
             case TEMPERATURE_TARGET:
+                if(fTargetValue > 90){
+                    HAL_UART_Transmit_IT(pUartPeripheral, "[CONFIG SYS] ERROR: Max Value Exceeded\n\r",  42);
+                    cSaveSuccessful = 0;
+                    break;
+                }
                 pSystemParameters->tempMgtCtl.fTemperatureTarget = fTargetValue;
+                cSaveSuccessful = 1;
                 break;
 
-            case DUTY_CYCLE_HEATER:
-                pSystemParameters->tempMgtCtl.fDutyCycleHeater = fTargetValue;
+            case BUZZER_PLAY:
+                pSystemParameters->buzzerInterface.cPlay = (char)fTargetValue;
+                cSaveSuccessful = 1;
+                break;
+
+            case BUZZER_FREQ:
+                pSystemParameters->buzzerInterface.usFrequency = (unsigned short)fTargetValue;
+                cSaveSuccessful = 1;
+                break;
+
+            case BUZZER_PERI:
+                pSystemParameters->buzzerInterface.usPeriod = (unsigned short)fTargetValue;
+                cSaveSuccessful = 1;
+                break;
+
+            case PID_KP:
+                pSystemParameters->tempMgtCtl.fKp = fTargetValue;
+                cSaveSuccessful = 1;
                 break;
             
-            case DUTY_CYCLE_COOLER:
-                pSystemParameters->tempMgtCtl.fDutyCycleCooler = fTargetValue;
+            case PID_KI:
+                pSystemParameters->tempMgtCtl.fKi = fTargetValue;
+                cSaveSuccessful = 1;
                 break;
+            
+            case PID_KD:
+                pSystemParameters->tempMgtCtl.fKd = fTargetValue;
+                cSaveSuccessful = 1;
+                break;
+            
 
             default:
                 break;
+
+        }
+
+        if(cSaveSuccessful){
+            HAL_UART_Transmit_IT(pUartPeripheral, "[CONFIG SYS] Value set SUCCESSFUL\n\r",  35);
+            pSystemParameters->buzzerInterface.cPlay = 1;
+            cSaveSuccessful = 0;
         }
 
     }
 
     ucBufferIndex = 0;
     xCurrentState = IDLE;
+
 }
 
 void vCommunicationStateMachineProcessByte(){

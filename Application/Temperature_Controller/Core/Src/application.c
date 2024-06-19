@@ -26,6 +26,7 @@
 #include "applicationScreen.h"
 #include "temperatureSensor.h"
 #include "applicationButtons.h"
+#include "communicationStateMachine.h"
 
 
 // Application Specific Macros 
@@ -140,6 +141,10 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
 
 }
 
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef* pHUart){
+    if (pHUart == &hlpuart1)
+        vCommunicationStateMachineProcessByte();
+}
 
 void vApplicationStart() {
 
@@ -158,6 +163,9 @@ void vApplicationStart() {
 
 	vBuzzerInit(&xBuzzerConfig, &BUZZER_PWM_TIMER);
 	vBuzzerConfig(xApplicationParameters.buzzerInterface.usFrequency, xApplicationParameters.buzzerInterface.usPeriod);
+
+
+    vCommunicationStateMachineInit(&hlpuart1, &xApplicationParameters);
 
 	HAL_TIM_Base_Init(&TMC_UPDATE_TIMER);
 	HAL_TIM_Base_Start_IT(&TMC_UPDATE_TIMER);

@@ -26,7 +26,7 @@
 // Output params:      void                                   //
 //                        N/A                                 //
 // ********************************************************** //
-void vCommunicationStateMachineInit(UART_HandleTypeDef* pHUart, SystemParameters* xSysParam);
+void vCommunicationStateMachineInit(UART_HandleTypeDef* pHUart, applicationParameters* xSysParam);
 
 // ************************************************************* //
 // Method name:        vCommunicationStateMachineHandleStateReady//
