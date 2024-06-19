@@ -7,7 +7,7 @@
                        vLcdSetCursor(1,0);\
                        vLcdWriteString("                ")
 
-#define RESET_INPUT_TEMPLATE(x) x[0] = '_';\ 
+#define RESET_INPUT_TEMPLATE(x) x[0] = '_';\
                                 x[1] = '_';\
                                 x[2] = ',';\
                                 x[3] = '_';\
