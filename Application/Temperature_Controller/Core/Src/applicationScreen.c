@@ -348,7 +348,7 @@ void vConfigScreenInputHandle(){
             if(cIsComplete){
                 float fConvertedValue = fParserToFloat(cUserInput, 5);
 
-                if(fConvertedValue < 90){
+                if(fConvertedValue <= 90){
                     pApplicationParameters->tempMgtCtl.fTemperatureTarget = fConvertedValue;
                     pApplicationParameters->buzzerInterface.cPlay = 1;
                     xCurrentState = CONFIG_SCREEN_1;
