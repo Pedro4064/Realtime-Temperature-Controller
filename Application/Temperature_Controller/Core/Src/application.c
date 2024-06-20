@@ -179,6 +179,12 @@ void vApplicationStart() {
 		xApplicationParameters.tempMgtCtl.uiVelocityCooler = fTachometerMeasuredSpeed;
     	vApplicationScreenUpdate();
 
+		// Update PID values to any new values if changed by the applications interface (both local and UART)
+		vPidSetKp(xApplicationParameters.tempMgtCtl.fKp);
+		vPidSetKi(xApplicationParameters.tempMgtCtl.fKi);
+		vPidSetKd(xApplicationParameters.tempMgtCtl.fKd);
+
+		// Play the buzzer if any interface requests it
 		if(xApplicationParameters.buzzerInterface.cPlay){
 			vBuzzerPlay();
 			xApplicationParameters.buzzerInterface.cPlay = 0;
