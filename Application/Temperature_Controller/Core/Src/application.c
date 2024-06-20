@@ -180,9 +180,18 @@ void vApplicationStart() {
     	vApplicationScreenUpdate();
 
 		// Update PID values to any new values if changed by the applications interface (both local and UART)
-		vPidSetKp(xApplicationParameters.tempMgtCtl.fKp);
-		vPidSetKi(xApplicationParameters.tempMgtCtl.fKi);
-		vPidSetKd(xApplicationParameters.tempMgtCtl.fKd);
+		if(xApplicationParameters.tempMgtCtl.cPidConfigChanged){
+			xApplicationParameters.tempMgtCtl.cPidConfigChanged = 0;
+			vPidSetKp(xApplicationParameters.tempMgtCtl.fKp);
+			vPidSetKi(xApplicationParameters.tempMgtCtl.fKi);
+			vPidSetKd(xApplicationParameters.tempMgtCtl.fKd);
+		}
+
+		// If buzzer configurations changed, update the driver settings
+		if(xApplicationParameters.buzzerInterface.cBuzzerConfigChanged){
+			xApplicationParameters.buzzerInterface.cBuzzerConfigChanged = 0;
+			vBuzzerConfig(xApplicationParameters.buzzerInterface.usFrequency, xApplicationParameters.buzzerInterface.usPeriod);
+		}
 
 		// Play the buzzer if any interface requests it
 		if(xApplicationParameters.buzzerInterface.cPlay){

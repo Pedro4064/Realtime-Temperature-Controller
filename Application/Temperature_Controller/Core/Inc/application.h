@@ -65,6 +65,7 @@ typedef struct{
 		float fKi;
 		float fKp;
 		float fKd;
+		char cPidConfigChanged;
 	} tempMgtCtl;
 
 	union AppButtons
@@ -84,6 +85,7 @@ typedef struct{
 	struct BuzzerInterface{
 		unsigned short int usFrequency; 
 		unsigned short int usPeriod;
+		char cBuzzerConfigChanged;
 		char cPlay;
 	} buzzerInterface;
 

@@ -193,26 +193,31 @@ void vCommunicationStateMachineStateHandleValue(){
 
             case BUZZER_FREQ:
                 pSystemParameters->buzzerInterface.usFrequency = (unsigned short)fTargetValue;
+                pSystemParameters->buzzerInterface.cBuzzerConfigChanged = 1;
                 cSaveSuccessful = 1;
                 break;
 
             case BUZZER_PERI:
                 pSystemParameters->buzzerInterface.usPeriod = (unsigned short)fTargetValue;
+                pSystemParameters->buzzerInterface.cBuzzerConfigChanged = 1;
                 cSaveSuccessful = 1;
                 break;
 
             case PID_KP:
                 pSystemParameters->tempMgtCtl.fKp = fTargetValue;
+                pSystemParameters->tempMgtCtl.cPidConfigChanged = 1;
                 cSaveSuccessful = 1;
                 break;
             
             case PID_KI:
                 pSystemParameters->tempMgtCtl.fKi = fTargetValue;
+                pSystemParameters->tempMgtCtl.cPidConfigChanged = 1;
                 cSaveSuccessful = 1;
                 break;
             
             case PID_KD:
                 pSystemParameters->tempMgtCtl.fKd = fTargetValue;
+                pSystemParameters->tempMgtCtl.cPidConfigChanged = 1;
                 cSaveSuccessful = 1;
                 break;
             

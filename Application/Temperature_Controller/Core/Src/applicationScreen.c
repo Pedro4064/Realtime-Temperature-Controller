@@ -378,6 +378,7 @@ void vConfigScreenInputHandle(){
             if(cIsComplete){
                 float fConvertedValue = fParserToFloat(ucUserInput, 5);
                 pApplicationParameters->tempMgtCtl.fKp = fConvertedValue;
+                pApplicationParameters->tempMgtCtl.cPidConfigChanged = 1;
                 pApplicationParameters->buzzerInterface.cPlay = 1;
                 xCurrentState = CONFIG_SCREEN_1;
 
@@ -401,6 +402,7 @@ void vConfigScreenInputHandle(){
             if(cIsComplete){
                 float fConvertedValue = fParserToFloat(ucUserInput, 5);
                 pApplicationParameters->tempMgtCtl.fKi = fConvertedValue;
+                pApplicationParameters->tempMgtCtl.cPidConfigChanged = 1;
                 pApplicationParameters->buzzerInterface.cPlay = 1;
                 xCurrentState = CONFIG_SCREEN_1;
 
@@ -424,6 +426,7 @@ void vConfigScreenInputHandle(){
             if(cIsComplete){
                 float fConvertedValue = fParserToFloat(ucUserInput, 5);
                 pApplicationParameters->tempMgtCtl.fKd = fConvertedValue;
+                pApplicationParameters->tempMgtCtl.cPidConfigChanged = 1;
                 pApplicationParameters->buzzerInterface.cPlay = 1;
                 xCurrentState = CONFIG_SCREEN_1;
 
