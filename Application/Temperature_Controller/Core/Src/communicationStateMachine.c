@@ -187,6 +187,11 @@ void vCommunicationStateMachineStateHandleValue(){
                 break;
 
             case BUZZER_PLAY:
+                if(fTargetValue != 1){
+                    HAL_UART_Transmit_IT(pUartPeripheral, (unsigned char*)"[CONFIG SYS] ERROR: Val. Outside Range\n\r",  42);
+                    cSaveSuccessful = 0;
+                    break;
+                }
                 pSystemParameters->buzzerInterface.cPlay = (char)fTargetValue;
                 cSaveSuccessful = 1;
                 break;
@@ -204,18 +209,33 @@ void vCommunicationStateMachineStateHandleValue(){
                 break;
 
             case PID_KP:
+                if(fTargetValue < 0 || fTargetValue >= 100){
+                    HAL_UART_Transmit_IT(pUartPeripheral, (unsigned char*)"[CONFIG SYS] ERROR: Val. Outside Range\n\r",  42);
+                    cSaveSuccessful = 0;
+                    break;
+                }
                 pSystemParameters->tempMgtCtl.fKp = fTargetValue;
                 pSystemParameters->tempMgtCtl.cPidConfigChanged = 1;
                 cSaveSuccessful = 1;
                 break;
             
             case PID_KI:
+                if(fTargetValue < 0 || fTargetValue >= 100){
+                    HAL_UART_Transmit_IT(pUartPeripheral, (unsigned char*)"[CONFIG SYS] ERROR: Val. Outside Range\n\r",  42);
+                    cSaveSuccessful = 0;
+                    break;
+                }
                 pSystemParameters->tempMgtCtl.fKi = fTargetValue;
                 pSystemParameters->tempMgtCtl.cPidConfigChanged = 1;
                 cSaveSuccessful = 1;
                 break;
             
             case PID_KD:
+                if(fTargetValue < 0 || fTargetValue >= 100){
+                    HAL_UART_Transmit_IT(pUartPeripheral, (unsigned char*)"[CONFIG SYS] ERROR: Val. Outside Range\n\r",  42);
+                    cSaveSuccessful = 0;
+                    break;
+                }
                 pSystemParameters->tempMgtCtl.fKd = fTargetValue;
                 pSystemParameters->tempMgtCtl.cPidConfigChanged = 1;
                 cSaveSuccessful = 1;
