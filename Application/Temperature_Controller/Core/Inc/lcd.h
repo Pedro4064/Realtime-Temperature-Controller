@@ -86,6 +86,8 @@ void vLcdSendCommand(unsigned char ucCmd);
 /* ************************************************ */
 void vLcdWriteString(const char *cBuffer);
 
+void vLcdWriteBuffer(unsigned char *ucBuffer);
+
 
 /* ************************************************ */
 /* Method name:        vLcdSetCursor                */

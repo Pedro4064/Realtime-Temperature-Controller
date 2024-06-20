@@ -40,10 +40,10 @@ void vParserStandardizeNumericInput(unsigned char* cUartMessage, int iMessageMax
 
 float fParserToFloat(unsigned char* cUartMessage, int iBufferMaxSize){
 	vParserStandardizeNumericInput(cUartMessage, iBufferMaxSize);
-	return atof(cUartMessage);
+	return atof((char*)cUartMessage);
 }
 
-void vParserFloatToString(unsigned char* ucStringBuffer, float fNumberInput){
+void vParserFloatToString(unsigned char ucStringBuffer[11], float fNumberInput){
 
 	if(fNumberInput<0){
 		ucStringBuffer[0] = '-';
@@ -72,7 +72,7 @@ void vParserFlexibleFloatToString(unsigned char* ucStringBuffer, int iBufferSize
 		iDigitIndex++;
 	}
 
-	for(iDigitIndex; iDigitIndex<iBufferSize; iDigitIndex++){
+	for(; iDigitIndex<iBufferSize; iDigitIndex++){
 		if(iNumberWholeDigits > 0){
 			ucStringBuffer[iDigitIndex] = WHOLE_DIGIT_EXTRACT(iNumberWholeDigits, fNumberInput) + 48;
 			iNumberWholeDigits--;

@@ -115,7 +115,7 @@ void vCommunicationStateMachineStateHandleParam(){
     if(ucCommByte != ';')
         return;
 
-    static char message[11];
+    static unsigned char ucMessage[11];
     float fTargetValue;
 
     switch (xTargetParam)
@@ -153,8 +153,8 @@ void vCommunicationStateMachineStateHandleParam(){
         break;
     }
 
-    vParserFloatToString(&message, fTargetValue);
-    HAL_UART_Transmit_IT(pUartPeripheral, message, 11);
+    vParserFloatToString(ucMessage, fTargetValue);
+    HAL_UART_Transmit_IT(pUartPeripheral, ucMessage, 11);
         
         
 }
@@ -178,7 +178,7 @@ void vCommunicationStateMachineStateHandleValue(){
         {
             case TEMPERATURE_TARGET:
                 if(fTargetValue > 90){
-                    HAL_UART_Transmit_IT(pUartPeripheral, "[CONFIG SYS] ERROR: Max Value Exceeded\n\r",  42);
+                    HAL_UART_Transmit_IT(pUartPeripheral, (unsigned char*)"[CONFIG SYS] ERROR: Max Value Exceeded\n\r",  42);
                     cSaveSuccessful = 0;
                     break;
                 }
@@ -223,7 +223,7 @@ void vCommunicationStateMachineStateHandleValue(){
         }
 
         if(cSaveSuccessful){
-            HAL_UART_Transmit_IT(pUartPeripheral, "[CONFIG SYS] Value set SUCCESSFUL\n\r",  35);
+            HAL_UART_Transmit_IT(pUartPeripheral, (unsigned char*)"[CONFIG SYS] Value set SUCCESSFUL\n\r",  35);
             pSystemParameters->buzzerInterface.cPlay = 1;
             cSaveSuccessful = 0;
         }

@@ -128,6 +128,14 @@ void vLcdWriteString(const char *cBuffer)
 	};
 }
 
+void vLcdWriteBuffer(unsigned char *ucBuffer)
+{
+	while(*ucBuffer)
+	{
+		vLcdWriteData(*ucBuffer++);
+	};
+}
+
 
 /* ************************************************ */
 /* Method name:        vLCDDummyText                */

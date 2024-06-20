@@ -26,7 +26,7 @@
 // Output params:      void                                   //
 //                        N/A                                 //
 // ********************************************************** //
-void vParserFloatToString(unsigned char* ucStringBuffer, float fNumberInput);
+void vParserFloatToString(unsigned char ucStringBuffer[11], float fNumberInput);
 
 // ********************************************************** //
 // Method name:        pParserStandardizeNumericInput         //

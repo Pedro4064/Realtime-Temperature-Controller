@@ -67,7 +67,7 @@ void vDataScreen1Handle(){
     vLcdWriteString("Temp. At:");
     vLcdSetCursor(0,9);
     vParserFlexibleFloatToString(ucLcdScreenString[0], 16, pApplicationParameters->tempMgtCtl.fTemperatureCurrent, 2, 2 , ',');
-    vLcdWriteString(ucLcdScreenString[0]);
+    vLcdWriteBuffer(ucLcdScreenString[0]);
 
 
     vLcdSetCursor(1,0);
@@ -78,7 +78,7 @@ void vDataScreen1Handle(){
     }
     else{
         vParserFlexibleFloatToString(ucLcdScreenString[1], 16, pApplicationParameters->tempMgtCtl.fTemperatureTarget, 2, 2 , ',');
-        vLcdWriteString(ucLcdScreenString[1]);
+        vLcdWriteBuffer(ucLcdScreenString[1]);
     }
 
     // Update the state depending on buttons states 
@@ -106,7 +106,7 @@ void vDataScreen2Handle(){
     vLcdWriteString("Vel. C:");
     vLcdSetCursor(0,7);
     vParserFlexibleFloatToString(ucLcdScreenString[0], 16, pApplicationParameters->tempMgtCtl.uiVelocityCooler, 4, 2, ',');
-    vLcdWriteString(ucLcdScreenString[0]);
+    vLcdWriteBuffer(ucLcdScreenString[0]);
 
     // Update the state depending on buttons states 
     if(pApplicationParameters->appButtons.discreteMapping.xDownBtn == PRESSED){
@@ -132,19 +132,19 @@ void vDataScreen3Handle(){
     vLcdWriteString("Kp:");
     vLcdSetCursor(0,3);
     vParserFlexibleFloatToString(ucLcdScreenString[0], 16, pApplicationParameters->tempMgtCtl.fKp, 2, 2, ',');
-    vLcdWriteString(ucLcdScreenString[0]);
+    vLcdWriteBuffer(ucLcdScreenString[0]);
 
     vLcdSetCursor(0,8);
     vLcdWriteString("Ki:");
     vLcdSetCursor(0,11);
     vParserFlexibleFloatToString(ucLcdScreenString[0], 16, pApplicationParameters->tempMgtCtl.fKi, 2, 2, ',');
-    vLcdWriteString(ucLcdScreenString[0]);
+    vLcdWriteBuffer(ucLcdScreenString[0]);
 
     vLcdSetCursor(1,0);
     vLcdWriteString("Kd:");
     vLcdSetCursor(1,3);
     vParserFlexibleFloatToString(ucLcdScreenString[1], 16, pApplicationParameters->tempMgtCtl.fKd, 2, 2, ',');
-    vLcdWriteString(ucLcdScreenString[1]);
+    vLcdWriteBuffer(ucLcdScreenString[1]);
 
     // Update the state depending on buttons states 
     if(pApplicationParameters->appButtons.discreteMapping.xDownBtn == PRESSED){
@@ -323,18 +323,18 @@ void vConfigScreenInputHandle(){
     }
 
     // Create input buffer for the data
-    static char cUserInput[5] = {'_', '_', ',', '_', '_'};
+    static unsigned char ucUserInput[5] = {'_', '_', ',', '_', '_'};
     static int iCursorPosition = 0;
 
     // Blink the cursor until user inputs information
-    cUserInput[iCursorPosition] = (++cBlinkStatus%4 == 0)? ' ': '_';
+    ucUserInput[iCursorPosition] = (++cBlinkStatus%4 == 0)? ' ': '_';
 
     // If any keys were pressed and add to user input until user input is full
     if(!cQueueIsEmpty(&pApplicationParameters->xKeyboardQueue) && iCursorPosition <= 4){
         char cInput = cQueueGet(&pApplicationParameters->xKeyboardQueue);
 
         cIsComplete = (iCursorPosition == 4)? 1 : 0;
-        cUserInput[iCursorPosition] = IS_NUMERIC(cInput)? cInput : cUserInput[iCursorPosition];
+        ucUserInput[iCursorPosition] = IS_NUMERIC(cInput)? cInput : ucUserInput[iCursorPosition];
         iCursorPosition = IS_NUMERIC(cInput)? UPDATE_CURSOR(iCursorPosition) : iCursorPosition;
     }   
 
@@ -346,7 +346,7 @@ void vConfigScreenInputHandle(){
             
             // When full, convert the value to float and save it to the configuration parameters
             if(cIsComplete){
-                float fConvertedValue = fParserToFloat(cUserInput, 5);
+                float fConvertedValue = fParserToFloat(ucUserInput, 5);
 
                 if(fConvertedValue <= 90){
                     pApplicationParameters->tempMgtCtl.fTemperatureTarget = fConvertedValue;
@@ -359,7 +359,7 @@ void vConfigScreenInputHandle(){
                 }
 
                 // Reset input dialog configurations for next config user interaction
-                RESET_INPUT_TEMPLATE(cUserInput);
+                RESET_INPUT_TEMPLATE(ucUserInput);
                 cFirstRendering = 1;
                 iCursorPosition = 0;
                 cIsComplete = 0;
@@ -369,20 +369,20 @@ void vConfigScreenInputHandle(){
             vLcdSetCursor(0,0);
             vLcdWriteString("Temp. Desejada");
             vLcdSetCursor(1,0);
-            vLcdWriteString(cUserInput);
+            vLcdWriteBuffer(ucUserInput);
 
             break;
 
         case '2':
             // When full, convert the value to float and save it to the configuration parameters
             if(cIsComplete){
-                float fConvertedValue = fParserToFloat(cUserInput, 5);
+                float fConvertedValue = fParserToFloat(ucUserInput, 5);
                 pApplicationParameters->tempMgtCtl.fKp = fConvertedValue;
                 pApplicationParameters->buzzerInterface.cPlay = 1;
                 xCurrentState = CONFIG_SCREEN_1;
 
                 // Reset input dialog configurations for next config user interaction
-                RESET_INPUT_TEMPLATE(cUserInput);
+                RESET_INPUT_TEMPLATE(ucUserInput);
                 cFirstRendering = 1;
                 iCursorPosition = 0;
                 cIsComplete = 0;
@@ -392,20 +392,20 @@ void vConfigScreenInputHandle(){
             vLcdSetCursor(0,0);
             vLcdWriteString("PID - Kp:");
             vLcdSetCursor(1,0);
-            vLcdWriteString(cUserInput);
+            vLcdWriteBuffer(ucUserInput);
 
             break;
 
         case '3':
             // When full, convert the value to float and save it to the configuration parameters
             if(cIsComplete){
-                float fConvertedValue = fParserToFloat(cUserInput, 5);
+                float fConvertedValue = fParserToFloat(ucUserInput, 5);
                 pApplicationParameters->tempMgtCtl.fKi = fConvertedValue;
                 pApplicationParameters->buzzerInterface.cPlay = 1;
                 xCurrentState = CONFIG_SCREEN_1;
 
                 // Reset input dialog configurations for next config user interaction
-                RESET_INPUT_TEMPLATE(cUserInput);
+                RESET_INPUT_TEMPLATE(ucUserInput);
                 cFirstRendering = 1;
                 iCursorPosition = 0;
                 cIsComplete = 0;
@@ -415,20 +415,20 @@ void vConfigScreenInputHandle(){
             vLcdSetCursor(0,0);
             vLcdWriteString("PID - Ki:");
             vLcdSetCursor(1,0);
-            vLcdWriteString(cUserInput);
+            vLcdWriteBuffer(ucUserInput);
 
             break;
 
         case '4':
             // When full, convert the value to float and save it to the configuration parameters
             if(cIsComplete){
-                float fConvertedValue = fParserToFloat(cUserInput, 5);
+                float fConvertedValue = fParserToFloat(ucUserInput, 5);
                 pApplicationParameters->tempMgtCtl.fKd = fConvertedValue;
                 pApplicationParameters->buzzerInterface.cPlay = 1;
                 xCurrentState = CONFIG_SCREEN_1;
 
                 // Reset input dialog configurations for next config user interaction
-                RESET_INPUT_TEMPLATE(cUserInput);
+                RESET_INPUT_TEMPLATE(ucUserInput);
                 cFirstRendering = 1;
                 iCursorPosition = 0;
                 cIsComplete = 0;
@@ -438,7 +438,7 @@ void vConfigScreenInputHandle(){
             vLcdSetCursor(0,0);
             vLcdWriteString("PID - Kd:");
             vLcdSetCursor(1,0);
-            vLcdWriteString(cUserInput);
+            vLcdWriteBuffer(ucUserInput);
 
             break;
         
@@ -452,7 +452,7 @@ void vConfigScreenInputHandle(){
         cFirstRendering = 1;
         iCursorPosition = 0;
 
-        RESET_INPUT_TEMPLATE(cUserInput);
+        RESET_INPUT_TEMPLATE(ucUserInput);
         RESET_BTN_STATUS(pApplicationParameters->appButtons.discreteMapping.xCenterBtn);
         CLEAR_SCREEN();
     }

@@ -7,7 +7,7 @@
 #define ADC_VREF 3.25
 
 ADC_HandleTypeDef* pAdcPeripheral;
-unsigned int uiRawTempVoltage;
+long unsigned int uiRawTempVoltage;
 
 void vTemperatureSensorInit(ADC_HandleTypeDef* pHadc){
     pAdcPeripheral = pHadc;
