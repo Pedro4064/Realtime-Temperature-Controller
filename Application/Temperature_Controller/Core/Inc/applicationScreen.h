@@ -1,3 +1,16 @@
+// **********************************************//
+// File name:        applicationScreen.h         //
+// File description: This file defines the       //
+//                   application Screens.        //
+// Author name:		 Isabelle Miki Ikuno         //
+//                   Pedro Henrique L. da Cruz   //
+// Creation date:	 21/Jun/2024                 //
+// Revision date:    21/Jun/2024                 //
+// **********************************************//
+
+
+
+
 #include "application.h"
 #include "lcd.h"
 

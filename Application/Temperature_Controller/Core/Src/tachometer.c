@@ -1,3 +1,15 @@
+// **********************************************//
+// File name:        tachometer.c                //
+// File description: This file implementes       //
+//                   the tachometer system       //
+// Author name:		 Isabelle Miki Ikuno         //
+//                   Pedro Henrique L. da Cruz   //
+// Creation date:	 21/Jun/2024                 //
+// Revision date:    21/Jun/2024                 //
+// **********************************************//
+
+
+
 #include "main.h"
 #include "stm32g474xx.h"
 

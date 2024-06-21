@@ -1,3 +1,15 @@
+ // **********************************************//
+// File name:        heaterAndCooler.h           //
+// File description: This file defines the       //
+//                   drivers for the heater      //
+// Author name:		 Isabelle Miki Ikuno         //
+//                   Pedro Henrique L. da Cruz   //
+// Creation date:	 21/Jun/2024                 //
+// Revision date:    21/Jun/2024                 //
+// **********************************************//
+
+
+
 #ifndef INC_HEATER_AND_COOLER_H__
 #define INC_HEATER_AND_COOLER_H__
 

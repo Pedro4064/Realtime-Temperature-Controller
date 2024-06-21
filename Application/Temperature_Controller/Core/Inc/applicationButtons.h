@@ -1,3 +1,15 @@
+// **********************************************//
+// File name:        applicationButtons.h        //
+// File description: This file defines the       //
+//                   application's buttons.      //
+// Author name:		 Isabelle Miki Ikuno         //
+//                   Pedro Henrique L. da Cruz   //
+// Creation date:	 21/Jun/2024                 //
+// Revision date:    21/Jun/2024                 //
+// **********************************************//
+
+
+
 #ifndef H_APPLICATION_SCREEN_H_
 #define H_APPLICATION_SCREEN_H_
 

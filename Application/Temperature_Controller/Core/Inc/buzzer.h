@@ -1,3 +1,15 @@
+ // **********************************************//
+// File name:        buzzer.h                    //
+// File description: This file defines the       //
+//                   drivers for the buzzers.    //
+// Author name:		 Isabelle Miki Ikuno         //
+//                   Pedro Henrique L. da Cruz   //
+// Creation date:	 21/Jun/2024                 //
+// Revision date:    21/Jun/2024                 //
+// **********************************************//
+
+
+
 #ifndef INC_BUZZER_H__
 #define INC_BUZZER_H__
 

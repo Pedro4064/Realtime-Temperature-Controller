@@ -1,3 +1,15 @@
+ // **********************************************//
+// File name:        queue.h                     //
+// File description: This file defines           //
+//                   a queue system              //
+// Author name:		 Isabelle Miki Ikuno         //
+//                   Pedro Henrique L. da Cruz   //
+// Creation date:	 21/Jun/2024                 //
+// Revision date:    21/Jun/2024                 //
+// **********************************************//
+
+
+
 #ifndef H_QUEUE_INC_
 #define H_QUEUE_INC_
 
