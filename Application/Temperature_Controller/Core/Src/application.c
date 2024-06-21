@@ -29,11 +29,6 @@
 #include "communicationStateMachine.h"
 
 
-// Application Specific Macros 
-#define PWM_DUTYCYCLE_INCREMENT(x, delta) x+delta > 1 ? 1 : x+delta
-#define PWM_DUTYCYCLE_DECREMENT(x, delta) x-delta < 0 ? 0 : x-delta
-#define NEXT_SCREEN(x) x+1 > 2 ? 0 : x+1
-
 // Application Timers Traceability 
 #define BTN_DEBOUNCE_TIMER htim7
 #define BTN_PRESS_TIMER htim16
@@ -45,11 +40,6 @@
 
 #define BUZZER_PWM_TIMER htim5
 
-// Application Test Variables
-float fCoolerDutyCycle = 0;
-float fHeaterDutyCycle = 0;
-float fRawTempVoltage  = 0;
-
 applicationParameters xApplicationParameters = {.tempMgtCtl.ucHeatingOn = 1,
 												.tempMgtCtl.fTemperatureTarget = 40,
 												.tempMgtCtl.fKp = 0.18,
@@ -60,17 +50,6 @@ applicationParameters xApplicationParameters = {.tempMgtCtl.ucHeatingOn = 1,
 												};
 unsigned short usPidWindUp = 1500;
 float fActuatorSaturation = 3.3;
-
-unsigned char ucUartTemperatureMessage[11];
-
-unsigned char ucScreen = 0;
-unsigned char ucLcdTemperatureMessage[11];
-unsigned char ucLcdTemperatureTargetMessage[11];
-unsigned char ucLcdDutyCycleMessage[11];
-unsigned char ucLcdKiMessage[11];
-unsigned char ucLcdKpMessage[11];
-unsigned char ucLcdKdMessage[11];
-unsigned char ucTestStart = 1;
 
 // Config Settings 
 pwmConfig xHeaterConfig = {&htim1, TIM_CHANNEL_1};
