@@ -58,6 +58,31 @@ void vParserStandardizeNumericInput(unsigned char* cUartMessage, int iMessageMax
 float fParserToFloat(unsigned char* cUartMessage, int iBufferMaxSize);
 
 
+// ********************************************************** //
+// Method name:        vParserFlexibleFloatToString           //
+// Method description: Converts   float   to  string  in  a   //
+//                     flexible format                        //
+// Input params:       ucStringBuffer                         //
+//                        Pointer   to  buffer  to  save  the //
+//                        formatted string                    //
+//                     iBufferSize                            //
+//                        Size  of  the  buffer  to  save the //
+//                        formatted string                    //
+//                     fNumberInput                           //
+//                        Number to be formatted              //
+//                     iNumberWholeDigits                     //
+//                        Number  of whole numbers desired in //
+//                        the final string                    //
+//                     iNumberDecimalDigits                   //
+//                        Number  of  decimal  places  in the //
+//                        desired string                      //
+//                     cDelimiter                             //
+//                        Character   to   be   used  as  the //
+//                        delimiter  between  the  whole  and //
+//                        decimal places                      //
+// Output params:      void                                   //
+//                        N/A                                 //
+// ********************************************************** //
 void vParserFlexibleFloatToString(unsigned char* ucStringBuffer, int iBufferSize, float fNumberInput, int iNumberWholeDigits, int iNumberDecimalDigits, char cDelimiter);
 
 #endif /* INC_PARSER_H_ */
