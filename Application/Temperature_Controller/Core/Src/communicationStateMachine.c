@@ -165,7 +165,7 @@ void vCommunicationStateMachineStateHandleValue(){
     static unsigned char ucBuffer[MAX_BUFFER_SIZE + 1];
     char cSaveSuccessful;
 
-    if(VALIDATED_INPUT(ucCommByte) && ucBufferIndex <= MAX_BUFFER_SIZE){
+    if(VALIDATED_INPUT(ucCommByte) && ucBufferIndex < MAX_BUFFER_SIZE){
         ucBuffer[ucBufferIndex++] = ucCommByte;
         return;
     }
