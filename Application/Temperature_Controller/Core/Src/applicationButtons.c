@@ -57,8 +57,8 @@ void vApplicationButtonThreeSecondPressed(Button xPressedButton){
 // ********************************************************** //
 void vApplicationButtonHalfSecondPressed(Button xPressedButton){}
 
-void vApplicationButtonsInit(ButtonMapping (*xBoardButtonMapping)[NUMBER_BOARD_BUTTONS],TIM_HandleTypeDef* pDebounceTim, TIM_HandleTypeDef* pLongPressTim, applicationParameters* pApplicationParam){
+void vApplicationButtonsInit(ButtonMapping (*pBoardButtonMapping)[NUMBER_BOARD_BUTTONS],TIM_HandleTypeDef* pDebounceTim, TIM_HandleTypeDef* pLongPressTim, applicationParameters* pApplicationParam){
 
 	pApplicationParameters = pApplicationParam;
-	vButtonsEventsInit(xBoardButtonMapping, pDebounceTim, pLongPressTim, &vApplicationButtonPressed, &vApplicationButtonReleased, &vApplicationButtonHalfSecondPressed, &vApplicationButtonThreeSecondPressed);
+	vButtonsEventsInit(pBoardButtonMapping, pDebounceTim, pLongPressTim, &vApplicationButtonPressed, &vApplicationButtonReleased, &vApplicationButtonHalfSecondPressed, &vApplicationButtonThreeSecondPressed);
 }
