@@ -1,0 +1,120 @@
+@startuml
+' Define included headers as packages for context
+
+
+class queue {
+    char cQ[10]
+    int iTop
+    int iBottom
+    int iSize
+}
+
+queue : +void vQueueInsert(queue* pQ, char cValue)
+queue : +char cQueueGet(queue* pQ)
+queue : +char cQueueIsEmpty(queue* pQ)
+queue : +void vQueueClear(queue* pQ)
+
+
+' Define the main application class
+struct applicationParameters {
+    TempManParam tempMgtCtl
+    AppButtons appButtons
+    BuzzerInterface buzzerInterface
+    queue xKeyboardQueue
+}
+
+' Define nested structures within applicationParameters
+struct TempManParam {
+    float fTemperatureCurrent
+    float fTemperatureTarget
+    unsigned char ucHeatingOn
+    float fDutyCycleCooler
+    float fDutyCycleHeater
+    unsigned int uiVelocityCooler
+    float fKi
+    float fKp
+    float fKd
+    char cPidConfigChanged
+}
+
+struct AppButtons {
+    DiscreteMapping discreteMapping
+    ButtonStatus indexBased[5]
+}
+
+struct DiscreteMapping {
+    ButtonStatus xUpBtn
+    ButtonStatus xDownBtn
+    ButtonStatus xLeftBtn
+    ButtonStatus xRightBtn
+    ButtonStatus xCenterBtn
+}
+
+struct BuzzerInterface {
+    unsigned short int usFrequency
+    unsigned short int usPeriod
+    char cBuzzerConfigChanged
+    char cPlay
+}
+
+enum ButtonStatus{
+    LONG_PRESSED = 2
+    PRESSED = 1
+    NOT_PRESSED = 1
+}
+
+' Define the methods in application.h
+class application {
+    applicationParameters xApplicationParameters
+}
+application :   +void vApplicationStart()
+application :   -void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* timer)
+application :   -void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+application :   -void HAL_UART_RxCpltCallback(UART_HandleTypeDef* pHUart)
+
+class applicationScreen{
+    static screenState xCurrentState
+    static applicationParameters* pApplicationParamenters
+}
+
+applicationScreen : +void vApplicationScreenInit(lcdConfig* pLcdConfiguration, applicationParameters* pAppParam)
+applicationScreen : +void vApplicationScreenUpdate()
+applicationScreen : -void vInitialScreenHandle()
+applicationScreen : -void vDataScreen1Handle()
+applicationScreen : -void vDataScreen2Handle()
+applicationScreen : -void vDataScreen3Handle()
+applicationScreen : -void vConfigScreen1Handle()
+applicationScreen : -void vConfigScreen2Handle()
+applicationScreen : -void vConfigScreen3Handle()
+applicationScreen : -void vConfigScreenInputHandle()
+applicationScreen : -void vConfigScreenInputHandle()
+applicationScreen : -void vMaxValueExceededScreenHandle()
+
+
+enum  screenState{
+    INITIAL_SCREEN
+    DATA_SCREEN_1
+    DATA_SCREEN_2
+    DATA_SCREEN_3
+    CONFIG_SCREEN_1
+    CONFIG_SCREEN_2
+    CONFIG_SCREEN_3
+    CONFIG_SCREEN_INPUT
+    MAX_VAL_ERROR_SCREEN
+}
+
+' Relationships between structures
+applicationScreen --> screenState
+applicationScreen --> applicationParameters
+application--> applicationScreen
+application --> applicationParameters
+applicationParameters --> TempManParam
+applicationParameters --> AppButtons
+applicationParameters --> BuzzerInterface
+applicationParameters --> queue
+
+AppButtons --> DiscreteMapping
+DiscreteMapping --> ButtonStatus
+
+' Include relationship
+@enduml
